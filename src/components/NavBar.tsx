@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Coins, ShoppingCart, User, Bell } from 'lucide-react';
+import { Coins, ShoppingCart, User, Bell, Image } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -31,6 +31,7 @@ const NavBar = () => {
           <Link to="/" className="text-white hover:text-neon-purple transition-colors">Home</Link>
           <Link to="/earn" className="text-white hover:text-neon-purple transition-colors">Earn Coins</Link>
           <Link to="/store" className="text-white hover:text-neon-purple transition-colors">Shop</Link>
+          <Link to="/reviews" className="text-white hover:text-neon-purple transition-colors">Reviews</Link>
           <Link to="/referral" className="text-white hover:text-neon-purple transition-colors">Refer & Earn</Link>
         </div>
 

@@ -9,6 +9,7 @@ import NotFound from "./pages/NotFound";
 import Earn from "./pages/Earn";
 import Store from "./pages/Store";
 import Referral from "./pages/Referral";
+import Reviews from "./pages/Reviews";
 
 const queryClient = new QueryClient();
 
@@ -23,6 +24,7 @@ const App = () => (
           <Route path="/earn" element={<Earn />} />
           <Route path="/store" element={<Store />} />
           <Route path="/referral" element={<Referral />} />
+          <Route path="/reviews" element={<Reviews />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

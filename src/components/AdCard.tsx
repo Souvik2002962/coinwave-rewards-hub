@@ -1,6 +1,6 @@
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Play, ArrowRight, CheckCircle } from 'lucide-react';
+import { Play, ArrowRight, CheckCircle, Volume2, VolumeX } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 
@@ -21,7 +21,7 @@ const AdCard = ({
   description,
   coinReward,
   imageUrl,
-  videoUrl,
+  videoUrl = 'https://assets.mixkit.co/videos/preview/mixkit-spinning-around-the-earth-29351-large.mp4', // Default video if none provided
   videoDuration = 30, // default duration for demo purposes
   type
 }: AdCardProps) => {
@@ -30,6 +30,8 @@ const AdCard = ({
   const [cardRotation, setCardRotation] = useState({ x: 0, y: 0 });
   const [progress, setProgress] = useState(0);
   const [adCompleted, setAdCompleted] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
   const timerRef = useRef<number | null>(null);
   const progressIntervalRef = useRef<number | null>(null);
   
@@ -73,6 +75,11 @@ const AdCard = ({
         clearTimeout(timerRef.current);
       }
       
+      // Stop video if it's playing
+      if (videoRef.current) {
+        videoRef.current.pause();
+      }
+      
       toast.error('Ad viewing abandoned. No coins earned.', {
         position: 'top-center',
         duration: 3000,
@@ -80,10 +87,33 @@ const AdCard = ({
     }
   };
 
+  const toggleMute = () => {
+    if (videoRef.current) {
+      videoRef.current.muted = !videoRef.current.muted;
+      setIsMuted(!isMuted);
+    }
+  };
+
   const watchAd = () => {
     // In a real implementation, this would trigger video ad viewing
     setWatchedState('watching');
     setProgress(0);
+    
+    // Play video if it exists
+    setTimeout(() => {
+      if (videoRef.current) {
+        videoRef.current.currentTime = 0;
+        videoRef.current.muted = isMuted;
+        videoRef.current.play().catch(err => {
+          console.error("Error playing video:", err);
+          // Fallback if autoplay is blocked
+          toast.error("Couldn't autoplay video. Please click the video to play.", {
+            position: 'top-center',
+            duration: 3000,
+          });
+        });
+      }
+    }, 100);
     
     // Set up progress tracking
     const intervalTime = 100; // Update progress every 100ms
@@ -124,6 +154,10 @@ const AdCard = ({
     setWatchedState('unwatched');
     setProgress(0);
     setAdCompleted(false);
+    if (videoRef.current) {
+      videoRef.current.pause();
+      videoRef.current.currentTime = 0;
+    }
   };
 
   return (
@@ -138,12 +172,25 @@ const AdCard = ({
       onMouseLeave={resetRotation}
     >
       <div className="relative overflow-hidden rounded-t-lg h-48">
-        <img 
-          src={imageUrl} 
-          alt={title} 
-          className="w-full h-full object-cover transition-transform duration-300"
-          style={{ transform: isHovering ? 'scale(1.05)' : 'scale(1)' }}
-        />
+        {type === 'video' && watchedState === 'watching' && (
+          <video 
+            ref={videoRef}
+            src={videoUrl} 
+            className="w-full h-full object-cover" 
+            playsInline
+            onClick={toggleMute}
+          />
+        )}
+        
+        {(type !== 'video' || watchedState !== 'watching') && (
+          <img 
+            src={imageUrl} 
+            alt={title} 
+            className="w-full h-full object-cover transition-transform duration-300"
+            style={{ transform: isHovering ? 'scale(1.05)' : 'scale(1)' }}
+          />
+        )}
+        
         {type === 'video' && watchedState === 'unwatched' && (
           <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
             <div className="w-16 h-16 rounded-full bg-neon-purple/80 flex items-center justify-center animate-pulse">
@@ -151,32 +198,35 @@ const AdCard = ({
             </div>
           </div>
         )}
-        {watchedState === 'watching' && (
-          <div className="absolute inset-0 bg-black/90 flex flex-col items-center justify-center">
-            <div className="text-white text-center">
-              <div className="animate-spin h-12 w-12 border-4 border-neon-purple border-t-transparent rounded-full mx-auto mb-4"></div>
-              <p>Watching ad...</p>
-              <p className="text-sm mt-1">Please don't leave until complete</p>
-              <div className="w-full bg-gray-700 rounded-full h-2 mt-2">
-                <div 
-                  className="bg-neon-purple h-2 rounded-full transition-all duration-100 ease-linear" 
-                  style={{ width: `${progress}%` }}
-                ></div>
-              </div>
-              <p className="text-xs mt-1 text-gray-300">
-                {Math.floor(progress)}% complete
-              </p>
+        
+        {type === 'video' && watchedState === 'watching' && (
+          <>
+            <div className="absolute top-2 right-2 z-20">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="bg-black/40 hover:bg-black/60 p-1 rounded-full"
+                onClick={toggleMute}
+              >
+                {isMuted ? <VolumeX className="h-4 w-4 text-white" /> : <Volume2 className="h-4 w-4 text-white" />}
+              </Button>
             </div>
-            <Button 
-              variant="destructive" 
-              size="sm" 
-              onClick={abandonAd} 
-              className="mt-4 bg-red-600 hover:bg-red-700"
-            >
-              Skip (No Coins)
-            </Button>
-          </div>
+            <div className="absolute inset-0 bg-black/30 flex flex-col items-center justify-center">
+              <div className="text-white text-center absolute bottom-2 left-2 right-2">
+                <div className="w-full bg-gray-700/80 rounded-full h-2">
+                  <div 
+                    className="bg-neon-purple h-2 rounded-full transition-all duration-100 ease-linear" 
+                    style={{ width: `${progress}%` }}
+                  ></div>
+                </div>
+                <p className="text-xs mt-1 text-white/90">
+                  {Math.floor(progress)}% complete
+                </p>
+              </div>
+            </div>
+          </>
         )}
+        
         {watchedState === 'abandoned' && (
           <div className="absolute inset-0 bg-black/80 flex items-center justify-center">
             <div className="text-white text-center p-4">
@@ -217,10 +267,10 @@ const AdCard = ({
         
         {watchedState === 'watching' && (
           <Button 
-            className="w-full bg-muted text-muted-foreground" 
-            disabled
+            className="w-full bg-red-600 hover:bg-red-700" 
+            onClick={abandonAd}
           >
-            Watching...
+            Skip (No Coins)
           </Button>
         )}
         

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -8,6 +7,7 @@ import ProductCard from '@/components/ProductCard';
 import CoinWallet from '@/components/CoinWallet';
 import ReferralCard from '@/components/ReferralCard';
 import AdvertiserDashboardPreview from '@/components/AdvertiserDashboardPreview';
+import { Link } from 'react-router-dom';
 
 const Index = () => {
   // Sample ad data
@@ -95,13 +95,17 @@ const Index = () => {
               Dive into a futuristic ecosystem where your time converts into digital currency. Watch ads, earn coins, and redeem them for real products.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button className="bg-neon-purple hover:bg-neon-purple/90 text-white px-8 py-6 text-lg">
-                Start Earning
-                <ArrowRight className="ml-2" />
-              </Button>
-              <Button variant="outline" className="border-neon-blue text-neon-blue hover:bg-neon-blue/10 hover:text-neon-blue px-8 py-6 text-lg">
-                Browse Store
-              </Button>
+              <Link to="/earn">
+                <Button className="bg-neon-purple hover:bg-neon-purple/90 text-white px-8 py-6 text-lg">
+                  Start Earning
+                  <ArrowRight className="ml-2" />
+                </Button>
+              </Link>
+              <Link to="/store">
+                <Button variant="outline" className="border-neon-blue text-neon-blue hover:bg-neon-blue/10 hover:text-neon-blue px-8 py-6 text-lg">
+                  Browse Store
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
@@ -112,9 +116,11 @@ const Index = () => {
         <div className="container mx-auto">
           <div className="flex justify-between items-center mb-8">
             <h2 className="text-2xl font-bold text-white">Watch & Earn</h2>
-            <Button variant="link" className="text-neon-purple">
-              View All <ArrowRight className="ml-1 h-4 w-4" />
-            </Button>
+            <Link to="/earn">
+              <Button variant="link" className="text-neon-purple">
+                View All <ArrowRight className="ml-1 h-4 w-4" />
+              </Button>
+            </Link>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -130,9 +136,11 @@ const Index = () => {
         <div className="container mx-auto">
           <div className="flex justify-between items-center mb-8">
             <h2 className="text-2xl font-bold text-white">Featured Products</h2>
-            <Button variant="link" className="text-neon-purple">
-              Shop All <ArrowRight className="ml-1 h-4 w-4" />
-            </Button>
+            <Link to="/store">
+              <Button variant="link" className="text-neon-purple">
+                Shop All <ArrowRight className="ml-1 h-4 w-4" />
+              </Button>
+            </Link>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
