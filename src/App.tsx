@@ -10,6 +10,9 @@ import Earn from "./pages/Earn";
 import Store from "./pages/Store";
 import Referral from "./pages/Referral";
 import Reviews from "./pages/Reviews";
+import BecomeAdvertiser from "./pages/BecomeAdvertiser";
+import CreateCampaign from "./pages/CreateCampaign";
+import AdvertiserDashboard from "./pages/AdvertiserDashboard";
 
 const queryClient = new QueryClient();
 
@@ -25,6 +28,9 @@ const App = () => (
           <Route path="/store" element={<Store />} />
           <Route path="/referral" element={<Referral />} />
           <Route path="/reviews" element={<Reviews />} />
+          <Route path="/become-advertiser" element={<BecomeAdvertiser />} />
+          <Route path="/create-campaign" element={<CreateCampaign />} />
+          <Route path="/advertiser-dashboard" element={<AdvertiserDashboard />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

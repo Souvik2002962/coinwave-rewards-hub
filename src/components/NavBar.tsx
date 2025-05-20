@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Coins, ShoppingCart, User, Bell, Menu, X } from 'lucide-react';
+import { Coins, ShoppingCart, User, Bell, Menu, X, BriefcaseBusiness } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -39,6 +39,10 @@ const NavBar = () => {
           <Link to="/store" className="text-white hover:text-neon-purple transition-colors">Shop</Link>
           <Link to="/reviews" className="text-white hover:text-neon-purple transition-colors">Reviews</Link>
           <Link to="/referral" className="text-white hover:text-neon-purple transition-colors">Refer & Earn</Link>
+          <Link to="/become-advertiser" className="text-white hover:text-neon-purple transition-colors flex items-center">
+            <BriefcaseBusiness className="h-4 w-4 mr-1" />
+            For Advertisers
+          </Link>
         </div>
 
         {/* User Controls - Always Visible */}
@@ -71,6 +75,10 @@ const NavBar = () => {
                 <DropdownMenuItem className="text-white hover:text-neon-purple hover:bg-secondary focus:bg-secondary">Wallet History</DropdownMenuItem>
                 <DropdownMenuItem className="text-white hover:text-neon-purple hover:bg-secondary focus:bg-secondary">Settings</DropdownMenuItem>
                 <DropdownMenuSeparator className="bg-neon-purple/30" />
+                <DropdownMenuItem className="text-white hover:text-neon-purple hover:bg-secondary focus:bg-secondary">
+                  <Link to="/advertiser-dashboard" className="w-full">Advertiser Dashboard</Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator className="bg-neon-purple/30" />
                 <DropdownMenuItem className="text-destructive hover:text-destructive hover:bg-secondary focus:bg-secondary">Log out</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -96,6 +104,10 @@ const NavBar = () => {
           <Link to="/store" className="block text-white hover:text-neon-purple py-2 transition-colors" onClick={toggleMobileMenu}>Shop</Link>
           <Link to="/reviews" className="block text-white hover:text-neon-purple py-2 transition-colors" onClick={toggleMobileMenu}>Reviews</Link>
           <Link to="/referral" className="block text-white hover:text-neon-purple py-2 transition-colors" onClick={toggleMobileMenu}>Refer & Earn</Link>
+          <Link to="/become-advertiser" className="block text-white hover:text-neon-purple py-2 transition-colors flex items-center" onClick={toggleMobileMenu}>
+            <BriefcaseBusiness className="h-4 w-4 mr-1" />
+            For Advertisers
+          </Link>
           
           <div className="flex items-center space-x-4 pt-2 border-t border-neon-purple/30">
             <Button variant="ghost" size="icon" className="text-white hover:text-neon-purple">
