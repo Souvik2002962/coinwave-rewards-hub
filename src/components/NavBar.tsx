@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Coins, ShoppingCart, User, Bell, Image } from 'lucide-react';
+import { Coins, ShoppingCart, User, Bell, Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -14,7 +14,12 @@ import {
 
 const NavBar = () => {
   const [coinBalance, setCoinBalance] = useState(1250);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
+  const toggleMobileMenu = () => {
+    setMobileMenuOpen(!mobileMenuOpen);
+  };
+
   return (
     <nav className="fixed w-full top-0 z-50 bg-cyber-dark shadow-md py-3 px-4 md:px-6">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
@@ -27,6 +32,7 @@ const NavBar = () => {
           </span>
         </Link>
 
+        {/* Desktop Navigation */}
         <div className="hidden md:flex items-center space-x-8">
           <Link to="/" className="text-white hover:text-neon-purple transition-colors">Home</Link>
           <Link to="/earn" className="text-white hover:text-neon-purple transition-colors">Earn Coins</Link>
@@ -35,39 +41,75 @@ const NavBar = () => {
           <Link to="/referral" className="text-white hover:text-neon-purple transition-colors">Refer & Earn</Link>
         </div>
 
-        <div className="flex items-center space-x-4">
+        {/* User Controls - Always Visible */}
+        <div className="flex items-center space-x-2 md:space-x-4">
           <div className="neon-border px-3 py-1 rounded-full flex items-center">
             <Coins className="h-4 w-4 text-yellow-400 mr-1" />
             <span className="text-white font-medium">{coinBalance}</span>
           </div>
           
-          <Button variant="ghost" size="icon" className="text-white hover:text-neon-purple">
-            <Bell className="h-5 w-5" />
-          </Button>
+          <div className="hidden md:flex items-center space-x-2">
+            <Button variant="ghost" size="icon" className="text-white hover:text-neon-purple">
+              <Bell className="h-5 w-5" />
+            </Button>
+            
+            <Button variant="ghost" size="icon" className="text-white hover:text-neon-purple">
+              <ShoppingCart className="h-5 w-5" />
+            </Button>
+            
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="text-white hover:text-neon-purple">
+                  <User className="h-5 w-5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56 bg-cyber-dark border-neon-purple">
+                <DropdownMenuLabel className="text-white">My Account</DropdownMenuLabel>
+                <DropdownMenuSeparator className="bg-neon-purple/30" />
+                <DropdownMenuItem className="text-white hover:text-neon-purple hover:bg-secondary focus:bg-secondary">Profile</DropdownMenuItem>
+                <DropdownMenuItem className="text-white hover:text-neon-purple hover:bg-secondary focus:bg-secondary">My Orders</DropdownMenuItem>
+                <DropdownMenuItem className="text-white hover:text-neon-purple hover:bg-secondary focus:bg-secondary">Wallet History</DropdownMenuItem>
+                <DropdownMenuItem className="text-white hover:text-neon-purple hover:bg-secondary focus:bg-secondary">Settings</DropdownMenuItem>
+                <DropdownMenuSeparator className="bg-neon-purple/30" />
+                <DropdownMenuItem className="text-destructive hover:text-destructive hover:bg-secondary focus:bg-secondary">Log out</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
           
-          <Button variant="ghost" size="icon" className="text-white hover:text-neon-purple">
-            <ShoppingCart className="h-5 w-5" />
+          {/* Mobile Menu Button */}
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="md:hidden text-white hover:text-neon-purple"
+            onClick={toggleMobileMenu}
+          >
+            {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </Button>
-          
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="text-white hover:text-neon-purple">
-                <User className="h-5 w-5" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56 bg-cyber-dark border-neon-purple">
-              <DropdownMenuLabel className="text-white">My Account</DropdownMenuLabel>
-              <DropdownMenuSeparator className="bg-neon-purple/30" />
-              <DropdownMenuItem className="text-white hover:text-neon-purple hover:bg-secondary focus:bg-secondary">Profile</DropdownMenuItem>
-              <DropdownMenuItem className="text-white hover:text-neon-purple hover:bg-secondary focus:bg-secondary">My Orders</DropdownMenuItem>
-              <DropdownMenuItem className="text-white hover:text-neon-purple hover:bg-secondary focus:bg-secondary">Wallet History</DropdownMenuItem>
-              <DropdownMenuItem className="text-white hover:text-neon-purple hover:bg-secondary focus:bg-secondary">Settings</DropdownMenuItem>
-              <DropdownMenuSeparator className="bg-neon-purple/30" />
-              <DropdownMenuItem className="text-destructive hover:text-destructive hover:bg-secondary focus:bg-secondary">Log out</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
         </div>
       </div>
+
+      {/* Mobile Menu Dropdown */}
+      {mobileMenuOpen && (
+        <div className="md:hidden bg-cyber-dark border-t border-neon-purple/30 mt-3 py-3 px-4 space-y-3">
+          <Link to="/" className="block text-white hover:text-neon-purple py-2 transition-colors" onClick={toggleMobileMenu}>Home</Link>
+          <Link to="/earn" className="block text-white hover:text-neon-purple py-2 transition-colors" onClick={toggleMobileMenu}>Earn Coins</Link>
+          <Link to="/store" className="block text-white hover:text-neon-purple py-2 transition-colors" onClick={toggleMobileMenu}>Shop</Link>
+          <Link to="/reviews" className="block text-white hover:text-neon-purple py-2 transition-colors" onClick={toggleMobileMenu}>Reviews</Link>
+          <Link to="/referral" className="block text-white hover:text-neon-purple py-2 transition-colors" onClick={toggleMobileMenu}>Refer & Earn</Link>
+          
+          <div className="flex items-center space-x-4 pt-2 border-t border-neon-purple/30">
+            <Button variant="ghost" size="icon" className="text-white hover:text-neon-purple">
+              <Bell className="h-5 w-5" />
+            </Button>
+            <Button variant="ghost" size="icon" className="text-white hover:text-neon-purple">
+              <ShoppingCart className="h-5 w-5" />
+            </Button>
+            <Button variant="ghost" size="icon" className="text-white hover:text-neon-purple">
+              <User className="h-5 w-5" />
+            </Button>
+          </div>
+        </div>
+      )}
     </nav>
   );
 };

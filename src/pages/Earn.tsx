@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import NavBar from '@/components/NavBar';
 import AdCard from '@/components/AdCard';
 import { 
@@ -12,6 +11,8 @@ import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
 
 const Earn = () => {
+  const tabsRef = useRef<HTMLDivElement>(null);
+  
   // Sample ad data
   const videoAds = [
     {
@@ -147,55 +148,59 @@ const Earn = () => {
           </div>
         </div>
         
-        <Tabs defaultValue="video" className="w-full">
-          <TabsList className="w-full max-w-lg mx-auto mb-8 bg-cyber-dark">
-            <TabsTrigger value="video" className="flex-1">Video Ads (20-30 coins)</TabsTrigger>
-            <TabsTrigger value="banner" className="flex-1">Banner Ads (8-15 coins)</TabsTrigger>
-            <TabsTrigger value="carousel" className="flex-1">Carousel (12-18 coins)</TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="video">
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
-              {videoAds.map((ad) => (
-                <AdCard key={ad.adId} {...ad} />
-              ))}
+        <div ref={tabsRef} className="overflow-x-auto hide-scrollbar">
+          <Tabs defaultValue="video" className="w-full">
+            <div className="min-w-max">
+              <TabsList className="w-full max-w-lg mx-auto mb-8 bg-cyber-dark">
+                <TabsTrigger value="video" className="flex-1 whitespace-nowrap">Video Ads (20-30 coins)</TabsTrigger>
+                <TabsTrigger value="banner" className="flex-1 whitespace-nowrap">Banner Ads (8-15 coins)</TabsTrigger>
+                <TabsTrigger value="carousel" className="flex-1 whitespace-nowrap">Carousel (12-18 coins)</TabsTrigger>
+              </TabsList>
             </div>
-            <div className="mt-8 text-center">
-              <Button variant="outline" className="border-neon-purple text-neon-purple hover:bg-neon-purple/10">
-                Load More Ads
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </div>
-          </TabsContent>
-          
-          <TabsContent value="banner">
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
-              {bannerAds.map((ad) => (
-                <AdCard key={ad.adId} {...ad} />
-              ))}
-            </div>
-            <div className="mt-8 text-center">
-              <Button variant="outline" className="border-neon-purple text-neon-purple hover:bg-neon-purple/10">
-                Load More Ads
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </div>
-          </TabsContent>
-          
-          <TabsContent value="carousel">
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
-              {carouselAds.map((ad) => (
-                <AdCard key={ad.adId} {...ad} />
-              ))}
-            </div>
-            <div className="mt-8 text-center">
-              <Button variant="outline" className="border-neon-purple text-neon-purple hover:bg-neon-purple/10">
-                Load More Ads
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </div>
-          </TabsContent>
-        </Tabs>
+            
+            <TabsContent value="video">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                {videoAds.map((ad) => (
+                  <AdCard key={ad.adId} {...ad} />
+                ))}
+              </div>
+              <div className="mt-8 text-center">
+                <Button variant="outline" className="border-neon-purple text-neon-purple hover:bg-neon-purple/10">
+                  Load More Ads
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </div>
+            </TabsContent>
+            
+            <TabsContent value="banner">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                {bannerAds.map((ad) => (
+                  <AdCard key={ad.adId} {...ad} />
+                ))}
+              </div>
+              <div className="mt-8 text-center">
+                <Button variant="outline" className="border-neon-purple text-neon-purple hover:bg-neon-purple/10">
+                  Load More Ads
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </div>
+            </TabsContent>
+            
+            <TabsContent value="carousel">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                {carouselAds.map((ad) => (
+                  <AdCard key={ad.adId} {...ad} />
+                ))}
+              </div>
+              <div className="mt-8 text-center">
+                <Button variant="outline" className="border-neon-purple text-neon-purple hover:bg-neon-purple/10">
+                  Load More Ads
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </div>
+            </TabsContent>
+          </Tabs>
+        </div>
         
         {/* Daily Bonus Section */}
         <div className="mt-16">
