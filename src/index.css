@@ -90,4 +90,33 @@
     @apply bg-gradient-to-r from-yellow-300 to-yellow-500 rounded-full flex items-center justify-center text-black font-bold;
     box-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
   }
+  
+  .glossy-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+  }
+  
+  .glossy-button {
+    @apply bg-gradient-to-r from-neon-purple to-neon-blue text-white font-medium rounded-full;
+    box-shadow: 0 5px 15px rgba(155, 135, 245, 0.4);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    transition: all 0.3s ease;
+  }
+  
+  .glossy-button:hover {
+    box-shadow: 0 8px 25px rgba(155, 135, 245, 0.6);
+    transform: translateY(-2px);
+  }
+  
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 }

@@ -1,6 +1,6 @@
 
-import React, { useState } from 'react';
-import { Play, ArrowRight } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { Play, ArrowRight, CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 
@@ -11,6 +11,7 @@ interface AdCardProps {
   coinReward: number;
   imageUrl: string;
   videoUrl?: string;
+  videoDuration?: number; // in seconds
   type: 'video' | 'banner' | 'carousel';
 }
 
@@ -21,11 +22,16 @@ const AdCard = ({
   coinReward,
   imageUrl,
   videoUrl,
+  videoDuration = 30, // default duration for demo purposes
   type
 }: AdCardProps) => {
   const [isHovering, setIsHovering] = useState(false);
-  const [watchedState, setWatchedState] = useState<'unwatched' | 'watching' | 'watched'>('unwatched');
+  const [watchedState, setWatchedState] = useState<'unwatched' | 'watching' | 'watched' | 'abandoned'>('unwatched');
   const [cardRotation, setCardRotation] = useState({ x: 0, y: 0 });
+  const [progress, setProgress] = useState(0);
+  const [adCompleted, setAdCompleted] = useState(false);
+  const timerRef = useRef<number | null>(null);
+  const progressIntervalRef = useRef<number | null>(null);
   
   // Handle mouse movement for 3D effect
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -44,12 +50,60 @@ const AdCard = ({
     setIsHovering(false);
   };
 
+  useEffect(() => {
+    return () => {
+      // Clean up any timers when component unmounts
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+      if (progressIntervalRef.current) {
+        clearInterval(progressIntervalRef.current);
+      }
+    };
+  }, []);
+
+  const abandonAd = () => {
+    if (watchedState === 'watching') {
+      // User left before completion
+      setWatchedState('abandoned');
+      if (progressIntervalRef.current) {
+        clearInterval(progressIntervalRef.current);
+      }
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+      
+      toast.error('Ad viewing abandoned. No coins earned.', {
+        position: 'top-center',
+        duration: 3000,
+      });
+    }
+  };
+
   const watchAd = () => {
     // In a real implementation, this would trigger video ad viewing
     setWatchedState('watching');
+    setProgress(0);
     
-    // Simulate ad completion after 3 seconds
-    setTimeout(() => {
+    // Set up progress tracking
+    const intervalTime = 100; // Update progress every 100ms
+    const totalIntervals = (videoDuration * 1000) / intervalTime;
+    let currentInterval = 0;
+    
+    progressIntervalRef.current = window.setInterval(() => {
+      currentInterval++;
+      const newProgress = Math.min(100, (currentInterval / totalIntervals) * 100);
+      setProgress(newProgress);
+      
+      // If we reach 100%, clear the interval
+      if (newProgress >= 100) {
+        if (progressIntervalRef.current) clearInterval(progressIntervalRef.current);
+      }
+    }, intervalTime) as unknown as number;
+    
+    // Simulate ad completion after videoDuration seconds
+    timerRef.current = window.setTimeout(() => {
+      setAdCompleted(true);
       setWatchedState('watched');
       
       // Show reward animation and toast notification
@@ -63,7 +117,13 @@ const AdCard = ({
           duration: 3000,
         }
       );
-    }, 3000);
+    }, videoDuration * 1000) as unknown as number;
+  };
+
+  const restartAd = () => {
+    setWatchedState('unwatched');
+    setProgress(0);
+    setAdCompleted(false);
   };
 
   return (
@@ -92,10 +152,44 @@ const AdCard = ({
           </div>
         )}
         {watchedState === 'watching' && (
-          <div className="absolute inset-0 bg-black/90 flex items-center justify-center">
+          <div className="absolute inset-0 bg-black/90 flex flex-col items-center justify-center">
             <div className="text-white text-center">
               <div className="animate-spin h-12 w-12 border-4 border-neon-purple border-t-transparent rounded-full mx-auto mb-4"></div>
               <p>Watching ad...</p>
+              <p className="text-sm mt-1">Please don't leave until complete</p>
+              <div className="w-full bg-gray-700 rounded-full h-2 mt-2">
+                <div 
+                  className="bg-neon-purple h-2 rounded-full transition-all duration-100 ease-linear" 
+                  style={{ width: `${progress}%` }}
+                ></div>
+              </div>
+              <p className="text-xs mt-1 text-gray-300">
+                {Math.floor(progress)}% complete
+              </p>
+            </div>
+            <Button 
+              variant="destructive" 
+              size="sm" 
+              onClick={abandonAd} 
+              className="mt-4 bg-red-600 hover:bg-red-700"
+            >
+              Skip (No Coins)
+            </Button>
+          </div>
+        )}
+        {watchedState === 'abandoned' && (
+          <div className="absolute inset-0 bg-black/80 flex items-center justify-center">
+            <div className="text-white text-center p-4">
+              <p className="text-red-400 font-medium mb-2">Ad abandoned</p>
+              <p className="text-sm mb-4">You need to watch the full ad to earn coins</p>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={restartAd}
+                className="border-neon-purple text-neon-purple hover:bg-neon-purple/10"
+              >
+                Try Again
+              </Button>
             </div>
           </div>
         )}
@@ -132,10 +226,21 @@ const AdCard = ({
         
         {watchedState === 'watched' && (
           <Button 
-            className="w-full bg-green-600 hover:bg-green-700"
+            className="w-full bg-green-600 hover:bg-green-700 flex items-center justify-center gap-2"
             disabled
           >
+            <CheckCircle className="h-4 w-4" />
             Coins Earned!
+          </Button>
+        )}
+        
+        {watchedState === 'abandoned' && (
+          <Button 
+            className="w-full bg-neon-purple hover:bg-neon-purple/90"
+            onClick={watchAd}
+          >
+            Watch & Earn
+            <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
         )}
       </div>

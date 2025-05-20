@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { ShoppingCart, Heart } from 'lucide-react';
+import { ShoppingCart, Heart, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { 
   Dialog,
@@ -10,6 +10,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 
 interface ProductCardProps {
   id: string;
@@ -37,6 +38,19 @@ const ProductCard = ({
   const [isHovering, setIsHovering] = useState(false);
   const [cardRotation, setCardRotation] = useState({ x: 0, y: 0 });
   const [isFavorite, setIsFavorite] = useState(false);
+  const [selectedColor, setSelectedColor] = useState(0);
+  const [selectedSize, setSelectedSize] = useState('');
+  
+  // Available colors (for demo)
+  const colors = [
+    { name: 'Black', class: 'bg-black' },
+    { name: 'White', class: 'bg-white border border-gray-300' },
+    { name: 'Red', class: 'bg-red-500' },
+    { name: 'Blue', class: 'bg-blue-400' },
+  ];
+  
+  // Available sizes (for demo)
+  const sizes = ['5', '5.5', '6', '6.5', '7', '7.5', '8'];
   
   // Calculate the final price after coin discount
   const finalPrice = Math.max(0, price - discountCoins);
@@ -129,62 +143,114 @@ const ProductCard = ({
           </div>
         </DialogTrigger>
         
-        <DialogContent className="bg-cyber-dark border border-neon-purple sm:max-w-xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle className="text-xl font-bold text-white">{name}</DialogTitle>
-            <DialogDescription className="text-gray-400">{category}</DialogDescription>
-          </DialogHeader>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 my-4">
-            <div className="overflow-hidden rounded-lg neon-border">
-              <img src={imageUrl} alt={name} className="w-full h-auto object-cover" />
-            </div>
-            
-            <div className="space-y-4">
-              <p className="text-gray-300">{description}</p>
-              
-              <div className="flex items-center space-x-2">
-                <div className="text-2xl font-bold text-white">${finalPrice.toFixed(2)}</div>
-                <div className="text-gray-400 text-sm line-through">${price.toFixed(2)}</div>
+        <DialogContent className="bg-white border-none rounded-2xl p-0 sm:max-w-2xl max-h-[90vh] overflow-y-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
+            {/* Left side - Product Images */}
+            <div className="bg-gray-100 p-6 rounded-l-2xl">
+              <div className="relative mb-4">
+                <img 
+                  src={imageUrl} 
+                  alt={name} 
+                  className="w-full h-64 object-contain rounded-lg"
+                />
+                <button 
+                  onClick={toggleFavorite}
+                  className={`absolute top-2 right-2 p-2 rounded-full transition-colors ${
+                    isFavorite ? 'bg-red-500 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'
+                  }`}
+                >
+                  <Heart className="h-5 w-5" fill={isFavorite ? "currentColor" : "none"} />
+                </button>
               </div>
               
-              {discountCoins > 0 && (
-                <div className="inline-flex items-center bg-neon-purple/20 rounded-full px-3 py-1">
-                  <span className="text-yellow-400 text-sm font-medium">Save {discountCoins} coins</span>
-                  <div className="coin w-4 h-4 ml-1 text-xs">💰</div>
-                </div>
+              {additionalImages.length > 0 && (
+                <Carousel className="w-full">
+                  <CarouselContent>
+                    {additionalImages.map((img, idx) => (
+                      <CarouselItem key={idx} className="basis-1/3">
+                        <div className="p-1">
+                          <div className="bg-white rounded-md overflow-hidden">
+                            <img 
+                              src={img} 
+                              alt={`${name} view ${idx + 1}`}
+                              className="w-full h-20 object-cover"
+                            />
+                          </div>
+                        </div>
+                      </CarouselItem>
+                    ))}
+                  </CarouselContent>
+                  <CarouselPrevious className="h-8 w-8 -left-4" />
+                  <CarouselNext className="h-8 w-8 -right-4" />
+                </Carousel>
               )}
+            </div>
+            
+            {/* Right side - Product Details */}
+            <div className="p-6">
+              <h2 className="text-2xl font-bold text-gray-900">{name}</h2>
+              <p className="text-sm text-gray-500 mb-4">{category}</p>
               
-              <Button 
-                className="w-full bg-neon-purple hover:bg-neon-purple/90 flex items-center justify-center gap-2"
-              >
-                <ShoppingCart className="h-4 w-4" />
-                Add to Cart
+              <div className="flex items-baseline mb-6">
+                <span className="text-2xl font-bold text-gray-900">${finalPrice.toFixed(2)}</span>
+                {discountCoins > 0 && (
+                  <>
+                    <span className="ml-2 text-gray-500 line-through">${price.toFixed(2)}</span>
+                    <div className="ml-2 bg-yellow-100 px-2 py-1 rounded-full flex items-center">
+                      <span className="text-yellow-800 text-xs font-semibold">Save {discountCoins} coins</span>
+                      <span className="ml-1 text-xs">💰</span>
+                    </div>
+                  </>
+                )}
+              </div>
+              
+              <p className="text-gray-700 mb-6">{description}</p>
+              
+              <div className="mb-6">
+                <h3 className="font-medium text-gray-900 mb-2">Select color</h3>
+                <div className="flex gap-2">
+                  {colors.map((color, index) => (
+                    <button
+                      key={index}
+                      className={`w-8 h-8 rounded-full ${color.class} ${
+                        selectedColor === index ? 'ring-2 ring-black ring-offset-2' : ''
+                      }`}
+                      onClick={() => setSelectedColor(index)}
+                      aria-label={`Select ${color.name}`}
+                    />
+                  ))}
+                </div>
+              </div>
+              
+              <div className="mb-6">
+                <h3 className="font-medium text-gray-900 mb-2">Size</h3>
+                <div className="flex flex-wrap gap-2">
+                  {sizes.map((size) => (
+                    <button
+                      key={size}
+                      className={`px-3 py-2 rounded-md text-sm ${
+                        selectedSize === size 
+                          ? 'bg-black text-white' 
+                          : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
+                      }`}
+                      onClick={() => setSelectedSize(size)}
+                    >
+                      {size}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              
+              <Button className="w-full bg-black hover:bg-gray-800 text-white rounded-full mb-3 h-12">
+                Add to cart
               </Button>
               
-              <Button
-                variant="outline" 
-                className="w-full border-neon-purple text-neon-purple hover:text-neon-purple hover:bg-neon-purple/10"
-                onClick={toggleFavorite}
-              >
-                <Heart className="h-4 w-4 mr-2" fill={isFavorite ? "currentColor" : "none"} />
-                {isFavorite ? "Remove from Favorites" : "Add to Favorites"}
+              <Button variant="outline" className="w-full border-gray-300 text-gray-800 hover:bg-gray-50 rounded-full h-12">
+                Buy now
+                <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </div>
           </div>
-          
-          {additionalImages.length > 0 && (
-            <div className="mt-4">
-              <h4 className="text-sm font-medium text-white mb-2">More Images</h4>
-              <div className="grid grid-cols-4 gap-2">
-                {additionalImages.map((img, idx) => (
-                  <div key={idx} className="overflow-hidden rounded-md border border-gray-700">
-                    <img src={img} alt={`${name} view ${idx + 1}`} className="w-full h-auto object-cover" />
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
         </DialogContent>
       </Dialog>
     </>
