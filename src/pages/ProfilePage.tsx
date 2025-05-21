@@ -13,7 +13,7 @@ import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { 
   User, Package, Wallet, History, Settings, Edit, Copy, QrCode, 
-  Download, ExternalLink, Star, Bell, LogOut, Trash2 
+  Download, ExternalLink, Star, Bell, LogOut, Trash2, Coins 
 } from 'lucide-react';
 import { toast } from "sonner";
 
