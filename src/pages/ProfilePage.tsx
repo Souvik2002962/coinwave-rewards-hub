@@ -1,5 +1,6 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
 import NavBar from '@/components/NavBar';
@@ -16,21 +17,42 @@ import {
   Download, ExternalLink, Star, Bell, LogOut, Trash2, Coins 
 } from 'lucide-react';
 import { toast } from "sonner";
+import { useAuth } from '@/contexts/AuthContext';
+import coinService from '@/services/CoinService';
 
 const ProfilePage = () => {
-  const [activeTab, setActiveTab] = useState("profile");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const tabFromUrl = searchParams.get('tab');
+  const { user, updateUser, logout } = useAuth();
+  const [activeTab, setActiveTab] = useState(tabFromUrl || "profile");
   const [editMode, setEditMode] = useState(false);
   const [userData, setUserData] = useState({
-    username: "JohnDoe123",
-    fullName: "John Doe",
-    email: "john.doe@example.com",
-    phone: "+91 98765 43210",
-    level: 7,
-    coins: 5400,
-    referralCode: "JOHND21",
-    joinDate: "March 2023",
-    xpProgress: 75
+    username: "",
+    fullName: "",
+    email: "",
+    phone: "",
   });
+
+  useEffect(() => {
+    // Update the URL when tab changes
+    setSearchParams({ tab: activeTab });
+  }, [activeTab, setSearchParams]);
+
+  useEffect(() => {
+    // Update local form state when user data changes
+    if (user) {
+      setUserData({
+        username: user.username,
+        fullName: user.fullName,
+        email: user.email,
+        phone: user.phone,
+      });
+    }
+  }, [user]);
+
+  if (!user) {
+    return null; // This should be handled by the ProtectedRoute component
+  }
 
   // Mock data
   const badges = [
@@ -71,23 +93,30 @@ const ProfilePage = () => {
       tracking: null 
     },
   ];
-  
-  const historyItems = [
-    { type: "ad", name: "Nike Campaign", date: "May 1, 2025", time: "14:30", coins: 25 },
-    { type: "ad", name: "Samsung Ad", date: "May 1, 2025", time: "15:45", coins: 30 },
-    { type: "referral", name: "priya@example.com", date: "Apr 29, 2025", time: "09:15", coins: 200 },
-    { type: "purchase", name: "Wireless Headphones", date: "Apr 20, 2025", time: "17:20", coins: -1200 },
-    { type: "mission", name: "Daily Login Streak (7 days)", date: "Apr 20, 2025", time: "08:00", coins: 100 },
-  ];
+
+  // Get transactions from the coin service
+  const transactions = user ? coinService.getTransactions(user.id) : [];
+  const historyItems = transactions.map(tx => ({
+    type: tx.source || (tx.type === 'earned' ? 'ad' : 'purchase'),
+    name: tx.description,
+    date: tx.date.toLocaleDateString(),
+    time: tx.date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+    coins: tx.type === 'earned' ? tx.amount : -tx.amount
+  }));
   
   const copyReferralCode = () => {
-    navigator.clipboard.writeText(userData.referralCode);
+    navigator.clipboard.writeText(user.referralCode);
     toast.success("Referral code copied to clipboard");
   };
 
   const handleEditProfile = () => {
     if (editMode) {
-      // Save changes logic would go here
+      // Save changes
+      updateUser({
+        username: userData.username,
+        fullName: userData.fullName,
+        phone: userData.phone,
+      });
       toast.success("Profile updated successfully");
     }
     setEditMode(!editMode);
@@ -99,7 +128,7 @@ const ProfilePage = () => {
   
   const handleLogout = () => {
     toast.info("Logging out...");
-    // Logout logic would go here
+    logout();
   };
   
   const handleDeleteAccount = () => {
@@ -111,6 +140,10 @@ const ProfilePage = () => {
       },
     });
   };
+
+  // Calculate total earned and spent
+  const earnedCoins = user ? coinService.getTotalEarned(user.id) : 0;
+  const spentCoins = user ? coinService.getTotalSpent(user.id) : 0;
 
   return (
     <div className="min-h-screen bg-cyber-dark text-white">
@@ -151,9 +184,9 @@ const ProfilePage = () => {
                   <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
                     <div className="relative">
                       <Avatar className="h-24 w-24 border-2 border-neon-purple">
-                        <AvatarImage src="https://images.unsplash.com/photo-1633332755192-727a05c4013d" />
+                        <AvatarImage src={user.profileImage} />
                         <AvatarFallback className="bg-neon-purple/20 text-neon-purple text-xl">
-                          {userData.fullName.substring(0, 2).toUpperCase()}
+                          {user.fullName.substring(0, 2).toUpperCase()}
                         </AvatarFallback>
                       </Avatar>
                       {editMode && (
@@ -197,26 +230,26 @@ const ProfilePage = () => {
                       ) : (
                         <>
                           <div>
-                            <h2 className="text-xl font-bold">{userData.fullName}</h2>
-                            <p className="text-gray-400">@{userData.username}</p>
+                            <h2 className="text-xl font-bold">{user.fullName}</h2>
+                            <p className="text-gray-400">@{user.username}</p>
                           </div>
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                             <div className="text-sm">
                               <p className="text-gray-400">Email</p>
-                              <p>{userData.email}</p>
+                              <p>{user.email}</p>
                             </div>
                             <div className="text-sm">
                               <p className="text-gray-400">Phone</p>
-                              <p>{userData.phone}</p>
+                              <p>{user.phone}</p>
                             </div>
                             <div className="text-sm">
                               <p className="text-gray-400">Member since</p>
-                              <p>{userData.joinDate}</p>
+                              <p>{user.joinDate}</p>
                             </div>
                             <div className="text-sm">
                               <p className="text-gray-400">Referral Code</p>
                               <div className="flex items-center">
-                                <p className="font-mono">{userData.referralCode}</p>
+                                <p className="font-mono">{user.referralCode}</p>
                                 <Button variant="ghost" size="icon" onClick={copyReferralCode} className="ml-1">
                                   <Copy className="h-4 w-4" />
                                 </Button>
@@ -251,20 +284,20 @@ const ProfilePage = () => {
                 <CardContent className="p-6 space-y-4">
                   <div className="flex justify-between items-center">
                     <h3 className="text-lg font-semibold">User Level</h3>
-                    <Badge className="bg-neon-purple hover:bg-neon-purple">Level {userData.level}</Badge>
+                    <Badge className="bg-neon-purple hover:bg-neon-purple">Level {user.level}</Badge>
                   </div>
                   <div>
                     <div className="flex justify-between text-sm mb-2">
                       <span>XP Progress</span>
-                      <span>{userData.xpProgress}%</span>
+                      <span>{user.xpProgress}%</span>
                     </div>
-                    <Progress value={userData.xpProgress} className="h-2" />
+                    <Progress value={user.xpProgress} className="h-2" />
                   </div>
                   <div className="text-center">
                     <p className="text-sm text-gray-400 mb-2">Current Balance</p>
                     <div className="flex justify-center items-center space-x-2">
                       <Coins className="h-5 w-5 text-yellow-400" />
-                      <span className="text-xl font-bold">{userData.coins}</span>
+                      <span className="text-xl font-bold">{user.coinBalance}</span>
                     </div>
                   </div>
                 </CardContent>
@@ -394,16 +427,16 @@ const ProfilePage = () => {
                   <h3 className="text-gray-400 text-sm mb-1">Current Balance</h3>
                   <div className="flex justify-center items-center space-x-2">
                     <Coins className="h-5 w-5 text-yellow-400" />
-                    <span className="text-2xl font-bold">{userData.coins}</span>
+                    <span className="text-2xl font-bold">{user.coinBalance}</span>
                   </div>
-                  <p className="text-sm text-gray-400 mt-1">Value: ₹{(userData.coins * 0.1).toFixed(2)}</p>
+                  <p className="text-sm text-gray-400 mt-1">Value: {coinService.convertCoinsToValue(user.coinBalance)}</p>
                 </CardContent>
               </Card>
               
               <Card className="neon-card">
                 <CardContent className="p-6 text-center">
                   <h3 className="text-gray-400 text-sm mb-1">Total Earned</h3>
-                  <p className="text-2xl font-bold text-green-500">7,840</p>
+                  <p className="text-2xl font-bold text-green-500">{earnedCoins}</p>
                   <p className="text-sm text-gray-400 mt-1">All-time</p>
                 </CardContent>
               </Card>
@@ -411,7 +444,7 @@ const ProfilePage = () => {
               <Card className="neon-card">
                 <CardContent className="p-6 text-center">
                   <h3 className="text-gray-400 text-sm mb-1">Total Spent</h3>
-                  <p className="text-2xl font-bold text-red-500">2,440</p>
+                  <p className="text-2xl font-bold text-red-500">{spentCoins}</p>
                   <p className="text-sm text-gray-400 mt-1">All-time</p>
                 </CardContent>
               </Card>
@@ -419,7 +452,7 @@ const ProfilePage = () => {
               <Card className="neon-card">
                 <CardContent className="p-6 text-center">
                   <h3 className="text-gray-400 text-sm mb-1">Conversion Rate</h3>
-                  <p className="text-2xl font-bold">₹0.10</p>
+                  <p className="text-2xl font-bold">₹0.010 / $0.012</p>
                   <p className="text-sm text-gray-400 mt-1">Per coin</p>
                 </CardContent>
               </Card>

@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Coins, ArrowDown, ArrowUp, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -9,54 +9,21 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs";
-
-interface Transaction {
-  id: string;
-  type: 'earned' | 'spent';
-  amount: number;
-  description: string;
-  date: Date;
-}
+import { useAuth } from '@/contexts/AuthContext';
+import coinService, { CoinTransaction } from '@/services/CoinService';
+import { Link } from 'react-router-dom';
 
 const CoinWallet = () => {
-  const [coinBalance, setCoinBalance] = useState(1250);
-  const [transactions, setTransactions] = useState<Transaction[]>([
-    {
-      id: 't1',
-      type: 'earned',
-      amount: 50,
-      description: 'Watched Nike advertisement',
-      date: new Date(2025, 4, 18)
-    },
-    {
-      id: 't2',
-      type: 'earned',
-      amount: 100,
-      description: 'Daily login streak (5 days)',
-      date: new Date(2025, 4, 18)
-    },
-    {
-      id: 't3',
-      type: 'spent',
-      amount: 200,
-      description: 'Discount on Wireless Headphones',
-      date: new Date(2025, 4, 17)
-    },
-    {
-      id: 't4',
-      type: 'earned',
-      amount: 25,
-      description: 'Watched Samsung advertisement',
-      date: new Date(2025, 4, 17)
-    },
-    {
-      id: 't5',
-      type: 'earned',
-      amount: 500,
-      description: 'Referral bonus: john@example.com',
-      date: new Date(2025, 4, 16)
+  const { user } = useAuth();
+  const [transactions, setTransactions] = useState<CoinTransaction[]>([]);
+  
+  useEffect(() => {
+    if (user) {
+      // Get transactions for the current user
+      const userTransactions = coinService.getTransactions(user.id);
+      setTransactions(userTransactions);
     }
-  ]);
+  }, [user]);
   
   const formatDate = (date: Date) => {
     const today = new Date();
@@ -72,13 +39,30 @@ const CoinWallet = () => {
     }
   };
   
-  const earnedCoins = transactions
-    .filter(t => t.type === 'earned')
-    .reduce((sum, t) => sum + t.amount, 0);
-    
-  const spentCoins = transactions
-    .filter(t => t.type === 'spent')
-    .reduce((sum, t) => sum + t.amount, 0);
+  const earnedCoins = user ? coinService.getTotalEarned(user.id) : 0;
+  const spentCoins = user ? coinService.getTotalSpent(user.id) : 0;
+  const coinBalance = user ? user.coinBalance : 0;
+
+  if (!user) {
+    return (
+      <Card className="neon-card w-full">
+        <CardContent className="p-6 text-center">
+          <div className="flex flex-col items-center justify-center py-8 space-y-4">
+            <Coins className="h-12 w-12 text-yellow-400 opacity-50" />
+            <div>
+              <h3 className="text-lg font-medium text-white">Sign in to view your coin wallet</h3>
+              <p className="text-sm text-gray-400 mt-1">Track your earnings and spending</p>
+            </div>
+            <Link to="/login">
+              <Button className="bg-neon-purple hover:bg-neon-purple/90">
+                Sign In
+              </Button>
+            </Link>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card className="neon-card w-full">
@@ -126,10 +110,18 @@ const CoinWallet = () => {
                   </div>
                 </div>
               ))}
+              
+              {transactions.length === 0 && (
+                <div className="text-center p-6">
+                  <p className="text-gray-400">No transactions yet</p>
+                </div>
+              )}
             </div>
             <Button variant="ghost" className="w-full mt-3 text-neon-purple hover:text-neon-purple hover:bg-neon-purple/10">
-              View All Transactions
-              <ChevronRight className="h-4 w-4 ml-1" />
+              <Link to="/profile?tab=history" className="flex items-center w-full justify-center">
+                View All Transactions
+                <ChevronRight className="h-4 w-4 ml-1" />
+              </Link>
             </Button>
           </TabsContent>
           
@@ -160,9 +152,11 @@ const CoinWallet = () => {
                 <p className="text-xs text-gray-400 mt-1">2 more days for 200 bonus coins!</p>
               </div>
               
-              <Button className="w-full bg-neon-blue hover:bg-neon-blue/90">
-                Spin & Win More Coins
-              </Button>
+              <Link to="/earn">
+                <Button className="w-full bg-neon-blue hover:bg-neon-blue/90">
+                  Spin & Win More Coins
+                </Button>
+              </Link>
             </div>
           </TabsContent>
         </Tabs>

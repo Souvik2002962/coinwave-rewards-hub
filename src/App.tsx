@@ -14,7 +14,11 @@ import BecomeAdvertiser from "./pages/BecomeAdvertiser";
 import CreateCampaign from "./pages/CreateCampaign";
 import AdvertiserDashboard from "./pages/AdvertiserDashboard";
 import ProfilePage from "./pages/ProfilePage";
-import { MapPin, Tag, Coins } from "lucide-react"; // Import missing icons
+import LoginPage from "./pages/LoginPage";
+import SignupPage from "./pages/SignupPage";
+import { AuthProvider } from "./contexts/AuthContext";
+import ProtectedRoute from "./components/ProtectedRoute";
+import { MapPin, Tag, Coins } from 'lucide-react'; 
 
 const queryClient = new QueryClient();
 
@@ -24,19 +28,35 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/earn" element={<Earn />} />
-          <Route path="/store" element={<Store />} />
-          <Route path="/referral" element={<Referral />} />
-          <Route path="/reviews" element={<Reviews />} />
-          <Route path="/become-advertiser" element={<BecomeAdvertiser />} />
-          <Route path="/create-campaign" element={<CreateCampaign />} />
-          <Route path="/advertiser-dashboard" element={<AdvertiserDashboard />} />
-          <Route path="/profile" element={<ProfilePage />} /> {/* Added profile route */}
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <AuthProvider>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/login" element={
+              <ProtectedRoute requireAuth={false}>
+                <LoginPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/signup" element={
+              <ProtectedRoute requireAuth={false}>
+                <SignupPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/earn" element={<Earn />} />
+            <Route path="/store" element={<Store />} />
+            <Route path="/referral" element={<Referral />} />
+            <Route path="/reviews" element={<Reviews />} />
+            <Route path="/become-advertiser" element={<BecomeAdvertiser />} />
+            <Route path="/create-campaign" element={<CreateCampaign />} />
+            <Route path="/advertiser-dashboard" element={<AdvertiserDashboard />} />
+            <Route path="/profile" element={
+              <ProtectedRoute>
+                <ProfilePage />
+              </ProtectedRoute>
+            } />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

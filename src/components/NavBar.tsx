@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Coins, ShoppingCart, User, Bell, Menu, X, BriefcaseBusiness } from 'lucide-react';
+import { Coins, ShoppingCart, User, Bell, Menu, X, BriefcaseBusiness, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -11,14 +11,20 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useAuth } from '@/contexts/AuthContext';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 const NavBar = () => {
-  const [coinBalance, setCoinBalance] = useState(1250);
+  const { user, logout } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [notificationCount, setNotificationCount] = useState(3);
   
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
+  };
+
+  const handleLogout = () => {
+    logout();
   };
 
   return (
@@ -48,10 +54,12 @@ const NavBar = () => {
 
         {/* User Controls - Always Visible */}
         <div className="flex items-center space-x-2 md:space-x-4">
-          <div className="neon-border px-3 py-1 rounded-full flex items-center">
-            <Coins className="h-4 w-4 text-yellow-400 mr-1" />
-            <span className="text-white font-medium">{coinBalance}</span>
-          </div>
+          {user && (
+            <div className="neon-border px-3 py-1 rounded-full flex items-center">
+              <Coins className="h-4 w-4 text-yellow-400 mr-1" />
+              <span className="text-white font-medium">{user.coinBalance}</span>
+            </div>
+          )}
           
           <div className="hidden md:flex items-center space-x-2">
             <Button variant="ghost" size="icon" className="text-white hover:text-neon-purple relative">
@@ -67,35 +75,56 @@ const NavBar = () => {
               <ShoppingCart className="h-5 w-5" />
             </Button>
             
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="text-white hover:text-neon-purple">
-                  <User className="h-5 w-5" />
+            {user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" className="text-white hover:text-neon-purple">
+                    <Avatar className="h-8 w-8">
+                      {user.profileImage ? (
+                        <AvatarImage src={user.profileImage} />
+                      ) : (
+                        <AvatarFallback className="bg-neon-purple/20 text-neon-purple">
+                          {user.fullName.substring(0, 2).toUpperCase()}
+                        </AvatarFallback>
+                      )}
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56 bg-cyber-dark border-neon-purple">
+                  <DropdownMenuLabel className="text-white">{user.fullName}</DropdownMenuLabel>
+                  <DropdownMenuSeparator className="bg-neon-purple/30" />
+                  <DropdownMenuItem className="text-white hover:text-neon-purple hover:bg-secondary focus:bg-secondary">
+                    <Link to="/profile" className="w-full">Profile</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="text-white hover:text-neon-purple hover:bg-secondary focus:bg-secondary">
+                    <Link to="/profile?tab=orders" className="w-full">My Orders</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="text-white hover:text-neon-purple hover:bg-secondary focus:bg-secondary">
+                    <Link to="/profile?tab=wallet" className="w-full">Wallet History</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="text-white hover:text-neon-purple hover:bg-secondary focus:bg-secondary">
+                    <Link to="/profile?tab=settings" className="w-full">Settings</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator className="bg-neon-purple/30" />
+                  <DropdownMenuItem className="text-white hover:text-neon-purple hover:bg-secondary focus:bg-secondary">
+                    <Link to="/advertiser-dashboard" className="w-full">Advertiser Dashboard</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator className="bg-neon-purple/30" />
+                  <DropdownMenuItem 
+                    className="text-destructive hover:text-destructive hover:bg-secondary focus:bg-secondary"
+                    onClick={handleLogout}
+                  >
+                    <LogOut className="h-4 w-4 mr-2" /> Log out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Link to="/login">
+                <Button className="bg-neon-purple hover:bg-neon-purple/90">
+                  Sign In
                 </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56 bg-cyber-dark border-neon-purple">
-                <DropdownMenuLabel className="text-white">My Account</DropdownMenuLabel>
-                <DropdownMenuSeparator className="bg-neon-purple/30" />
-                <DropdownMenuItem className="text-white hover:text-neon-purple hover:bg-secondary focus:bg-secondary">
-                  <Link to="/profile" className="w-full">Profile</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem className="text-white hover:text-neon-purple hover:bg-secondary focus:bg-secondary">
-                  <Link to="/profile?tab=orders" className="w-full">My Orders</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem className="text-white hover:text-neon-purple hover:bg-secondary focus:bg-secondary">
-                  <Link to="/profile?tab=wallet" className="w-full">Wallet History</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem className="text-white hover:text-neon-purple hover:bg-secondary focus:bg-secondary">
-                  <Link to="/profile?tab=settings" className="w-full">Settings</Link>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator className="bg-neon-purple/30" />
-                <DropdownMenuItem className="text-white hover:text-neon-purple hover:bg-secondary focus:bg-secondary">
-                  <Link to="/advertiser-dashboard" className="w-full">Advertiser Dashboard</Link>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator className="bg-neon-purple/30" />
-                <DropdownMenuItem className="text-destructive hover:text-destructive hover:bg-secondary focus:bg-secondary">Log out</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+              </Link>
+            )}
           </div>
           
           {/* Mobile Menu Button */}
@@ -122,10 +151,32 @@ const NavBar = () => {
             <BriefcaseBusiness className="h-4 w-4 mr-1" />
             For Advertisers
           </Link>
-          <Link to="/profile" className="block text-white hover:text-neon-purple py-2 transition-colors flex items-center" onClick={toggleMobileMenu}>
-            <User className="h-4 w-4 mr-1" />
-            My Account
-          </Link>
+          
+          {user ? (
+            <>
+              <Link to="/profile" className="block text-white hover:text-neon-purple py-2 transition-colors flex items-center" onClick={toggleMobileMenu}>
+                <User className="h-4 w-4 mr-1" />
+                My Account
+              </Link>
+              <Button 
+                variant="ghost" 
+                className="w-full justify-start text-red-400 hover:text-red-500 p-2 h-auto"
+                onClick={() => {
+                  handleLogout();
+                  toggleMobileMenu();
+                }}
+              >
+                <LogOut className="h-4 w-4 mr-1" />
+                Log out
+              </Button>
+            </>
+          ) : (
+            <Link to="/login" className="block" onClick={toggleMobileMenu}>
+              <Button className="w-full bg-neon-purple hover:bg-neon-purple/90">
+                Sign In
+              </Button>
+            </Link>
+          )}
           
           <div className="flex items-center space-x-4 pt-2 border-t border-neon-purple/30">
             <Button variant="ghost" size="icon" className="text-white hover:text-neon-purple relative">
