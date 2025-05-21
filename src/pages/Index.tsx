@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -7,6 +8,8 @@ import ProductCard from '@/components/ProductCard';
 import CoinWallet from '@/components/CoinWallet';
 import ReferralCard from '@/components/ReferralCard';
 import AdvertiserDashboardPreview from '@/components/AdvertiserDashboardPreview';
+import TestimonialSection from '@/components/TestimonialSection';
+import LiveStatsSection from '@/components/LiveStatsSection';
 import { Link } from 'react-router-dom';
 
 const Index = () => {
@@ -111,6 +114,9 @@ const Index = () => {
         </div>
       </section>
       
+      {/* Live Stats Section - Added new section */}
+      <LiveStatsSection />
+      
       {/* Featured Ads Section */}
       <section className="py-12 px-4">
         <div className="container mx-auto">
@@ -151,6 +157,9 @@ const Index = () => {
         </div>
       </section>
       
+      {/* Testimonial Section - Added new section */}
+      <TestimonialSection />
+      
       {/* Wallet and Referral Section */}
       <section className="py-12 px-4">
         <div className="container mx-auto">
@@ -173,10 +182,12 @@ const Index = () => {
         <AdvertiserDashboardPreview />
         
         <div className="text-center mt-8">
-          <Button className="bg-neon-blue hover:bg-neon-blue/90 text-white px-8 py-6">
-            Become an Advertiser
-            <ArrowRight className="ml-2" />
-          </Button>
+          <Link to="/become-advertiser">
+            <Button className="bg-neon-blue hover:bg-neon-blue/90 text-white px-8 py-6">
+              Become an Advertiser
+              <ArrowRight className="ml-2" />
+            </Button>
+          </Link>
         </div>
       </section>
       
