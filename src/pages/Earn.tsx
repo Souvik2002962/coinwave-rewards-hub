@@ -1,3 +1,4 @@
+
 import React, { useState, useRef } from 'react';
 import NavBar from '@/components/NavBar';
 import AdCard from '@/components/AdCard';
@@ -9,9 +10,11 @@ import {
 } from "@/components/ui/tabs";
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
 
 const Earn = () => {
   const tabsRef = useRef<HTMLDivElement>(null);
+  const { user } = useAuth();
   
   // Sample ad data
   const videoAds = [
@@ -141,7 +144,7 @@ const Earn = () => {
             <div className="flex items-center">
               <div className="mr-3">
                 <div className="text-xs text-gray-400">Available Balance</div>
-                <div className="text-xl font-bold text-white">1,250 Coins</div>
+                <div className="text-xl font-bold text-white">{user ? user.coinBalance : 0} Coins</div>
               </div>
               <div className="coin w-10 h-10 text-xl flex-shrink-0">💰</div>
             </div>
