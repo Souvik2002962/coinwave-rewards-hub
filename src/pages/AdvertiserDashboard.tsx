@@ -36,7 +36,9 @@ import {
   Heart,
   BadgeDollarSign,
   Filter,
-  Search
+  Search,
+  MapPin,
+  Tag
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Input } from '@/components/ui/input';
