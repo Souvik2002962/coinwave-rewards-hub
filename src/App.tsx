@@ -13,6 +13,7 @@ import Reviews from "./pages/Reviews";
 import BecomeAdvertiser from "./pages/BecomeAdvertiser";
 import CreateCampaign from "./pages/CreateCampaign";
 import AdvertiserDashboard from "./pages/AdvertiserDashboard";
+import { MapPin, Tag, Coins } from "lucide-react"; // Added this import for the missing icons
 
 const queryClient = new QueryClient();
 

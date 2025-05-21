@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -421,9 +420,9 @@ const BecomeAdvertiser = () => {
                         <FormLabel className="text-base">
                           Would you like us to help optimize your campaign using AI?
                         </FormLabel>
-                        <FormDescription>
+                        <CardDescription>
                           Our AI can help target the right audience and optimize your ad spend
-                        </FormDescription>
+                        </CardDescription>
                       </div>
                       <FormControl>
                         <Switch
@@ -448,9 +447,9 @@ const BecomeAdvertiser = () => {
                             {...field}
                           />
                         </FormControl>
-                        <FormDescription>
+                        <CardDescription>
                           Describe your ideal audience or regions you want to target
-                        </FormDescription>
+                        </CardDescription>
                         <FormMessage />
                       </FormItem>
                     )}

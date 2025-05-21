@@ -45,6 +45,7 @@ import {
   Smartphone,
   Tablet,
   Monitor,
+  Coins
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
