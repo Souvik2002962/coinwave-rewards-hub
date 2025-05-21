@@ -13,7 +13,8 @@ import Reviews from "./pages/Reviews";
 import BecomeAdvertiser from "./pages/BecomeAdvertiser";
 import CreateCampaign from "./pages/CreateCampaign";
 import AdvertiserDashboard from "./pages/AdvertiserDashboard";
-import { MapPin, Tag, Coins } from "lucide-react"; // Added this import for the missing icons
+import ProfilePage from "./pages/ProfilePage";
+import { MapPin, Tag, Coins } from "lucide-react"; // Import missing icons
 
 const queryClient = new QueryClient();
 
@@ -32,6 +33,7 @@ const App = () => (
           <Route path="/become-advertiser" element={<BecomeAdvertiser />} />
           <Route path="/create-campaign" element={<CreateCampaign />} />
           <Route path="/advertiser-dashboard" element={<AdvertiserDashboard />} />
+          <Route path="/profile" element={<ProfilePage />} /> {/* Added profile route */}
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

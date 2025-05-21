@@ -15,6 +15,7 @@ import {
 const NavBar = () => {
   const [coinBalance, setCoinBalance] = useState(1250);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [notificationCount, setNotificationCount] = useState(3);
   
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
@@ -53,8 +54,13 @@ const NavBar = () => {
           </div>
           
           <div className="hidden md:flex items-center space-x-2">
-            <Button variant="ghost" size="icon" className="text-white hover:text-neon-purple">
+            <Button variant="ghost" size="icon" className="text-white hover:text-neon-purple relative">
               <Bell className="h-5 w-5" />
+              {notificationCount > 0 && (
+                <span className="absolute top-0 right-0 h-4 w-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
+                  {notificationCount}
+                </span>
+              )}
             </Button>
             
             <Button variant="ghost" size="icon" className="text-white hover:text-neon-purple">
@@ -70,10 +76,18 @@ const NavBar = () => {
               <DropdownMenuContent align="end" className="w-56 bg-cyber-dark border-neon-purple">
                 <DropdownMenuLabel className="text-white">My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator className="bg-neon-purple/30" />
-                <DropdownMenuItem className="text-white hover:text-neon-purple hover:bg-secondary focus:bg-secondary">Profile</DropdownMenuItem>
-                <DropdownMenuItem className="text-white hover:text-neon-purple hover:bg-secondary focus:bg-secondary">My Orders</DropdownMenuItem>
-                <DropdownMenuItem className="text-white hover:text-neon-purple hover:bg-secondary focus:bg-secondary">Wallet History</DropdownMenuItem>
-                <DropdownMenuItem className="text-white hover:text-neon-purple hover:bg-secondary focus:bg-secondary">Settings</DropdownMenuItem>
+                <DropdownMenuItem className="text-white hover:text-neon-purple hover:bg-secondary focus:bg-secondary">
+                  <Link to="/profile" className="w-full">Profile</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem className="text-white hover:text-neon-purple hover:bg-secondary focus:bg-secondary">
+                  <Link to="/profile?tab=orders" className="w-full">My Orders</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem className="text-white hover:text-neon-purple hover:bg-secondary focus:bg-secondary">
+                  <Link to="/profile?tab=wallet" className="w-full">Wallet History</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem className="text-white hover:text-neon-purple hover:bg-secondary focus:bg-secondary">
+                  <Link to="/profile?tab=settings" className="w-full">Settings</Link>
+                </DropdownMenuItem>
                 <DropdownMenuSeparator className="bg-neon-purple/30" />
                 <DropdownMenuItem className="text-white hover:text-neon-purple hover:bg-secondary focus:bg-secondary">
                   <Link to="/advertiser-dashboard" className="w-full">Advertiser Dashboard</Link>
@@ -108,16 +122,22 @@ const NavBar = () => {
             <BriefcaseBusiness className="h-4 w-4 mr-1" />
             For Advertisers
           </Link>
+          <Link to="/profile" className="block text-white hover:text-neon-purple py-2 transition-colors flex items-center" onClick={toggleMobileMenu}>
+            <User className="h-4 w-4 mr-1" />
+            My Account
+          </Link>
           
           <div className="flex items-center space-x-4 pt-2 border-t border-neon-purple/30">
-            <Button variant="ghost" size="icon" className="text-white hover:text-neon-purple">
+            <Button variant="ghost" size="icon" className="text-white hover:text-neon-purple relative">
               <Bell className="h-5 w-5" />
+              {notificationCount > 0 && (
+                <span className="absolute top-0 right-0 h-4 w-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
+                  {notificationCount}
+                </span>
+              )}
             </Button>
             <Button variant="ghost" size="icon" className="text-white hover:text-neon-purple">
               <ShoppingCart className="h-5 w-5" />
-            </Button>
-            <Button variant="ghost" size="icon" className="text-white hover:text-neon-purple">
-              <User className="h-5 w-5" />
             </Button>
           </div>
         </div>
