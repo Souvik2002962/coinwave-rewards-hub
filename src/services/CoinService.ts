@@ -1,3 +1,4 @@
+
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabase";
 
@@ -295,8 +296,8 @@ class CoinService {
   }
 
   // Track successful referral
-  trackReferral(userId: string, referredEmail: string, coinsEarned: number): void {
-    this.addTransaction({
+  async trackReferral(userId: string, referredEmail: string, coinsEarned: number): Promise<void> {
+    await this.addTransaction({
       userId,
       type: 'earned',
       amount: coinsEarned,
@@ -308,8 +309,8 @@ class CoinService {
   }
 
   // Track coin spend on purchase
-  trackPurchase(userId: string, productName: string, coinsSpent: number): void {
-    this.addTransaction({
+  async trackPurchase(userId: string, productName: string, coinsSpent: number): Promise<void> {
+    await this.addTransaction({
       userId,
       type: 'spent',
       amount: coinsSpent,
@@ -321,8 +322,8 @@ class CoinService {
   }
 
   // Track mission completion
-  trackMission(userId: string, missionName: string, coinsEarned: number): void {
-    this.addTransaction({
+  async trackMission(userId: string, missionName: string, coinsEarned: number): Promise<void> {
+    await this.addTransaction({
       userId,
       type: 'earned',
       amount: coinsEarned,

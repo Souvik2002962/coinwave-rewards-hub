@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -18,7 +17,7 @@ import {
 } from 'lucide-react';
 import { toast } from "sonner";
 import { useAuth } from '@/contexts/AuthContext';
-import coinService from '@/services/CoinService';
+import coinService, { CoinTransaction } from '@/services/CoinService';
 
 const ProfilePage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -32,6 +31,10 @@ const ProfilePage = () => {
     email: "",
     phone: "",
   });
+  const [transactions, setTransactions] = useState<CoinTransaction[]>([]);
+  const [earnedCoins, setEarnedCoins] = useState<number>(0);
+  const [spentCoins, setSpentCoins] = useState<number>(0);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     // Update the URL when tab changes
@@ -47,6 +50,31 @@ const ProfilePage = () => {
         email: user.email,
         phone: user.phone,
       });
+    }
+  }, [user]);
+  
+  // Fetch coin transactions and totals
+  useEffect(() => {
+    if (user) {
+      const fetchCoinData = async () => {
+        try {
+          setIsLoading(true);
+          const userTransactions = await coinService.getTransactions(user.id);
+          setTransactions(userTransactions);
+          
+          const earned = await coinService.getTotalEarned(user.id);
+          setEarnedCoins(earned);
+          
+          const spent = await coinService.getTotalSpent(user.id);
+          setSpentCoins(spent);
+        } catch (error) {
+          console.error("Error fetching coin data:", error);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+      
+      fetchCoinData();
     }
   }, [user]);
 
@@ -94,8 +122,7 @@ const ProfilePage = () => {
     },
   ];
 
-  // Get transactions from the coin service
-  const transactions = user ? coinService.getTransactions(user.id) : [];
+  // Transform transactions to historyItems
   const historyItems = transactions.map(tx => ({
     type: tx.source || (tx.type === 'earned' ? 'ad' : 'purchase'),
     name: tx.description,
@@ -141,10 +168,6 @@ const ProfilePage = () => {
     });
   };
 
-  // Calculate total earned and spent
-  const earnedCoins = user ? coinService.getTotalEarned(user.id) : 0;
-  const spentCoins = user ? coinService.getTotalSpent(user.id) : 0;
-
   return (
     <div className="min-h-screen bg-cyber-dark text-white">
       <NavBar />
@@ -176,7 +199,7 @@ const ProfilePage = () => {
           </TabsList>
           
           {/* Profile Tab */}
-          <TabsContent value="profile" className="space-y-6">
+          <TabsContent value="profile">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {/* Profile Card */}
               <Card className="neon-card col-span-1 md:col-span-2">
@@ -336,7 +359,7 @@ const ProfilePage = () => {
           </TabsContent>
           
           {/* Orders Tab */}
-          <TabsContent value="orders" className="space-y-4">
+          <TabsContent value="orders">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-xl font-semibold">My Orders</h3>
               <div className="flex space-x-2">
@@ -436,7 +459,9 @@ const ProfilePage = () => {
               <Card className="neon-card">
                 <CardContent className="p-6 text-center">
                   <h3 className="text-gray-400 text-sm mb-1">Total Earned</h3>
-                  <p className="text-2xl font-bold text-green-500">{earnedCoins}</p>
+                  <p className="text-2xl font-bold text-green-500">
+                    {isLoading ? "Loading..." : earnedCoins}
+                  </p>
                   <p className="text-sm text-gray-400 mt-1">All-time</p>
                 </CardContent>
               </Card>
@@ -444,7 +469,9 @@ const ProfilePage = () => {
               <Card className="neon-card">
                 <CardContent className="p-6 text-center">
                   <h3 className="text-gray-400 text-sm mb-1">Total Spent</h3>
-                  <p className="text-2xl font-bold text-red-500">{spentCoins}</p>
+                  <p className="text-2xl font-bold text-red-500">
+                    {isLoading ? "Loading..." : spentCoins}
+                  </p>
                   <p className="text-sm text-gray-400 mt-1">All-time</p>
                 </CardContent>
               </Card>
@@ -493,16 +520,30 @@ const ProfilePage = () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {historyItems.slice(0, 5).map((item, index) => (
-                      <TableRow key={index} className="border-gray-700">
-                        <TableCell className="capitalize">{item.type}</TableCell>
-                        <TableCell>{item.name}</TableCell>
-                        <TableCell>{`${item.date}, ${item.time}`}</TableCell>
-                        <TableCell className={`text-right ${item.coins > 0 ? 'text-green-500' : 'text-red-500'}`}>
-                          {item.coins > 0 ? `+${item.coins}` : item.coins}
+                    {isLoading ? (
+                      <TableRow>
+                        <TableCell colSpan={4} className="text-center py-4">
+                          Loading transactions...
                         </TableCell>
                       </TableRow>
-                    ))}
+                    ) : historyItems.length === 0 ? (
+                      <TableRow>
+                        <TableCell colSpan={4} className="text-center py-4">
+                          No transactions found
+                        </TableCell>
+                      </TableRow>
+                    ) : (
+                      historyItems.slice(0, 5).map((item, index) => (
+                        <TableRow key={index} className="border-gray-700">
+                          <TableCell className="capitalize">{item.type}</TableCell>
+                          <TableCell>{item.name}</TableCell>
+                          <TableCell>{`${item.date}, ${item.time}`}</TableCell>
+                          <TableCell className={`text-right ${item.coins > 0 ? 'text-green-500' : 'text-red-500'}`}>
+                            {item.coins > 0 ? `+${item.coins}` : item.coins}
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    )}
                   </TableBody>
                 </Table>
               </CardContent>
@@ -536,39 +577,55 @@ const ProfilePage = () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {historyItems.map((item, index) => (
-                      <TableRow key={index} className="border-gray-700">
-                        <TableCell>
-                          <Badge className={
-                            item.type === "ad" ? "bg-blue-600" :
-                            item.type === "referral" ? "bg-green-600" :
-                            item.type === "purchase" ? "bg-yellow-600" :
-                            "bg-neon-purple"
-                          }>
-                            {item.type}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>{item.name}</TableCell>
-                        <TableCell>{`${item.date}, ${item.time}`}</TableCell>
-                        <TableCell className={`text-right ${item.coins > 0 ? 'text-green-500' : 'text-red-500'}`}>
-                          {item.coins > 0 ? `+${item.coins}` : item.coins}
+                    {isLoading ? (
+                      <TableRow>
+                        <TableCell colSpan={4} className="text-center py-4">
+                          Loading transactions...
                         </TableCell>
                       </TableRow>
-                    ))}
+                    ) : historyItems.length === 0 ? (
+                      <TableRow>
+                        <TableCell colSpan={4} className="text-center py-4">
+                          No transaction history found
+                        </TableCell>
+                      </TableRow>
+                    ) : (
+                      historyItems.map((item, index) => (
+                        <TableRow key={index} className="border-gray-700">
+                          <TableCell>
+                            <Badge className={
+                              item.type === "ad" ? "bg-blue-600" :
+                              item.type === "referral" ? "bg-green-600" :
+                              item.type === "purchase" ? "bg-yellow-600" :
+                              "bg-neon-purple"
+                            }>
+                              {item.type}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>{item.name}</TableCell>
+                          <TableCell>{`${item.date}, ${item.time}`}</TableCell>
+                          <TableCell className={`text-right ${item.coins > 0 ? 'text-green-500' : 'text-red-500'}`}>
+                            {item.coins > 0 ? `+${item.coins}` : item.coins}
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    )}
                   </TableBody>
                 </Table>
                 
-                <div className="text-center mt-6">
-                  <Button variant="outline" className="border-neon-purple/50">
-                    Load More History
-                  </Button>
-                </div>
+                {!isLoading && historyItems.length > 0 && (
+                  <div className="text-center mt-6">
+                    <Button variant="outline" className="border-neon-purple/50">
+                      Load More History
+                    </Button>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
           
           {/* Settings Tab */}
-          <TabsContent value="settings" className="space-y-6">
+          <TabsContent value="settings">
             <Card className="neon-card">
               <CardContent className="p-6">
                 <h3 className="text-lg font-semibold mb-4">Account Settings</h3>

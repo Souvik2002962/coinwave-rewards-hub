@@ -16,12 +16,32 @@ import { Link } from 'react-router-dom';
 const CoinWallet = () => {
   const { user } = useAuth();
   const [transactions, setTransactions] = useState<CoinTransaction[]>([]);
+  const [earnedCoins, setEarnedCoins] = useState<number>(0);
+  const [spentCoins, setSpentCoins] = useState<number>(0);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   
   useEffect(() => {
     if (user) {
       // Get transactions for the current user
-      const userTransactions = coinService.getTransactions(user.id);
-      setTransactions(userTransactions);
+      const fetchData = async () => {
+        try {
+          setIsLoading(true);
+          const userTransactions = await coinService.getTransactions(user.id);
+          setTransactions(userTransactions);
+          
+          const earned = await coinService.getTotalEarned(user.id);
+          setEarnedCoins(earned);
+          
+          const spent = await coinService.getTotalSpent(user.id);
+          setSpentCoins(spent);
+        } catch (error) {
+          console.error("Error fetching coin data:", error);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+      
+      fetchData();
     }
   }, [user]);
   
@@ -39,8 +59,6 @@ const CoinWallet = () => {
     }
   };
   
-  const earnedCoins = user ? coinService.getTotalEarned(user.id) : 0;
-  const spentCoins = user ? coinService.getTotalSpent(user.id) : 0;
   const coinBalance = user ? user.coinBalance : 0;
 
   if (!user) {
@@ -87,34 +105,38 @@ const CoinWallet = () => {
           
           <TabsContent value="transactions">
             <div className="space-y-3 mt-4 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
-              {transactions.map((transaction) => (
-                <div 
-                  key={transaction.id} 
-                  className="flex justify-between items-center p-3 bg-cyber-dark rounded-md border border-gray-800"
-                >
-                  <div className="flex items-center">
-                    <div className={`rounded-full p-2 mr-3 
-                      ${transaction.type === 'earned' ? 'bg-green-500/20' : 'bg-red-500/20'}`}>
-                      {transaction.type === 'earned' ? 
-                        <ArrowUp className="h-4 w-4 text-green-500" /> : 
-                        <ArrowDown className="h-4 w-4 text-red-500" />
-                      }
-                    </div>
-                    <div>
-                      <p className="text-sm text-white">{transaction.description}</p>
-                      <p className="text-xs text-gray-400">{formatDate(transaction.date)}</p>
-                    </div>
-                  </div>
-                  <div className={`font-medium ${transaction.type === 'earned' ? 'text-green-500' : 'text-red-500'}`}>
-                    {transaction.type === 'earned' ? '+' : '-'}{transaction.amount} 
-                  </div>
+              {isLoading ? (
+                <div className="text-center p-6">
+                  <p className="text-gray-400">Loading transactions...</p>
                 </div>
-              ))}
-              
-              {transactions.length === 0 && (
+              ) : transactions.length === 0 ? (
                 <div className="text-center p-6">
                   <p className="text-gray-400">No transactions yet</p>
                 </div>
+              ) : (
+                transactions.map((transaction) => (
+                  <div 
+                    key={transaction.id} 
+                    className="flex justify-between items-center p-3 bg-cyber-dark rounded-md border border-gray-800"
+                  >
+                    <div className="flex items-center">
+                      <div className={`rounded-full p-2 mr-3 
+                        ${transaction.type === 'earned' ? 'bg-green-500/20' : 'bg-red-500/20'}`}>
+                        {transaction.type === 'earned' ? 
+                          <ArrowUp className="h-4 w-4 text-green-500" /> : 
+                          <ArrowDown className="h-4 w-4 text-red-500" />
+                        }
+                      </div>
+                      <div>
+                        <p className="text-sm text-white">{transaction.description}</p>
+                        <p className="text-xs text-gray-400">{formatDate(transaction.date)}</p>
+                      </div>
+                    </div>
+                    <div className={`font-medium ${transaction.type === 'earned' ? 'text-green-500' : 'text-red-500'}`}>
+                      {transaction.type === 'earned' ? '+' : '-'}{transaction.amount} 
+                    </div>
+                  </div>
+                ))
               )}
             </div>
             <Button variant="ghost" className="w-full mt-3 text-neon-purple hover:text-neon-purple hover:bg-neon-purple/10">
@@ -130,11 +152,15 @@ const CoinWallet = () => {
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-cyber-dark p-4 rounded-md border border-green-500/30">
                   <p className="text-xs text-gray-400 mb-1">Total Earned</p>
-                  <p className="text-xl font-bold text-green-500">+{earnedCoins}</p>
+                  <p className="text-xl font-bold text-green-500">
+                    {isLoading ? "Loading..." : `+${earnedCoins}`}
+                  </p>
                 </div>
                 <div className="bg-cyber-dark p-4 rounded-md border border-red-500/30">
                   <p className="text-xs text-gray-400 mb-1">Total Spent</p>
-                  <p className="text-xl font-bold text-red-500">-{spentCoins}</p>
+                  <p className="text-xl font-bold text-red-500">
+                    {isLoading ? "Loading..." : `-${spentCoins}`}
+                  </p>
                 </div>
               </div>
               
