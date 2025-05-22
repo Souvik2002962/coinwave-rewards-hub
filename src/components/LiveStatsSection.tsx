@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Coins, ShoppingBag, User } from 'lucide-react';
+import { supabase } from '@/lib/supabase';
 
 const LiveStatsSection = () => {
   // Initial stats values
@@ -8,6 +9,50 @@ const LiveStatsSection = () => {
   const [productsDelivered, setProductsDelivered] = useState(1820);
   const [activeUsers, setActiveUsers] = useState(324);
   const [animating, setAnimating] = useState(false);
+  
+  // Fetch initial stats from Supabase
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        // Fetch total coins redeemed
+        const { data: coinData, error: coinError } = await supabase
+          .from('user_transactions')
+          .select('amount')
+          .eq('type', 'spent');
+          
+        if (!coinError && coinData) {
+          const total = coinData.reduce((sum, item) => sum + (item.amount || 0), 0);
+          if (total > 0) setCoinsRedeemed(total);
+        }
+        
+        // Fetch products delivered (simplified, real implementation would be more complex)
+        const { data: productData, error: productError } = await supabase
+          .from('user_transactions')
+          .select('count')
+          .eq('source', 'purchase');
+          
+        if (!productError && productData) {
+          const count = productData[0]?.count || 0;
+          if (count > 0) setProductsDelivered(count);
+        }
+        
+        // Fetch active users
+        const { data: userData, error: userError } = await supabase
+          .from('users')
+          .select('count');
+          
+        if (!userError && userData && userData[0]?.count) {
+          const baseCount = userData[0].count;
+          // Add some randomness to simulate real-time users
+          setActiveUsers(Math.floor(baseCount * 0.3) + Math.floor(Math.random() * 50));
+        }
+      } catch (error) {
+        console.error("Error fetching live stats:", error);
+      }
+    };
+    
+    fetchStats();
+  }, []);
 
   // Simulate live updates with small random increments
   useEffect(() => {
