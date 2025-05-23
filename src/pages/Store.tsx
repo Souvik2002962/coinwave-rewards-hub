@@ -1,223 +1,90 @@
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import NavBar from '@/components/NavBar';
-import ProductCard from '@/components/ProductCard';
 import { Button } from '@/components/ui/button';
-import { Coins, Search, Heart, ShoppingCart } from 'lucide-react';
+import { Coins, Search, Heart, ShoppingCart, ChevronRight } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   Card,
   CardContent,
 } from "@/components/ui/card";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs";
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
+import { toast } from "sonner";
+import useCoinConversion from '@/hooks/useCoinConversion';
+import ProductService, { Product } from '@/services/ProductService';
 
 const Store = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('all');
-  const [featuredProduct, setFeaturedProduct] = useState({
-    id: 'elec1',
-    name: 'Nike Air Max 270',
-    description: 'Nike\'s first lifestyle Air Max brings you style, comfort and big attitude in the Nike Air Max 270.',
-    price: 160,
-    discountCoins: 50,
-    imageUrl: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff',
-    category: 'Shoes',
-    isTrending: true,
-    additionalImages: [
-      'https://images.unsplash.com/photo-1600269452121-4f2416e55c28',
-      'https://images.unsplash.com/photo-1608231387042-66d1773070a5',
-      'https://images.unsplash.com/photo-1605348532760-6753d2c43329'
-    ]
-  });
+  const [products, setProducts] = useState<Product[]>([]);
+  const [featuredProduct, setFeaturedProduct] = useState<Product | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const { convert } = useCoinConversion();
   
-  // Sample product data
-  const electronics = [
-    {
-      id: 'elec1',
-      name: 'Nike Air Max 270',
-      description: 'Nike\'s first lifestyle Air Max brings you style, comfort and big attitude in the Nike Air Max 270.',
-      price: 160,
-      discountCoins: 50,
-      imageUrl: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff',
-      category: 'Shoes',
-      isTrending: true,
-      additionalImages: [
-        'https://images.unsplash.com/photo-1600269452121-4f2416e55c28',
-        'https://images.unsplash.com/photo-1608231387042-66d1773070a5',
-        'https://images.unsplash.com/photo-1605348532760-6753d2c43329'
-      ]
-    },
-    {
-      id: 'elec2',
-      name: 'Nike Air Force 1',
-      description: 'The iconic Air Force 1 with premium materials and classic style.',
-      price: 110,
-      discountCoins: 30,
-      imageUrl: 'https://images.unsplash.com/photo-1549298916-b41d501d3772',
-      category: 'Shoes',
-      additionalImages: []
-    },
-    {
-      id: 'elec3',
-      name: 'Adidas Ultraboost',
-      description: 'Energy-returning cushioning and a sock-like fit for all-day comfort.',
-      price: 180,
-      discountCoins: 60,
-      imageUrl: 'https://images.unsplash.com/photo-1539185441755-769473a23570',
-      category: 'Shoes',
-      isTrending: true,
-      additionalImages: []
-    },
-    {
-      id: 'elec4',
-      name: 'Puma RS-X',
-      description: 'Retro-inspired design with bold colors and comfortable cushioning.',
-      price: 120,
-      discountCoins: 40,
-      imageUrl: 'https://images.unsplash.com/photo-1552664730-d307ca884978',
-      category: 'Shoes',
-      additionalImages: []
-    },
-    {
-      id: 'elec5',
-      name: 'Reebok Classic Leather',
-      description: 'Timeless style with a soft leather upper and comfortable fit.',
-      price: 90,
-      discountCoins: 25,
-      imageUrl: 'https://images.unsplash.com/photo-1560769629-975ec94e6a86',
-      category: 'Shoes',
-      additionalImages: []
-    },
-    {
-      id: 'elec6',
-      name: 'New Balance 574',
-      description: 'Iconic silhouette with a comfortable fit and versatile style.',
-      price: 100,
-      discountCoins: 35,
-      imageUrl: 'https://images.unsplash.com/photo-1588361503371-84635c59a7ca',
-      category: 'Shoes',
-      additionalImages: []
-    },
-  ];
-  
-  const fashion = [
-    {
-      id: 'fash1',
-      name: 'Leather Jacket',
-      description: 'Classic leather jacket with a modern fit and stylish details.',
-      price: 250,
-      discountCoins: 80,
-      imageUrl: 'https://images.unsplash.com/photo-1585470117024-1c4434b1413c',
-      category: 'Clothing',
-      isTrending: true,
-      additionalImages: []
-    },
-    {
-      id: 'fash2',
-      name: 'Denim Jeans',
-      description: 'Comfortable denim jeans with a classic fit and durable construction.',
-      price: 80,
-      discountCoins: 20,
-      imageUrl: 'https://images.unsplash.com/photo-1562157873-64b5b2266ef7',
-      category: 'Clothing',
-      additionalImages: []
-    },
-    {
-      id: 'fash3',
-      name: 'Cotton T-Shirt',
-      description: 'Soft cotton t-shirt with a comfortable fit and versatile style.',
-      price: 30,
-      discountCoins: 10,
-      imageUrl: 'https://images.unsplash.com/photo-1576566526864-8ebc8039704b',
-      category: 'Clothing',
-      additionalImages: []
-    },
-    {
-      id: 'fash4',
-      name: 'Wool Sweater',
-      description: 'Warm wool sweater with a comfortable fit and stylish design.',
-      price: 120,
-      discountCoins: 40,
-      imageUrl: 'https://images.unsplash.com/photo-1547959245-ca2e9395153c',
-      category: 'Clothing',
-      additionalImages: []
-    },
-  ];
-  
-  const jewelry = [
-    {
-      id: 'jewel1',
-      name: 'Silver Necklace',
-      description: 'Elegant silver necklace with a delicate design and timeless style.',
-      price: 150,
-      discountCoins: 50,
-      imageUrl: 'https://images.unsplash.com/photo-1585351317493-a1b60b44c11a',
-      category: 'Accessories',
-      additionalImages: []
-    },
-    {
-      id: 'jewel2',
-      name: 'Gold Earrings',
-      description: 'Stylish gold earrings with a modern design and comfortable fit.',
-      price: 200,
-      discountCoins: 70,
-      imageUrl: 'https://images.unsplash.com/photo-1572630247788-9947c41eb01c',
-      category: 'Accessories',
-      isTrending: true,
-      additionalImages: []
-    },
-    {
-      id: 'jewel3',
-      name: 'Leather Belt',
-      description: 'Durable leather belt with a classic design and stylish buckle.',
-      price: 60,
-      discountCoins: 20,
-      imageUrl: 'https://images.unsplash.com/photo-1581235720704-01687552a84f',
-      category: 'Accessories',
-      additionalImages: []
-    },
-  ];
-  
+  useEffect(() => {
+    const fetchProducts = async () => {
+      setIsLoading(true);
+      try {
+        const allProducts = await ProductService.getAllProducts();
+        setProducts(allProducts);
+        
+        // Set featured product (first trending product or first product)
+        const trending = allProducts.find(p => p.isTrending);
+        setFeaturedProduct(trending || allProducts[0]);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+        toast.error("Failed to load products");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    fetchProducts();
+  }, []);
+
   // Handle category selection
   const handleCategorySelect = (category: string) => {
     setActiveCategory(category);
   };
 
+  const handleProductClick = (productId: string) => {
+    navigate(`/shop/product/${productId}`);
+  };
+
   // Display featured product banner
-  const FeaturedProductBanner = () => (
-    <div className="relative w-full bg-gradient-to-r from-teal-50 to-teal-100 rounded-2xl overflow-hidden mb-8">
-      <div className="flex flex-col md:flex-row">
-        <div className="p-6 md:p-8 flex flex-col justify-center md:w-1/2">
-          <div className="mb-2 text-sm text-gray-500">New Release</div>
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">{featuredProduct.name}</h2>
-          <p className="text-sm text-gray-600 mb-4">{featuredProduct.description}</p>
-          <Button className="bg-black hover:bg-gray-800 text-white rounded-full w-32">
-            Shop Now
-          </Button>
-        </div>
-        <div className="md:w-1/2 relative">
-          <img 
-            src={featuredProduct.imageUrl} 
-            alt={featuredProduct.name} 
-            className="w-full h-64 md:h-80 object-contain"
-          />
+  const FeaturedProductBanner = () => {
+    if (!featuredProduct) return null;
+    
+    return (
+      <div className="relative w-full bg-gradient-to-r from-teal-50 to-teal-100 rounded-2xl overflow-hidden mb-8">
+        <div className="flex flex-col md:flex-row">
+          <div className="p-6 md:p-8 flex flex-col justify-center md:w-1/2">
+            <div className="mb-2 text-sm text-gray-500">New Release</div>
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">{featuredProduct.name}</h2>
+            <p className="text-sm text-gray-600 mb-4">{featuredProduct.description}</p>
+            <Button 
+              className="bg-black hover:bg-gray-800 text-white rounded-full w-32"
+              onClick={() => handleProductClick(featuredProduct.id)}
+            >
+              Shop Now
+            </Button>
+          </div>
+          <div className="md:w-1/2 relative">
+            <img 
+              src={featuredProduct.imageUrl} 
+              alt={featuredProduct.name} 
+              className="w-full h-64 md:h-80 object-contain"
+            />
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  };
 
-  // Category pill buttons that look like the reference
+  // Category pill buttons
   const CategoryPills = () => (
     <div className="flex gap-2 overflow-x-auto pb-2 mb-6 hide-scrollbar">
       <button 
@@ -263,11 +130,20 @@ const Store = () => {
     </div>
   );
   
-  // New product card similar to reference design
-  const ModernProductCard = ({ product }: { product: any }) => (
-    <Card className="group relative bg-white border-none rounded-2xl shadow-sm hover:shadow-md transition-all duration-300">
+  // Product card component
+  const ProductCard = ({ product }: { product: Product }) => (
+    <Card 
+      className="group relative bg-white border-none rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer"
+      onClick={() => handleProductClick(product.id)}
+    >
       <div className="absolute top-2 right-2 z-10">
-        <button className="p-2 rounded-full bg-white/80 hover:bg-white text-gray-800">
+        <button 
+          className="p-2 rounded-full bg-white/80 hover:bg-white text-gray-800"
+          onClick={(e) => {
+            e.stopPropagation();
+            toast.info("Added to wishlist");
+          }}
+        >
           <Heart className="h-4 w-4" />
         </button>
       </div>
@@ -283,19 +159,28 @@ const Store = () => {
           <h3 className="font-medium text-gray-900">{product.name}</h3>
           <p className="text-xs text-gray-500">{product.category}</p>
           <div className="mt-2 flex justify-between items-center">
-            <div className="text-lg font-semibold text-gray-900">
-              ${product.price}
+            <div className="font-semibold text-gray-900 flex items-center">
+              <span className="text-lg">₹{product.price}</span>
+              {product.discountCoins > 0 && (
+                <span className="text-xs text-gray-500 ml-1">+ {product.discountCoins} coins</span>
+              )}
             </div>
             {product.discountCoins > 0 && (
               <div className="flex items-center text-xs bg-yellow-100 rounded-full px-2 py-1">
-                <span className="text-yellow-800">-{product.discountCoins}</span>
+                <span className="text-yellow-800">Save {convert('INR')}</span>
                 <div className="coin w-3 h-3 ml-0.5">💰</div>
               </div>
             )}
           </div>
         </div>
         <div className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-          <button className="p-2 rounded-full bg-black text-white">
+          <button 
+            className="p-2 rounded-full bg-black text-white"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleProductClick(product.id);
+            }}
+          >
             <ShoppingCart className="h-4 w-4" />
           </button>
         </div>
@@ -313,10 +198,12 @@ const Store = () => {
             <h1 className="text-3xl font-bold text-gray-900 mb-2">Product Store</h1>
             <p className="text-gray-500">Redeem your coins for amazing products with exclusive discounts</p>
           </div>
-          <div className="bg-yellow-100 px-4 py-2 rounded-lg mt-4 sm:mt-0 flex items-center">
-            <Coins className="h-5 w-5 text-yellow-600 mr-2" />
-            <div className="font-bold text-yellow-800">1,250 Available</div>
-          </div>
+          {user && (
+            <div className="bg-yellow-100 px-4 py-2 rounded-lg mt-4 sm:mt-0 flex items-center">
+              <Coins className="h-5 w-5 text-yellow-600 mr-2" />
+              <div className="font-bold text-yellow-800">{user.coinBalance} Available</div>
+            </div>
+          )}
         </div>
         
         {/* Search Input */}
@@ -337,11 +224,28 @@ const Store = () => {
         <CategoryPills />
         
         {/* Product Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-          {[...electronics, ...fashion].slice(0, 8).map((product) => (
-            <ModernProductCard key={product.id} product={product} />
-          ))}
-        </div>
+        {isLoading ? (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+            {[...Array(8)].map((_, i) => (
+              <Card key={i} className="bg-white border-none rounded-2xl shadow-sm">
+                <CardContent className="p-0">
+                  <div className="bg-gray-100 rounded-t-2xl h-56 animate-pulse"></div>
+                  <div className="p-4 space-y-2">
+                    <div className="h-5 bg-gray-200 rounded animate-pulse"></div>
+                    <div className="h-4 w-1/2 bg-gray-200 rounded animate-pulse"></div>
+                    <div className="h-6 w-1/3 bg-gray-200 rounded animate-pulse"></div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+            {products.slice(0, 8).map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        )}
         
         <div className="mt-8 flex justify-center">
           <Button variant="outline" className="border-gray-300 text-gray-800 hover:bg-gray-100">

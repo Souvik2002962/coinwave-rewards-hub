@@ -8,6 +8,10 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Earn from "./pages/Earn";
 import Store from "./pages/Store";
+import ProductDetail from "./pages/ProductDetail";
+import Checkout from "./pages/Checkout";
+import OrderSuccess from "./pages/OrderSuccess";
+import Orders from "./pages/Orders";
 import Referral from "./pages/Referral";
 import Reviews from "./pages/Reviews";
 import BecomeAdvertiser from "./pages/BecomeAdvertiser";
@@ -18,7 +22,7 @@ import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
 import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
-import { MapPin, Tag, Coins } from 'lucide-react'; 
+import { MapPin, Tag, Coins } from 'lucide-react';
 
 const queryClient = new QueryClient();
 
@@ -43,6 +47,23 @@ const App = () => (
             } />
             <Route path="/earn" element={<Earn />} />
             <Route path="/store" element={<Store />} />
+            <Route path="/shop" element={<Store />} />
+            <Route path="/shop/product/:id" element={<ProductDetail />} />
+            <Route path="/shop/checkout/:id" element={
+              <ProtectedRoute>
+                <Checkout />
+              </ProtectedRoute>
+            } />
+            <Route path="/shop/order-success" element={
+              <ProtectedRoute>
+                <OrderSuccess />
+              </ProtectedRoute>
+            } />
+            <Route path="/shop/orders" element={
+              <ProtectedRoute>
+                <Orders />
+              </ProtectedRoute>
+            } />
             <Route path="/referral" element={<Referral />} />
             <Route path="/reviews" element={<Reviews />} />
             <Route path="/become-advertiser" element={<BecomeAdvertiser />} />
