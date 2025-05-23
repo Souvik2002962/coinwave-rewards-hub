@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import NavBar from '@/components/NavBar';
 import { Button } from '@/components/ui/button';
-import { CheckCircle2, ChevronRight, PackageCheck, ShoppingBag } from 'lucide-react';
+import { CheckCircle2, ChevronRight, PackageCheck, ShoppingBag, Truck } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Order } from '@/services/OrderService';
 import { Product } from '@/services/ProductService';
