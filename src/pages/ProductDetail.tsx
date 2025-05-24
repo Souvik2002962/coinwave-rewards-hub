@@ -18,15 +18,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from "sonner";
-import useCoinConversion from '@/hooks/useCoinConversion';
 import ProductService, { Product } from '@/services/ProductService';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   Tabs,
   TabsContent,
@@ -40,7 +32,6 @@ const ProductDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { convertToINR } = useCoinConversion();
   
   const [product, setProduct] = useState<Product | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -102,6 +93,20 @@ const ProductDetail = () => {
         size: selectedSize
       }
     });
+  };
+
+  const handleAddToCart = () => {
+    if (!user) {
+      setShowLoginModal(true);
+      return;
+    }
+    
+    if (!selectedSize && product?.availableSizes?.length) {
+      toast.error("Please select a size");
+      return;
+    }
+    
+    toast.success("Added to cart");
   };
   
   const calculatePrice = () => {
@@ -245,7 +250,7 @@ const ProductDetail = () => {
             {/* Price section */}
             <div className="mb-6">
               <div className="flex items-center">
-                <span className="text-2xl font-bold text-gray-900 mr-2">₹{original}</span>
+                <span className="text-2xl font-bold text-gray-900 mr-2">₹{final}</span>
                 {discount > 0 && (
                   <span className="text-sm text-gray-500 line-through">₹{original}</span>
                 )}
@@ -256,7 +261,7 @@ const ProductDetail = () => {
                   <span className="text-gray-700">You'll pay</span> 
                   <span className="font-bold mx-1 text-green-600">₹{final}</span>
                   <span className="text-gray-700">and use</span>
-                  <span className="font-bold mx-1 text-amber-600">{product.discountCoins} Coins</span>
+                  <span className="font-bold mx-1 text-amber-600">{product.discountCoins * quantity} Coins</span>
                 </div>
               )}
               
@@ -351,9 +356,7 @@ const ProductDetail = () => {
                 variant="outline"
                 size="lg"
                 className="border-gray-300 text-gray-700 hover:bg-gray-100"
-                onClick={() => {
-                  toast.success("Added to cart");
-                }}
+                onClick={handleAddToCart}
               >
                 <ShoppingCart className="mr-2 h-5 w-5" />
                 Add to Cart
@@ -503,12 +506,11 @@ const ProductDetail = () => {
       </div>
       
       {/* Login Modal */}
-      {showLoginModal && (
-        <LoginModal 
-          isOpen={showLoginModal} 
-          onClose={() => setShowLoginModal(false)} 
-        />
-      )}
+      <LoginModal 
+        isOpen={showLoginModal} 
+        onClose={() => setShowLoginModal(false)} 
+        message="Please log in to continue shopping"
+      />
     </div>
   );
 };

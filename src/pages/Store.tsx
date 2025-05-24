@@ -13,6 +13,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { toast } from "sonner";
 import useCoinConversion from '@/hooks/useCoinConversion';
 import ProductService, { Product } from '@/services/ProductService';
+import LoginModal from '@/components/LoginModal';
 
 const Store = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -20,6 +21,7 @@ const Store = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [featuredProduct, setFeaturedProduct] = useState<Product | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [showLoginModal, setShowLoginModal] = useState(false);
   const { user } = useAuth();
   const navigate = useNavigate();
   const { convert } = useCoinConversion();
@@ -54,6 +56,22 @@ const Store = () => {
     navigate(`/shop/product/${productId}`);
   };
 
+  const handleBuyNow = (productId: string) => {
+    if (!user) {
+      setShowLoginModal(true);
+      return;
+    }
+    navigate(`/shop/product/${productId}`);
+  };
+
+  const handleAddToCart = (productId: string) => {
+    if (!user) {
+      setShowLoginModal(true);
+      return;
+    }
+    toast.success("Added to cart");
+  };
+
   // Display featured product banner
   const FeaturedProductBanner = () => {
     if (!featuredProduct) return null;
@@ -67,7 +85,7 @@ const Store = () => {
             <p className="text-sm text-gray-600 mb-4">{featuredProduct.description}</p>
             <Button 
               className="bg-black hover:bg-gray-800 text-white rounded-full w-32"
-              onClick={() => handleProductClick(featuredProduct.id)}
+              onClick={() => handleBuyNow(featuredProduct.id)}
             >
               Shop Now
             </Button>
@@ -167,26 +185,48 @@ const Store = () => {
             </div>
             {product.discountCoins > 0 && (
               <div className="flex items-center text-xs bg-yellow-100 rounded-full px-2 py-1">
-                <span className="text-yellow-800">Save {convert('INR')}</span>
+                <span className="text-yellow-800">Save ₹{product.discountCoins / 100}</span>
                 <div className="coin w-3 h-3 ml-0.5">💰</div>
               </div>
             )}
           </div>
-        </div>
-        <div className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-          <button 
-            className="p-2 rounded-full bg-black text-white"
-            onClick={(e) => {
-              e.stopPropagation();
-              handleProductClick(product.id);
-            }}
-          >
-            <ShoppingCart className="h-4 w-4" />
-          </button>
+          <div className="mt-3 flex gap-2">
+            <Button 
+              size="sm"
+              className="bg-black hover:bg-gray-800 text-white flex-1"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleBuyNow(product.id);
+              }}
+            >
+              Buy Now
+            </Button>
+            <Button 
+              size="sm"
+              variant="outline"
+              className="border-gray-300 flex-1"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleAddToCart(product.id);
+              }}
+            >
+              <ShoppingCart className="h-4 w-4 mr-1" />
+              Add to Cart
+            </Button>
+          </div>
         </div>
       </CardContent>
     </Card>
   );
+
+  // Filter products based on search and category
+  const filteredProducts = products.filter(product => {
+    const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         product.description.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCategory = activeCategory === 'all' || 
+                           product.category.toLowerCase().includes(activeCategory.toLowerCase());
+    return matchesSearch && matchesCategory;
+  });
 
   return (
     <div className="min-h-screen bg-white">
@@ -225,7 +265,7 @@ const Store = () => {
         
         {/* Product Grid */}
         {isLoading ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
             {[...Array(8)].map((_, i) => (
               <Card key={i} className="bg-white border-none rounded-2xl shadow-sm">
                 <CardContent className="p-0">
@@ -240,45 +280,49 @@ const Store = () => {
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-            {products.slice(0, 8).map((product) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+            {filteredProducts.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
           </div>
         )}
         
-        <div className="mt-8 flex justify-center">
-          <Button variant="outline" className="border-gray-300 text-gray-800 hover:bg-gray-100">
-            Show More Products
-          </Button>
-        </div>
+        {filteredProducts.length === 0 && !isLoading && (
+          <div className="text-center py-12">
+            <p className="text-gray-500">No products found matching your criteria.</p>
+          </div>
+        )}
         
         {/* Featured Categories Section */}
         <div className="mt-12">
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Popular Categories</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="bg-orange-50 rounded-2xl p-6 text-center">
+            <div className="bg-orange-50 rounded-2xl p-6 text-center cursor-pointer hover:bg-orange-100 transition-colors"
+                 onClick={() => handleCategorySelect('shoes')}>
               <div className="h-16 w-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <img src="https://images.unsplash.com/photo-1560769629-975ec94e6a86" alt="Shoes" className="h-8 w-8 object-contain" />
               </div>
               <h3 className="font-medium text-gray-900">Shoes</h3>
               <p className="text-xs text-gray-500 mt-1">124 Products</p>
             </div>
-            <div className="bg-blue-50 rounded-2xl p-6 text-center">
+            <div className="bg-blue-50 rounded-2xl p-6 text-center cursor-pointer hover:bg-blue-100 transition-colors"
+                 onClick={() => handleCategorySelect('clothing')}>
               <div className="h-16 w-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <img src="https://images.unsplash.com/photo-1489987707025-afc232f7ea0f" alt="Clothing" className="h-8 w-8 object-contain" />
               </div>
               <h3 className="font-medium text-gray-900">Clothing</h3>
               <p className="text-xs text-gray-500 mt-1">86 Products</p>
             </div>
-            <div className="bg-green-50 rounded-2xl p-6 text-center">
+            <div className="bg-green-50 rounded-2xl p-6 text-center cursor-pointer hover:bg-green-100 transition-colors"
+                 onClick={() => handleCategorySelect('electronics')}>
               <div className="h-16 w-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <img src="https://images.unsplash.com/photo-1600003263516-530da009e46d" alt="Electronics" className="h-8 w-8 object-contain" />
               </div>
               <h3 className="font-medium text-gray-900">Electronics</h3>
               <p className="text-xs text-gray-500 mt-1">92 Products</p>
             </div>
-            <div className="bg-purple-50 rounded-2xl p-6 text-center">
+            <div className="bg-purple-50 rounded-2xl p-6 text-center cursor-pointer hover:bg-purple-100 transition-colors"
+                 onClick={() => handleCategorySelect('accessories')}>
               <div className="h-16 w-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <img src="https://images.unsplash.com/photo-1619532550501-933caec7df7a" alt="Accessories" className="h-8 w-8 object-contain" />
               </div>
@@ -288,6 +332,13 @@ const Store = () => {
           </div>
         </div>
       </div>
+
+      {/* Login Modal */}
+      <LoginModal 
+        isOpen={showLoginModal} 
+        onClose={() => setShowLoginModal(false)} 
+        message="Please log in to continue shopping"
+      />
     </div>
   );
 };
