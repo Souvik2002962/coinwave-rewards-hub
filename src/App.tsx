@@ -100,6 +100,8 @@ const App = () => (
             <Route path="/admin/coins" element={<AdminCoins />} />
             <Route path="/admin/reviews" element={<AdminReviews />} />
             <Route path="/admin/notifications" element={<AdminNotifications />} />
+            <Route path="/admin/team-members" element={<AdminTeamMembers />} />
+            <Route path="/admin/support" element={<AdminSupport />} />
             <Route path="/admin/settings" element={<AdminSettings />} />
             
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
