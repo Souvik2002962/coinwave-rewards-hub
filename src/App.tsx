@@ -22,7 +22,19 @@ import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
 import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
-import { MapPin, Tag, Coins } from 'lucide-react';
+
+// Admin Pages
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminUsers from "./pages/admin/AdminUsers";
+import AdminProducts from "./pages/admin/AdminProducts";
+import AdminOrders from "./pages/admin/AdminOrders";
+import AdminAds from "./pages/admin/AdminAds";
+import AdminAdvertisers from "./pages/admin/AdminAdvertisers";
+import AdminPayments from "./pages/admin/AdminPayments";
+import AdminCoins from "./pages/admin/AdminCoins";
+import AdminReviews from "./pages/admin/AdminReviews";
+import AdminNotifications from "./pages/admin/AdminNotifications";
+import AdminSettings from "./pages/admin/AdminSettings";
 
 const queryClient = new QueryClient();
 
@@ -74,6 +86,20 @@ const App = () => (
                 <ProfilePage />
               </ProtectedRoute>
             } />
+            
+            {/* Admin Routes */}
+            <Route path="/admin/dashboard" element={<AdminDashboard />} />
+            <Route path="/admin/users" element={<AdminUsers />} />
+            <Route path="/admin/products" element={<AdminProducts />} />
+            <Route path="/admin/orders" element={<AdminOrders />} />
+            <Route path="/admin/ads" element={<AdminAds />} />
+            <Route path="/admin/advertisers" element={<AdminAdvertisers />} />
+            <Route path="/admin/payments" element={<AdminPayments />} />
+            <Route path="/admin/coins" element={<AdminCoins />} />
+            <Route path="/admin/reviews" element={<AdminReviews />} />
+            <Route path="/admin/notifications" element={<AdminNotifications />} />
+            <Route path="/admin/settings" element={<AdminSettings />} />
+            
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
