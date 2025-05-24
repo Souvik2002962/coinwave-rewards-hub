@@ -34,6 +34,8 @@ import AdminPayments from "./pages/admin/AdminPayments";
 import AdminCoins from "./pages/admin/AdminCoins";
 import AdminReviews from "./pages/admin/AdminReviews";
 import AdminNotifications from "./pages/admin/AdminNotifications";
+import AdminTeamMembers from "./pages/admin/AdminTeamMembers";
+import AdminSupport from "./pages/admin/AdminSupport";
 import AdminSettings from "./pages/admin/AdminSettings";
 
 const queryClient = new QueryClient();

@@ -24,7 +24,9 @@ import {
   Coins, 
   MessageSquare, 
   Bell, 
-  Settings 
+  Settings,
+  UsersIcon,
+  Headphones
 } from 'lucide-react';
 
 const menuItems = [
@@ -77,6 +79,16 @@ const menuItems = [
     title: "Notifications",
     url: "/admin/notifications",
     icon: Bell,
+  },
+  {
+    title: "Team Members",
+    url: "/admin/team-members",
+    icon: UsersIcon,
+  },
+  {
+    title: "Support",
+    url: "/admin/support",
+    icon: Headphones,
   },
   {
     title: "Settings",
