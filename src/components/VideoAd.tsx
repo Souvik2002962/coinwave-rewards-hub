@@ -7,7 +7,7 @@ const VideoAd = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(0);
+  const [duration, setDuration] = useState(30); // 30 second video
   const [isFullscreen, setIsFullscreen] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -15,39 +15,27 @@ const VideoAd = () => {
   const scenes = [
     {
       time: 0,
-      title: "The Big Ad Platforms",
-      description: "You've used Facebook, Instagram, Google, YouTube...",
-      visual: "Traditional platforms logos"
+      title: "Facebook, Instagram, Google, YouTube",
+      description: "Expensive. Complex. Users skip your ads.",
+      visual: "Traditional platforms logos with X marks"
     },
     {
-      time: 15,
-      title: "The Truth About Traditional Ads",
-      description: "Expensive, complex, and users skip your ads",
-      visual: "Frustrated advertisers, skipped ads"
+      time: 8,
+      title: "Meet CoinCart - The Smart Alternative",
+      description: "Users actually WANT to watch your ads",
+      visual: "CoinCart logo with happy users"
     },
     {
-      time: 30,
-      title: "Meet CoinCart - The Smarter Alternative",
-      description: "Simple, affordable, real engagement",
-      visual: "Clean platform interface"
+      time: 16,
+      title: "Real Engagement. Real Results.",
+      description: "95% engagement • 50% lower costs • 3x better ROI",
+      visual: "Stats and analytics"
     },
     {
-      time: 45,
-      title: "Users Actually Watch Your Ads",
-      description: "They get rewarded for watching",
-      visual: "Happy users earning rewards"
-    },
-    {
-      time: 60,
-      title: "Full Transparency & Control",
-      description: "Track everything in real-time",
-      visual: "Analytics dashboard"
-    },
-    {
-      time: 75,
-      title: "Join the Future of Advertising",
-      description: "Start growing with CoinCart today",
-      visual: "CTA and success stories"
+      time: 24,
+      title: "Start Advertising Smarter Today",
+      description: "Join the future of advertising",
+      visual: "CTA and success"
     }
   ];
 
@@ -60,7 +48,7 @@ const VideoAd = () => {
     if (!video) return;
 
     const updateTime = () => setCurrentTime(video.currentTime);
-    const updateDuration = () => setDuration(video.duration);
+    const updateDuration = () => setDuration(video.duration || 30);
 
     video.addEventListener('timeupdate', updateTime);
     video.addEventListener('loadedmetadata', updateDuration);
@@ -98,9 +86,8 @@ const VideoAd = () => {
   };
 
   const formatTime = (time: number) => {
-    const minutes = Math.floor(time / 60);
     const seconds = Math.floor(time % 60);
-    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    return `0:${seconds.toString().padStart(2, '0')}`;
   };
 
   const progressPercentage = duration > 0 ? (currentTime / duration) * 100 : 0;
@@ -123,62 +110,99 @@ const VideoAd = () => {
         />
 
         {/* Overlay Content */}
-        <div className="absolute inset-0 bg-black/60 flex flex-col justify-center items-center text-center p-8">
+        <div className="absolute inset-0 bg-black/70 flex flex-col justify-center items-center text-center p-6">
           {/* Scene Content */}
-          <div className="mb-8">
-            <h2 className="text-2xl md:text-4xl font-bold text-white mb-4 animate-fade-in">
+          <div className="mb-6">
+            <h2 className="text-xl md:text-3xl font-bold text-white mb-3 animate-fade-in">
               {currentScene.title}
             </h2>
-            <p className="text-lg md:text-xl text-gray-300 max-w-2xl animate-fade-in">
+            <p className="text-base md:text-lg text-gray-200 max-w-xl animate-fade-in">
               {currentScene.description}
             </p>
           </div>
 
-          {/* Platform Logos Animation */}
-          {currentTime < 15 && (
-            <div className="flex space-x-8 mb-8 animate-scale-in">
-              <div className="w-16 h-16 bg-blue-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-xs">FB</span>
+          {/* Traditional Platforms with X marks */}
+          {currentTime < 8 && (
+            <div className="flex space-x-6 mb-6 animate-scale-in">
+              <div className="relative">
+                <div className="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center">
+                  <span className="text-white font-bold text-xs">FB</span>
+                </div>
+                <div className="absolute -top-1 -right-1 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center">
+                  <X className="w-3 h-3 text-white" />
+                </div>
               </div>
-              <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-xs">IG</span>
+              <div className="relative">
+                <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
+                  <span className="text-white font-bold text-xs">IG</span>
+                </div>
+                <div className="absolute -top-1 -right-1 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center">
+                  <X className="w-3 h-3 text-white" />
+                </div>
               </div>
-              <div className="w-16 h-16 bg-red-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-xs">YT</span>
+              <div className="relative">
+                <div className="w-12 h-12 bg-red-600 rounded-lg flex items-center justify-center">
+                  <span className="text-white font-bold text-xs">YT</span>
+                </div>
+                <div className="absolute -top-1 -right-1 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center">
+                  <X className="w-3 h-3 text-white" />
+                </div>
               </div>
-              <div className="w-16 h-16 bg-green-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-xs">G</span>
+              <div className="relative">
+                <div className="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center">
+                  <span className="text-white font-bold text-xs">G</span>
+                </div>
+                <div className="absolute -top-1 -right-1 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center">
+                  <X className="w-3 h-3 text-white" />
+                </div>
               </div>
             </div>
           )}
 
           {/* CoinCart Logo */}
-          {currentTime >= 30 && currentTime < 60 && (
-            <div className="mb-8 animate-scale-in">
-              <div className="h-16 w-16 rounded-full bg-gradient-to-r from-neon-purple to-neon-blue flex items-center justify-center mx-auto mb-4">
-                <span className="text-white font-bold text-xl">CC</span>
+          {currentTime >= 8 && currentTime < 16 && (
+            <div className="mb-6 animate-scale-in">
+              <div className="h-20 w-20 rounded-full bg-gradient-to-r from-neon-purple to-neon-blue flex items-center justify-center mx-auto mb-4 animate-pulse">
+                <span className="text-white font-bold text-2xl">CC</span>
               </div>
-              <h3 className="text-xl font-bold text-white">
+              <h3 className="text-2xl font-bold text-white">
                 Coin<span className="text-neon-purple">Cart</span>
               </h3>
+              <div className="flex items-center justify-center mt-2 space-x-2">
+                <div className="flex space-x-1">
+                  {[...Array(5)].map((_, i) => (
+                    <div key={i} className="w-2 h-2 bg-yellow-400 rounded-full animate-pulse" style={{ animationDelay: `${i * 0.1}s` }} />
+                  ))}
+                </div>
+                <span className="text-yellow-400 text-sm">Users Love Us!</span>
+              </div>
             </div>
           )}
 
-          {/* Stats Animation */}
-          {currentTime >= 60 && (
-            <div className="grid grid-cols-3 gap-4 mb-8 animate-fade-in">
+          {/* Key Stats */}
+          {currentTime >= 16 && currentTime < 24 && (
+            <div className="grid grid-cols-3 gap-4 mb-6 animate-fade-in">
               <div className="text-center">
-                <div className="text-2xl font-bold text-neon-purple">95%</div>
-                <div className="text-sm text-gray-300">Engagement Rate</div>
+                <div className="text-3xl font-bold text-neon-purple animate-pulse">95%</div>
+                <div className="text-xs text-gray-200">Engagement</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-neon-blue">50%</div>
-                <div className="text-sm text-gray-300">Lower Costs</div>
+                <div className="text-3xl font-bold text-neon-blue animate-pulse">50%</div>
+                <div className="text-xs text-gray-200">Lower Costs</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-green-500">3x</div>
-                <div className="text-sm text-gray-300">Better ROI</div>
+                <div className="text-3xl font-bold text-green-400 animate-pulse">3x</div>
+                <div className="text-xs text-gray-200">Better ROI</div>
               </div>
+            </div>
+          )}
+
+          {/* Final CTA */}
+          {currentTime >= 24 && (
+            <div className="animate-scale-in">
+              <Button className="bg-neon-purple hover:bg-neon-purple/90 text-white px-8 py-4 text-lg animate-pulse">
+                Start Now - It's Free!
+              </Button>
             </div>
           )}
         </div>
@@ -227,7 +251,7 @@ const VideoAd = () => {
               </Button>
 
               <span className="text-white text-sm">
-                {formatTime(currentTime)} / {formatTime(duration)}
+                {formatTime(currentTime)} / 0:30
               </span>
             </div>
 
@@ -248,17 +272,17 @@ const VideoAd = () => {
       {/* Video Description */}
       <div className="mt-6 text-center">
         <h3 className="text-xl font-bold text-white mb-2">
-          Why We're Better Than Facebook, Instagram, Google & YouTube Ads
+          30 Seconds That Will Change How You Think About Advertising
         </h3>
         <p className="text-gray-300 mb-4">
-          See why smart advertisers are switching to our platform for real engagement and better ROI.
+          See why smart advertisers are switching from Facebook, Instagram, Google & YouTube to our platform.
         </p>
         <div className="flex justify-center space-x-4">
           <Button className="bg-neon-purple hover:bg-neon-purple/90">
             Start Advertising Today
           </Button>
           <Button variant="outline" className="border-neon-blue text-neon-blue hover:bg-neon-blue/10">
-            Watch Full Demo
+            Learn More
           </Button>
         </div>
       </div>
