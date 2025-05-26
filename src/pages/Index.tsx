@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Play, Eye, Target, Zap, Globe, BarChart3, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import NavBar from '@/components/NavBar';
 import AdCard from '@/components/AdCard';
@@ -84,37 +84,114 @@ const Index = () => {
     <div className="min-h-screen bg-cyber-dark pb-16">
       <NavBar />
       
-      {/* Hero Section */}
-      <section className="relative pt-20 pb-16 overflow-hidden">
+      {/* Hero Video Section - Why We're Better */}
+      <section className="relative pt-20 pb-8 overflow-hidden">
         <div className="absolute -top-40 -right-40 w-96 h-96 bg-neon-purple/20 rounded-full blur-3xl"></div>
         <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-neon-blue/20 rounded-full blur-3xl"></div>
         
         <div className="container mx-auto px-4 pt-16 relative z-10">
-          <div className="text-center">
-            <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
-              Watch Ads. <span className="text-neon-purple">Earn Coins.</span> Shop Products.
+          <div className="text-center mb-12">
+            <h1 className="text-3xl md:text-5xl font-bold text-white mb-6">
+              Why We're Better Than <span className="text-red-500">Facebook</span>, <span className="text-purple-500">Instagram</span>, <span className="text-blue-500">Google</span> & <span className="text-red-600">YouTube</span> Ads
             </h1>
-            <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
-              Dive into a futuristic ecosystem where your time converts into digital currency. Watch ads, earn coins, and redeem them for real products.
+            <p className="text-lg md:text-xl text-gray-300 mb-8 max-w-4xl mx-auto">
+              Stop wasting money on ads that get skipped. Join the platform where users actually want to watch your ads and get rewarded for it.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to="/earn">
-                <Button className="bg-neon-purple hover:bg-neon-purple/90 text-white px-8 py-6 text-lg">
-                  Start Earning
-                  <ArrowRight className="ml-2" />
-                </Button>
-              </Link>
-              <Link to="/store">
-                <Button variant="outline" className="border-neon-blue text-neon-blue hover:bg-neon-blue/10 hover:text-neon-blue px-8 py-6 text-lg">
-                  Browse Store
-                </Button>
-              </Link>
+            
+            {/* Video Preview */}
+            <div className="relative max-w-4xl mx-auto mb-8">
+              <div className="aspect-video bg-gradient-to-br from-cyber-dark to-gray-900 rounded-2xl border border-neon-purple/30 overflow-hidden relative group">
+                <div className="absolute inset-0 bg-black/50 flex items-center justify-center group-hover:bg-black/40 transition-all cursor-pointer">
+                  <div className="text-center">
+                    <div className="w-20 h-20 bg-neon-purple/20 rounded-full flex items-center justify-center mb-4 mx-auto group-hover:scale-110 transition-transform">
+                      <Play className="w-8 h-8 text-neon-purple ml-1" fill="currentColor" />
+                    </div>
+                    <p className="text-white font-semibold">Watch: Why Smart Advertisers Are Switching</p>
+                    <p className="text-gray-300 text-sm">2 minutes that will change how you advertise</p>
+                  </div>
+                </div>
+                
+                {/* Background visuals */}
+                <div className="absolute inset-0 opacity-30">
+                  <div className="grid grid-cols-3 gap-4 h-full p-8">
+                    <div className="space-y-4">
+                      <div className="h-16 bg-gradient-to-r from-neon-purple/20 to-neon-blue/20 rounded-lg"></div>
+                      <div className="h-24 bg-gradient-to-r from-neon-blue/20 to-green-500/20 rounded-lg"></div>
+                      <div className="h-20 bg-gradient-to-r from-green-500/20 to-neon-purple/20 rounded-lg"></div>
+                    </div>
+                    <div className="space-y-4">
+                      <div className="h-20 bg-gradient-to-r from-neon-blue/20 to-neon-purple/20 rounded-lg"></div>
+                      <div className="h-16 bg-gradient-to-r from-green-500/20 to-neon-blue/20 rounded-lg"></div>
+                      <div className="h-28 bg-gradient-to-r from-neon-purple/20 to-green-500/20 rounded-lg"></div>
+                    </div>
+                    <div className="space-y-4">
+                      <div className="h-24 bg-gradient-to-r from-neon-blue/20 to-green-500/20 rounded-lg"></div>
+                      <div className="h-16 bg-gradient-to-r from-neon-purple/20 to-neon-blue/20 rounded-lg"></div>
+                      <div className="h-20 bg-gradient-to-r from-green-500/20 to-neon-purple/20 rounded-lg"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
+          </div>
+          
+          {/* Why We're Different - Key Points */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+            <div className="neon-card p-6 text-center">
+              <Eye className="w-12 h-12 text-neon-purple mx-auto mb-4" />
+              <h3 className="text-lg font-bold text-white mb-2">Users Actually Watch</h3>
+              <p className="text-gray-300 text-sm">No skipping. No scrolling past. Users earn rewards for watching your ads.</p>
+            </div>
+            
+            <div className="neon-card p-6 text-center">
+              <Target className="w-12 h-12 text-neon-blue mx-auto mb-4" />
+              <h3 className="text-lg font-bold text-white mb-2">Real Engagement</h3>
+              <p className="text-gray-300 text-sm">Higher attention rates than Facebook, Instagram, or YouTube ads.</p>
+            </div>
+            
+            <div className="neon-card p-6 text-center">
+              <Zap className="w-12 h-12 text-green-500 mx-auto mb-4" />
+              <h3 className="text-lg font-bold text-white mb-2">Simple & Affordable</h3>
+              <p className="text-gray-300 text-sm">No complex dashboards. No hidden fees. Just results that matter.</p>
+            </div>
+            
+            <div className="neon-card p-6 text-center">
+              <BarChart3 className="w-12 h-12 text-yellow-500 mx-auto mb-4" />
+              <h3 className="text-lg font-bold text-white mb-2">Full Transparency</h3>
+              <p className="text-gray-300 text-sm">Track every view, click, and conversion in real-time.</p>
+            </div>
+          </div>
+          
+          {/* CTA Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link to="/become-advertiser">
+              <Button className="bg-neon-purple hover:bg-neon-purple/90 text-white px-8 py-6 text-lg">
+                Start Advertising Smarter
+                <ArrowRight className="ml-2" />
+              </Button>
+            </Link>
+            <Link to="/earn">
+              <Button variant="outline" className="border-neon-blue text-neon-blue hover:bg-neon-blue/10 hover:text-neon-blue px-8 py-6 text-lg">
+                Watch Ads & Earn
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
       
-      {/* Live Stats Section - Added new section */}
+      {/* Traditional Hero Section - Simplified */}
+      <section className="py-8 px-4">
+        <div className="container mx-auto text-center">
+          <h2 className="text-2xl md:text-4xl font-bold text-white mb-4">
+            Watch Ads. <span className="text-neon-purple">Earn Coins.</span> Shop Products.
+          </h2>
+          <p className="text-lg text-gray-300 mb-6 max-w-2xl mx-auto">
+            The only platform where advertising benefits everyone - advertisers get real engagement, users get real rewards.
+          </p>
+        </div>
+      </section>
+      
+      {/* Live Stats Section */}
       <LiveStatsSection />
       
       {/* Featured Ads Section */}
@@ -157,7 +234,7 @@ const Index = () => {
         </div>
       </section>
       
-      {/* Testimonial Section - Added new section */}
+      {/* Testimonial Section */}
       <TestimonialSection />
       
       {/* Wallet and Referral Section */}
