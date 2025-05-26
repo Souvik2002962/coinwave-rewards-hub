@@ -13,7 +13,6 @@ import { ArrowRight } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 
 const Earn = () => {
-  const tabsRef = useRef<HTMLDivElement>(null);
   const { user } = useAuth();
   
   // Sample ad data
@@ -140,7 +139,7 @@ const Earn = () => {
             <h1 className="text-3xl font-bold text-white mb-2">Earn Coins</h1>
             <p className="text-gray-400">Watch ads, complete tasks, and earn digital coins to spend on products</p>
           </div>
-          <div className="neon-border px-4 py-2 rounded-lg mt-4 sm:mt-0">
+          <div className="glossy-card px-4 py-2 rounded-lg mt-4 sm:mt-0 backdrop-blur-lg bg-white/10 border border-white/20">
             <div className="flex items-center">
               <div className="mr-3">
                 <div className="text-xs text-gray-400">Available Balance</div>
@@ -151,52 +150,69 @@ const Earn = () => {
           </div>
         </div>
         
-        <div ref={tabsRef} className="overflow-x-auto hide-scrollbar">
+        <div className="w-full">
           <Tabs defaultValue="video" className="w-full">
-            <div className="min-w-max">
-              <TabsList className="w-full max-w-lg mx-auto mb-8 bg-cyber-dark">
-                <TabsTrigger value="video" className="flex-1 whitespace-nowrap">Video Ads (20-30 coins)</TabsTrigger>
-                <TabsTrigger value="banner" className="flex-1 whitespace-nowrap">Banner Ads (8-15 coins)</TabsTrigger>
-                <TabsTrigger value="carousel" className="flex-1 whitespace-nowrap">Carousel (12-18 coins)</TabsTrigger>
-              </TabsList>
+            <div className="flex justify-center mb-8">
+              <div className="glossy-card backdrop-blur-lg bg-white/10 border border-white/20 rounded-lg p-1">
+                <TabsList className="bg-transparent grid w-full grid-cols-3 gap-1">
+                  <TabsTrigger 
+                    value="video" 
+                    className="whitespace-nowrap px-4 py-2 text-sm data-[state=active]:bg-neon-purple data-[state=active]:text-white text-gray-300 hover:text-white transition-colors"
+                  >
+                    Video Ads (20-30 coins)
+                  </TabsTrigger>
+                  <TabsTrigger 
+                    value="banner" 
+                    className="whitespace-nowrap px-4 py-2 text-sm data-[state=active]:bg-neon-purple data-[state=active]:text-white text-gray-300 hover:text-white transition-colors"
+                  >
+                    Banner Ads (8-15 coins)
+                  </TabsTrigger>
+                  <TabsTrigger 
+                    value="carousel" 
+                    className="whitespace-nowrap px-4 py-2 text-sm data-[state=active]:bg-neon-purple data-[state=active]:text-white text-gray-300 hover:text-white transition-colors"
+                  >
+                    Carousel (12-18 coins)
+                  </TabsTrigger>
+                </TabsList>
+              </div>
             </div>
             
-            <TabsContent value="video">
+            <TabsContent value="video" className="mt-0">
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                 {videoAds.map((ad) => (
                   <AdCard key={ad.adId} {...ad} />
                 ))}
               </div>
               <div className="mt-8 text-center">
-                <Button variant="outline" className="border-neon-purple text-neon-purple hover:bg-neon-purple/10">
+                <Button variant="outline" className="border-neon-purple text-neon-purple hover:bg-neon-purple/10 glossy-card backdrop-blur-lg bg-white/10">
                   Load More Ads
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </div>
             </TabsContent>
             
-            <TabsContent value="banner">
+            <TabsContent value="banner" className="mt-0">
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                 {bannerAds.map((ad) => (
                   <AdCard key={ad.adId} {...ad} />
                 ))}
               </div>
               <div className="mt-8 text-center">
-                <Button variant="outline" className="border-neon-purple text-neon-purple hover:bg-neon-purple/10">
+                <Button variant="outline" className="border-neon-purple text-neon-purple hover:bg-neon-purple/10 glossy-card backdrop-blur-lg bg-white/10">
                   Load More Ads
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </div>
             </TabsContent>
             
-            <TabsContent value="carousel">
+            <TabsContent value="carousel" className="mt-0">
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                 {carouselAds.map((ad) => (
                   <AdCard key={ad.adId} {...ad} />
                 ))}
               </div>
               <div className="mt-8 text-center">
-                <Button variant="outline" className="border-neon-purple text-neon-purple hover:bg-neon-purple/10">
+                <Button variant="outline" className="border-neon-purple text-neon-purple hover:bg-neon-purple/10 glossy-card backdrop-blur-lg bg-white/10">
                   Load More Ads
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
@@ -210,7 +226,7 @@ const Earn = () => {
           <h2 className="text-2xl font-bold text-white mb-6">Bonus Opportunities</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="neon-card p-6">
+            <div className="glossy-card backdrop-blur-lg bg-white/10 border border-white/20 p-6 rounded-lg">
               <div className="h-14 w-14 rounded-full bg-neon-purple/20 flex items-center justify-center mb-4">
                 <div className="coin w-8 h-8 text-lg">🎯</div>
               </div>
@@ -221,7 +237,7 @@ const Earn = () => {
               </Button>
             </div>
             
-            <div className="neon-card p-6">
+            <div className="glossy-card backdrop-blur-lg bg-white/10 border border-white/20 p-6 rounded-lg">
               <div className="h-14 w-14 rounded-full bg-neon-purple/20 flex items-center justify-center mb-4">
                 <div className="coin w-8 h-8 text-lg">🎮</div>
               </div>
@@ -232,7 +248,7 @@ const Earn = () => {
               </Button>
             </div>
             
-            <div className="neon-card p-6">
+            <div className="glossy-card backdrop-blur-lg bg-white/10 border border-white/20 p-6 rounded-lg">
               <div className="h-14 w-14 rounded-full bg-neon-purple/20 flex items-center justify-center mb-4">
                 <div className="coin w-8 h-8 text-lg">👥</div>
               </div>
