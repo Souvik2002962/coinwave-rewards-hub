@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { ArrowRight, Play, Eye, Target, Zap, Globe, BarChart3, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -10,6 +9,7 @@ import ReferralCard from '@/components/ReferralCard';
 import AdvertiserDashboardPreview from '@/components/AdvertiserDashboardPreview';
 import TestimonialSection from '@/components/TestimonialSection';
 import LiveStatsSection from '@/components/LiveStatsSection';
+import VideoAd from '@/components/VideoAd';
 import { Link } from 'react-router-dom';
 
 const Index = () => {
@@ -84,8 +84,8 @@ const Index = () => {
     <div className="min-h-screen bg-cyber-dark pb-16">
       <NavBar />
       
-      {/* Hero Video Section - Why We're Better */}
-      <section className="relative pt-20 pb-8 overflow-hidden">
+      {/* Video Ad Hero Section */}
+      <section className="relative pt-20 pb-12 overflow-hidden">
         <div className="absolute -top-40 -right-40 w-96 h-96 bg-neon-purple/20 rounded-full blur-3xl"></div>
         <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-neon-blue/20 rounded-full blur-3xl"></div>
         
@@ -97,46 +97,13 @@ const Index = () => {
             <p className="text-lg md:text-xl text-gray-300 mb-8 max-w-4xl mx-auto">
               Stop wasting money on ads that get skipped. Join the platform where users actually want to watch your ads and get rewarded for it.
             </p>
-            
-            {/* Video Preview */}
-            <div className="relative max-w-4xl mx-auto mb-8">
-              <div className="aspect-video bg-gradient-to-br from-cyber-dark to-gray-900 rounded-2xl border border-neon-purple/30 overflow-hidden relative group">
-                <div className="absolute inset-0 bg-black/50 flex items-center justify-center group-hover:bg-black/40 transition-all cursor-pointer">
-                  <div className="text-center">
-                    <div className="w-20 h-20 bg-neon-purple/20 rounded-full flex items-center justify-center mb-4 mx-auto group-hover:scale-110 transition-transform">
-                      <Play className="w-8 h-8 text-neon-purple ml-1" fill="currentColor" />
-                    </div>
-                    <p className="text-white font-semibold">Watch: Why Smart Advertisers Are Switching</p>
-                    <p className="text-gray-300 text-sm">2 minutes that will change how you advertise</p>
-                  </div>
-                </div>
-                
-                {/* Background visuals */}
-                <div className="absolute inset-0 opacity-30">
-                  <div className="grid grid-cols-3 gap-4 h-full p-8">
-                    <div className="space-y-4">
-                      <div className="h-16 bg-gradient-to-r from-neon-purple/20 to-neon-blue/20 rounded-lg"></div>
-                      <div className="h-24 bg-gradient-to-r from-neon-blue/20 to-green-500/20 rounded-lg"></div>
-                      <div className="h-20 bg-gradient-to-r from-green-500/20 to-neon-purple/20 rounded-lg"></div>
-                    </div>
-                    <div className="space-y-4">
-                      <div className="h-20 bg-gradient-to-r from-neon-blue/20 to-neon-purple/20 rounded-lg"></div>
-                      <div className="h-16 bg-gradient-to-r from-green-500/20 to-neon-blue/20 rounded-lg"></div>
-                      <div className="h-28 bg-gradient-to-r from-neon-purple/20 to-green-500/20 rounded-lg"></div>
-                    </div>
-                    <div className="space-y-4">
-                      <div className="h-24 bg-gradient-to-r from-neon-blue/20 to-green-500/20 rounded-lg"></div>
-                      <div className="h-16 bg-gradient-to-r from-neon-purple/20 to-neon-blue/20 rounded-lg"></div>
-                      <div className="h-20 bg-gradient-to-r from-green-500/20 to-neon-purple/20 rounded-lg"></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
           
+          {/* Interactive Video Ad */}
+          <VideoAd />
+          
           {/* Why We're Different - Key Points */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-12 mb-8">
             <div className="neon-card p-6 text-center">
               <Eye className="w-12 h-12 text-neon-purple mx-auto mb-4" />
               <h3 className="text-lg font-bold text-white mb-2">Users Actually Watch</h3>
