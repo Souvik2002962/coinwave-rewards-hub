@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import NavBar from '@/components/NavBar';
 import { Button } from '@/components/ui/button';
@@ -173,11 +172,12 @@ const Store = () => {
   const ProductCard = ({ product }: { product: Product }) => {
     const isInCart = cartItems.has(product.id);
     const isInWishlist = wishlistItems.has(product.id);
-    const hasOffer = product.discountCoins > 0;
+    const hasOffer = product.offerPercentage && product.offerPercentage > 0;
+    const offerPrice = hasOffer ? product.price - (product.price * product.offerPercentage / 100) : product.price;
     
     return (
       <Card 
-        className={`group relative bg-white border-none rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer ${
+        className={`group relative bg-white/90 backdrop-blur-sm border-none rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer ${
           isInCart || isInWishlist ? 'ring-2 ring-neon-purple shadow-neon' : ''
         }`}
         onClick={() => handleProductClick(product.id)}
@@ -200,12 +200,14 @@ const Store = () => {
         
         {hasOffer && (
           <div className="absolute top-2 left-2 z-10 bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold">
-            {Math.round((product.discountCoins / product.price) * 100)}% OFF
+            {product.offerPercentage}% OFF
           </div>
         )}
         
         <CardContent className="p-0">
-          <div className="bg-gray-50 rounded-t-2xl p-4">
+          <div className={`bg-gray-50 rounded-t-2xl p-4 ${
+            isInCart || isInWishlist ? 'ring-2 ring-neon-purple' : ''
+          }`}>
             <img 
               src={product.imageUrl} 
               alt={product.name} 
@@ -216,15 +218,31 @@ const Store = () => {
             <h3 className="font-medium text-gray-900">{product.name}</h3>
             <p className="text-xs text-gray-500">{product.category}</p>
             <div className="mt-2 flex justify-between items-center">
-              <div className="font-semibold text-gray-900 flex items-center">
-                <span className="text-lg">₹{product.price}</span>
-                {product.discountCoins > 0 && (
-                  <span className="text-xs text-gray-500 ml-1">+ {product.discountCoins} coins</span>
+              <div className="font-semibold text-gray-900 flex items-center flex-col">
+                {hasOffer ? (
+                  <>
+                    <div className="flex items-center gap-2">
+                      <span className="text-lg line-through text-gray-400">₹{product.price}</span>
+                      <span className="text-lg text-green-600">₹{Math.round(offerPrice)}</span>
+                    </div>
+                    {product.discountCoins > 0 && (
+                      <span className="text-xs text-gray-500">+ {product.discountCoins} coins</span>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    <span className="text-lg">₹{product.price}</span>
+                    {product.discountCoins > 0 && (
+                      <span className="text-xs text-gray-500">+ {product.discountCoins} coins</span>
+                    )}
+                  </>
                 )}
               </div>
-              {product.discountCoins > 0 && (
+              {(hasOffer || product.discountCoins > 0) && (
                 <div className="flex items-center text-xs bg-yellow-100 rounded-full px-2 py-1">
-                  <span className="text-yellow-800">Save ₹{product.discountCoins / 100}</span>
+                  <span className="text-yellow-800">
+                    {hasOffer ? `Save ₹${Math.round(product.price - offerPrice)}` : `Save ₹${product.discountCoins / 100}`}
+                  </span>
                   <div className="coin w-3 h-3 ml-0.5">💰</div>
                 </div>
               )}
@@ -268,7 +286,7 @@ const Store = () => {
     const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          product.description.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = activeCategory === 'all' || 
-                           activeCategory === 'offers' && product.discountCoins > 0 ||
+                           activeCategory === 'offers' && (product.offerPercentage || product.discountCoins > 0) ||
                            product.category.toLowerCase().includes(activeCategory.toLowerCase());
     return matchesSearch && matchesCategory;
   });
@@ -296,7 +314,7 @@ const Store = () => {
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
           <Input 
             placeholder="Search products..." 
-            className="pl-10 bg-gray-100 border-none rounded-full text-gray-800"
+            className="pl-10 bg-gray-100/80 backdrop-blur-sm border-none rounded-full text-gray-800"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
@@ -308,11 +326,24 @@ const Store = () => {
         {/* Category Pills */}
         <CategoryPills />
         
+        {/* Special Offers Section */}
+        <div className="mb-8">
+          <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+            <Percent className="w-5 h-5 mr-2 text-red-500" />
+            Special Offers
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {filteredProducts.filter(p => p.offerPercentage && p.offerPercentage > 0).slice(0, 4).map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        </div>
+        
         {/* Product Grid */}
         {isLoading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
             {[...Array(8)].map((_, i) => (
-              <Card key={i} className="bg-white border-none rounded-2xl shadow-sm">
+              <Card key={i} className="bg-white/90 backdrop-blur-sm border-none rounded-2xl shadow-sm">
                 <CardContent className="p-0">
                   <div className="bg-gray-100 rounded-t-2xl h-56 animate-pulse"></div>
                   <div className="p-4 space-y-2">
