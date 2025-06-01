@@ -1,147 +1,130 @@
 
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { cn } from '@/lib/utils';
 import {
-  Sidebar,
-  SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarHeader,
-  SidebarFooter,
-} from '@/components/ui/sidebar';
-import { 
-  LayoutDashboard, 
-  Users, 
-  Package, 
-  ShoppingCart, 
-  Image, 
-  Building2, 
-  CreditCard, 
-  Coins, 
-  MessageSquare, 
-  Bell, 
+  BarChart3,
+  Users,
+  Package,
+  ShoppingCart,
+  Megaphone,
+  UserCheck,
+  CreditCard,
+  Coins,
+  MessageSquare,
+  Bell,
+  UserPlus,
+  HelpCircle,
   Settings,
-  UsersIcon,
-  Headphones
+  Heart
 } from 'lucide-react';
 
 const menuItems = [
   {
-    title: "Overview",
-    url: "/admin/dashboard",
-    icon: LayoutDashboard,
+    title: 'Dashboard',
+    href: '/admin/dashboard',
+    icon: BarChart3,
   },
   {
-    title: "Users",
-    url: "/admin/users",
+    title: 'Users',
+    href: '/admin/users',
     icon: Users,
   },
   {
-    title: "Products",
-    url: "/admin/products",
+    title: 'Products',
+    href: '/admin/products',
     icon: Package,
   },
   {
-    title: "Orders",
-    url: "/admin/orders",
+    title: 'Orders',
+    href: '/admin/orders',
     icon: ShoppingCart,
   },
   {
-    title: "Ad Campaigns",
-    url: "/admin/ads",
-    icon: Image,
+    title: 'Ads',
+    href: '/admin/ads',
+    icon: Megaphone,
   },
   {
-    title: "Advertisers",
-    url: "/admin/advertisers",
-    icon: Building2,
+    title: 'Advertisers',
+    href: '/admin/advertisers',
+    icon: UserCheck,
   },
   {
-    title: "Payments",
-    url: "/admin/payments",
+    title: 'Payments',
+    href: '/admin/payments',
     icon: CreditCard,
   },
   {
-    title: "Coin Settings",
-    url: "/admin/coins",
+    title: 'Coins',
+    href: '/admin/coins',
     icon: Coins,
   },
   {
-    title: "Reviews",
-    url: "/admin/reviews",
+    title: 'Reviews',
+    href: '/admin/reviews',
     icon: MessageSquare,
   },
   {
-    title: "Notifications",
-    url: "/admin/notifications",
+    title: 'Notifications',
+    href: '/admin/notifications',
     icon: Bell,
   },
   {
-    title: "Team Members",
-    url: "/admin/team-members",
-    icon: UsersIcon,
+    title: 'Cart & Wishlist',
+    href: '/admin/cart-wishlist',
+    icon: Heart,
   },
   {
-    title: "Support",
-    url: "/admin/support",
-    icon: Headphones,
+    title: 'Team Members',
+    href: '/admin/team-members',
+    icon: UserPlus,
   },
   {
-    title: "Settings",
-    url: "/admin/settings",
+    title: 'Support',
+    href: '/admin/support',
+    icon: HelpCircle,
+  },
+  {
+    title: 'Settings',
+    href: '/admin/settings',
     icon: Settings,
   },
 ];
 
-export function AdminSidebar() {
+export const AdminSidebar = () => {
   const location = useLocation();
 
   return (
-    <Sidebar>
-      <SidebarHeader className="border-b border-sidebar-border p-4">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-            <Coins className="w-5 h-5 text-primary-foreground" />
-          </div>
-          <div>
-            <h2 className="text-lg font-semibold">CoinCart</h2>
-            <p className="text-xs text-muted-foreground">Admin Dashboard</p>
-          </div>
-        </div>
-      </SidebarHeader>
-      
-      <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupLabel>Management</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {menuItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton 
-                    asChild 
-                    isActive={location.pathname === item.url}
-                  >
-                    <Link to={item.url}>
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-      </SidebarContent>
-      
-      <SidebarFooter className="border-t border-sidebar-border p-4">
-        <div className="text-xs text-muted-foreground">
-          v1.0.0 - Admin Panel
-        </div>
-      </SidebarFooter>
-    </Sidebar>
+    <div className="flex h-full w-64 flex-col bg-gray-50 border-r">
+      <div className="flex h-16 shrink-0 items-center border-b px-6">
+        <h2 className="text-lg font-semibold text-gray-900">Admin Panel</h2>
+      </div>
+      <nav className="flex-1 space-y-1 px-3 py-4 overflow-y-auto">
+        {menuItems.map((item) => {
+          const isActive = location.pathname === item.href;
+          return (
+            <Link
+              key={item.href}
+              to={item.href}
+              className={cn(
+                'group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors',
+                isActive
+                  ? 'bg-blue-100 text-blue-700'
+                  : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+              )}
+            >
+              <item.icon
+                className={cn(
+                  'mr-3 h-5 w-5 shrink-0',
+                  isActive ? 'text-blue-500' : 'text-gray-400 group-hover:text-gray-500'
+                )}
+              />
+              {item.title}
+            </Link>
+          );
+        })}
+      </nav>
+    </div>
   );
-}
+};

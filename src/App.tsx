@@ -37,6 +37,7 @@ import AdminNotifications from "./pages/admin/AdminNotifications";
 import AdminTeamMembers from "./pages/admin/AdminTeamMembers";
 import AdminSupport from "./pages/admin/AdminSupport";
 import AdminSettings from "./pages/admin/AdminSettings";
+import AdminCartWishlist from "./pages/admin/AdminCartWishlist";
 
 const queryClient = new QueryClient();
 
@@ -100,6 +101,7 @@ const App = () => (
             <Route path="/admin/coins" element={<AdminCoins />} />
             <Route path="/admin/reviews" element={<AdminReviews />} />
             <Route path="/admin/notifications" element={<AdminNotifications />} />
+            <Route path="/admin/cart-wishlist" element={<AdminCartWishlist />} />
             <Route path="/admin/team-members" element={<AdminTeamMembers />} />
             <Route path="/admin/support" element={<AdminSupport />} />
             <Route path="/admin/settings" element={<AdminSettings />} />
