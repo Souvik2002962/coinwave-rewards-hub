@@ -8,6 +8,7 @@ import {
   TabsList, 
   TabsTrigger 
 } from "@/components/ui/tabs";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
@@ -153,27 +154,30 @@ const Earn = () => {
         <div className="w-full">
           <Tabs defaultValue="video" className="w-full">
             <div className="flex justify-center mb-8">
-              <div className="glossy-card backdrop-blur-lg bg-white/10 border border-white/20 rounded-lg p-1">
-                <TabsList className="bg-transparent grid w-full grid-cols-3 gap-1">
-                  <TabsTrigger 
-                    value="video" 
-                    className="whitespace-nowrap px-4 py-2 text-sm data-[state=active]:bg-neon-purple data-[state=active]:text-white text-gray-300 hover:text-white transition-colors"
-                  >
-                    Video Ads (20-30 coins)
-                  </TabsTrigger>
-                  <TabsTrigger 
-                    value="banner" 
-                    className="whitespace-nowrap px-4 py-2 text-sm data-[state=active]:bg-neon-purple data-[state=active]:text-white text-gray-300 hover:text-white transition-colors"
-                  >
-                    Banner Ads (8-15 coins)
-                  </TabsTrigger>
-                  <TabsTrigger 
-                    value="carousel" 
-                    className="whitespace-nowrap px-4 py-2 text-sm data-[state=active]:bg-neon-purple data-[state=active]:text-white text-gray-300 hover:text-white transition-colors"
-                  >
-                    Carousel (12-18 coins)
-                  </TabsTrigger>
-                </TabsList>
+              <div className="glossy-card backdrop-blur-lg bg-white/10 border border-white/20 rounded-lg p-1 w-full max-w-4xl">
+                <ScrollArea className="w-full">
+                  <TabsList className="bg-transparent flex w-max min-w-full gap-1 p-0">
+                    <TabsTrigger 
+                      value="video" 
+                      className="whitespace-nowrap px-6 py-3 text-sm font-medium data-[state=active]:bg-neon-purple data-[state=active]:text-white text-gray-300 hover:text-white transition-colors rounded-md flex-shrink-0"
+                    >
+                      Video Ads (20-30 coins)
+                    </TabsTrigger>
+                    <TabsTrigger 
+                      value="banner" 
+                      className="whitespace-nowrap px-6 py-3 text-sm font-medium data-[state=active]:bg-neon-purple data-[state=active]:text-white text-gray-300 hover:text-white transition-colors rounded-md flex-shrink-0"
+                    >
+                      Banner Ads (8-15 coins)
+                    </TabsTrigger>
+                    <TabsTrigger 
+                      value="carousel" 
+                      className="whitespace-nowrap px-6 py-3 text-sm font-medium data-[state=active]:bg-neon-purple data-[state=active]:text-white text-gray-300 hover:text-white transition-colors rounded-md flex-shrink-0"
+                    >
+                      Carousel (12-18 coins)
+                    </TabsTrigger>
+                  </TabsList>
+                  <ScrollBar orientation="horizontal" className="mt-2" />
+                </ScrollArea>
               </div>
             </div>
             
