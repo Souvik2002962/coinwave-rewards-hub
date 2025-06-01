@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import NavBar from '@/components/NavBar';
 import { Button } from '@/components/ui/button';
-import { Coins, Search, Heart, ShoppingCart, ChevronRight } from 'lucide-react';
+import { Coins, Search, Heart, ShoppingCart, ChevronRight, Percent } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import {
   Card,
@@ -22,6 +22,8 @@ const Store = () => {
   const [featuredProduct, setFeaturedProduct] = useState<Product | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [cartItems, setCartItems] = useState<Set<string>>(new Set());
+  const [wishlistItems, setWishlistItems] = useState<Set<string>>(new Set());
   const { user } = useAuth();
   const navigate = useNavigate();
   const { convert } = useCoinConversion();
@@ -69,7 +71,17 @@ const Store = () => {
       setShowLoginModal(true);
       return;
     }
+    setCartItems(prev => new Set([...prev, productId]));
     toast.success("Added to cart");
+  };
+
+  const handleAddToWishlist = (productId: string) => {
+    if (!user) {
+      setShowLoginModal(true);
+      return;
+    }
+    setWishlistItems(prev => new Set([...prev, productId]));
+    toast.success("Added to wishlist");
   };
 
   // Display featured product banner
@@ -145,85 +157,118 @@ const Store = () => {
       >
         Collection
       </button>
+      <button 
+        className={`px-4 py-2 rounded-full text-sm font-medium ${
+          activeCategory === 'offers' ? 'bg-black text-white' : 'bg-gray-100 text-gray-800'
+        }`}
+        onClick={() => handleCategorySelect('offers')}
+      >
+        <Percent className="w-4 h-4 mr-1" />
+        Special Offers
+      </button>
     </div>
   );
   
   // Product card component
-  const ProductCard = ({ product }: { product: Product }) => (
-    <Card 
-      className="group relative bg-white border-none rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer"
-      onClick={() => handleProductClick(product.id)}
-    >
-      <div className="absolute top-2 right-2 z-10">
-        <button 
-          className="p-2 rounded-full bg-white/80 hover:bg-white text-gray-800"
-          onClick={(e) => {
-            e.stopPropagation();
-            toast.info("Added to wishlist");
-          }}
-        >
-          <Heart className="h-4 w-4" />
-        </button>
-      </div>
-      <CardContent className="p-0">
-        <div className="bg-gray-50 rounded-t-2xl p-4">
-          <img 
-            src={product.imageUrl} 
-            alt={product.name} 
-            className="w-full h-48 object-contain mx-auto transition-transform group-hover:scale-105 duration-300"
-          />
+  const ProductCard = ({ product }: { product: Product }) => {
+    const isInCart = cartItems.has(product.id);
+    const isInWishlist = wishlistItems.has(product.id);
+    const hasOffer = product.discountCoins > 0;
+    
+    return (
+      <Card 
+        className={`group relative bg-white border-none rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer ${
+          isInCart || isInWishlist ? 'ring-2 ring-neon-purple shadow-neon' : ''
+        }`}
+        onClick={() => handleProductClick(product.id)}
+      >
+        <div className="absolute top-2 right-2 z-10">
+          <button 
+            className={`p-2 rounded-full transition-all ${
+              isInWishlist 
+                ? 'bg-red-500 text-white shadow-lg' 
+                : 'bg-white/80 hover:bg-white text-gray-800'
+            }`}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleAddToWishlist(product.id);
+            }}
+          >
+            <Heart className="h-4 w-4" fill={isInWishlist ? "currentColor" : "none"} />
+          </button>
         </div>
-        <div className="p-4">
-          <h3 className="font-medium text-gray-900">{product.name}</h3>
-          <p className="text-xs text-gray-500">{product.category}</p>
-          <div className="mt-2 flex justify-between items-center">
-            <div className="font-semibold text-gray-900 flex items-center">
-              <span className="text-lg">₹{product.price}</span>
+        
+        {hasOffer && (
+          <div className="absolute top-2 left-2 z-10 bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold">
+            {Math.round((product.discountCoins / product.price) * 100)}% OFF
+          </div>
+        )}
+        
+        <CardContent className="p-0">
+          <div className="bg-gray-50 rounded-t-2xl p-4">
+            <img 
+              src={product.imageUrl} 
+              alt={product.name} 
+              className="w-full h-48 object-contain mx-auto transition-transform group-hover:scale-105 duration-300 rounded-lg"
+            />
+          </div>
+          <div className="p-4">
+            <h3 className="font-medium text-gray-900">{product.name}</h3>
+            <p className="text-xs text-gray-500">{product.category}</p>
+            <div className="mt-2 flex justify-between items-center">
+              <div className="font-semibold text-gray-900 flex items-center">
+                <span className="text-lg">₹{product.price}</span>
+                {product.discountCoins > 0 && (
+                  <span className="text-xs text-gray-500 ml-1">+ {product.discountCoins} coins</span>
+                )}
+              </div>
               {product.discountCoins > 0 && (
-                <span className="text-xs text-gray-500 ml-1">+ {product.discountCoins} coins</span>
+                <div className="flex items-center text-xs bg-yellow-100 rounded-full px-2 py-1">
+                  <span className="text-yellow-800">Save ₹{product.discountCoins / 100}</span>
+                  <div className="coin w-3 h-3 ml-0.5">💰</div>
+                </div>
               )}
             </div>
-            {product.discountCoins > 0 && (
-              <div className="flex items-center text-xs bg-yellow-100 rounded-full px-2 py-1">
-                <span className="text-yellow-800">Save ₹{product.discountCoins / 100}</span>
-                <div className="coin w-3 h-3 ml-0.5">💰</div>
-              </div>
-            )}
+            <div className="mt-3 flex gap-2">
+              <Button 
+                size="sm"
+                className="bg-black hover:bg-gray-800 text-white flex-1"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleBuyNow(product.id);
+                }}
+              >
+                Buy Now
+              </Button>
+              <Button 
+                size="sm"
+                variant={isInCart ? "default" : "outline"}
+                className={`flex-1 ${
+                  isInCart 
+                    ? 'bg-neon-purple text-white border-neon-purple' 
+                    : 'border-gray-300'
+                }`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleAddToCart(product.id);
+                }}
+              >
+                <ShoppingCart className="h-4 w-4 mr-1" />
+                {isInCart ? 'In Cart' : 'Add to Cart'}
+              </Button>
+            </div>
           </div>
-          <div className="mt-3 flex gap-2">
-            <Button 
-              size="sm"
-              className="bg-black hover:bg-gray-800 text-white flex-1"
-              onClick={(e) => {
-                e.stopPropagation();
-                handleBuyNow(product.id);
-              }}
-            >
-              Buy Now
-            </Button>
-            <Button 
-              size="sm"
-              variant="outline"
-              className="border-gray-300 flex-1"
-              onClick={(e) => {
-                e.stopPropagation();
-                handleAddToCart(product.id);
-              }}
-            >
-              <ShoppingCart className="h-4 w-4 mr-1" />
-              Add to Cart
-            </Button>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
-  );
+        </CardContent>
+      </Card>
+    );
+  };
 
   // Filter products based on search and category
   const filteredProducts = products.filter(product => {
     const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          product.description.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = activeCategory === 'all' || 
+                           activeCategory === 'offers' && product.discountCoins > 0 ||
                            product.category.toLowerCase().includes(activeCategory.toLowerCase());
     return matchesSearch && matchesCategory;
   });
@@ -297,7 +342,7 @@ const Store = () => {
         <div className="mt-12">
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Popular Categories</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="bg-orange-50 rounded-2xl p-6 text-center cursor-pointer hover:bg-orange-100 transition-colors"
+            <div className="bg-orange-50 rounded-full aspect-square p-6 text-center cursor-pointer hover:bg-orange-100 transition-colors flex flex-col items-center justify-center"
                  onClick={() => handleCategorySelect('shoes')}>
               <div className="h-16 w-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <img src="https://images.unsplash.com/photo-1560769629-975ec94e6a86" alt="Shoes" className="h-8 w-8 object-contain" />
@@ -305,7 +350,7 @@ const Store = () => {
               <h3 className="font-medium text-gray-900">Shoes</h3>
               <p className="text-xs text-gray-500 mt-1">124 Products</p>
             </div>
-            <div className="bg-blue-50 rounded-2xl p-6 text-center cursor-pointer hover:bg-blue-100 transition-colors"
+            <div className="bg-blue-50 rounded-full aspect-square p-6 text-center cursor-pointer hover:bg-blue-100 transition-colors flex flex-col items-center justify-center"
                  onClick={() => handleCategorySelect('clothing')}>
               <div className="h-16 w-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <img src="https://images.unsplash.com/photo-1489987707025-afc232f7ea0f" alt="Clothing" className="h-8 w-8 object-contain" />
@@ -313,7 +358,7 @@ const Store = () => {
               <h3 className="font-medium text-gray-900">Clothing</h3>
               <p className="text-xs text-gray-500 mt-1">86 Products</p>
             </div>
-            <div className="bg-green-50 rounded-2xl p-6 text-center cursor-pointer hover:bg-green-100 transition-colors"
+            <div className="bg-green-50 rounded-full aspect-square p-6 text-center cursor-pointer hover:bg-green-100 transition-colors flex flex-col items-center justify-center"
                  onClick={() => handleCategorySelect('electronics')}>
               <div className="h-16 w-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <img src="https://images.unsplash.com/photo-1600003263516-530da009e46d" alt="Electronics" className="h-8 w-8 object-contain" />
@@ -321,7 +366,7 @@ const Store = () => {
               <h3 className="font-medium text-gray-900">Electronics</h3>
               <p className="text-xs text-gray-500 mt-1">92 Products</p>
             </div>
-            <div className="bg-purple-50 rounded-2xl p-6 text-center cursor-pointer hover:bg-purple-100 transition-colors"
+            <div className="bg-purple-50 rounded-full aspect-square p-6 text-center cursor-pointer hover:bg-purple-100 transition-colors flex flex-col items-center justify-center"
                  onClick={() => handleCategorySelect('accessories')}>
               <div className="h-16 w-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <img src="https://images.unsplash.com/photo-1619532550501-933caec7df7a" alt="Accessories" className="h-8 w-8 object-contain" />
