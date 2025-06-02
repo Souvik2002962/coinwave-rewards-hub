@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Coins, ShoppingCart, User, Bell, Menu, X, BriefcaseBusiness, LogOut } from 'lucide-react';
@@ -28,7 +27,7 @@ const NavBar = () => {
   };
 
   return (
-    <nav className="fixed w-full top-0 z-50 bg-cyber-dark shadow-md py-3 px-4 md:px-6">
+    <nav className="fixed w-full top-0 z-50 glass-nav shadow-lg py-3 px-4 md:px-6">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         <Link to="/" className="flex items-center space-x-2">
           <div className="h-10 w-10 rounded-full bg-gradient-to-r from-neon-purple to-neon-blue flex items-center justify-center">
@@ -141,7 +140,7 @@ const NavBar = () => {
 
       {/* Mobile Menu Dropdown */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-cyber-dark border-t border-neon-purple/30 mt-3 py-3 px-4 space-y-3">
+        <div className="md:hidden glass-nav border-t border-neon-purple/30 mt-3 py-3 px-4 space-y-3">
           <Link to="/" className="block text-white hover:text-neon-purple py-2 transition-colors" onClick={toggleMobileMenu}>Home</Link>
           <Link to="/earn" className="block text-white hover:text-neon-purple py-2 transition-colors" onClick={toggleMobileMenu}>Earn Coins</Link>
           <Link to="/store" className="block text-white hover:text-neon-purple py-2 transition-colors" onClick={toggleMobileMenu}>Shop</Link>
