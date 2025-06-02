@@ -1,10 +1,11 @@
 
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { X, ArrowLeft } from 'lucide-react';
+import { X } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { coinService } from '@/services/CoinService';
 import { Progress } from '@/components/ui/progress';
+import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
 
 interface BannerAdViewProps {
@@ -14,6 +15,8 @@ interface BannerAdViewProps {
     description: string;
     imageUrl: string;
     coinReward: number;
+    websiteUrl?: string;
+    ctaText?: string;
   };
   onClose: () => void;
 }
@@ -65,6 +68,12 @@ const BannerAdView = ({ ad, onClose }: BannerAdViewProps) => {
     setAbandoned(false);
   };
 
+  const handleCtaClick = () => {
+    if (ad.websiteUrl) {
+      window.open(ad.websiteUrl, '_blank');
+    }
+  };
+
   return (
     <div className="fixed inset-0 z-50 bg-black flex flex-col items-center justify-center">
       <div className="absolute top-4 right-4 z-10">
@@ -88,6 +97,15 @@ const BannerAdView = ({ ad, onClose }: BannerAdViewProps) => {
           </Button>
         )}
       </div>
+
+      {/* Coin Badge */}
+      {!completed && !abandoned && (
+        <div className="absolute top-4 left-4 z-10">
+          <Badge className="bg-neon-purple text-white px-3 py-1 text-sm font-medium">
+            +{ad.coinReward} 💰
+          </Badge>
+        </div>
+      )}
       
       <div className="w-full h-full max-w-3xl max-h-screen flex flex-col items-center justify-center p-4">
         {!completed && !abandoned ? (
@@ -120,15 +138,30 @@ const BannerAdView = ({ ad, onClose }: BannerAdViewProps) => {
         ) : completed ? (
           <div className="text-center">
             <div className="text-7xl mb-4">✅</div>
+            <div className="mb-4">
+              <Badge className="bg-green-500 text-white px-4 py-2 text-lg font-bold mb-2">
+                Coins Earned!
+              </Badge>
+            </div>
             <h2 className="text-3xl font-bold text-white mb-4">
               +{ad.coinReward} Coins Added!
             </h2>
             <p className="text-gray-300 mb-8">
               Thank you for viewing {ad.title}
             </p>
-            <Button onClick={onClose} className="bg-neon-purple hover:bg-neon-purple/90">
-              Continue Earning
-            </Button>
+            <div className="flex flex-col space-y-4">
+              {ad.websiteUrl && (
+                <Button 
+                  onClick={handleCtaClick} 
+                  className="bg-white text-black hover:bg-gray-200"
+                >
+                  {ad.ctaText || 'Buy Now'}
+                </Button>
+              )}
+              <Button onClick={onClose} className="bg-neon-purple hover:bg-neon-purple/90">
+                Continue Earning
+              </Button>
+            </div>
           </div>
         ) : (
           <div className="text-center">

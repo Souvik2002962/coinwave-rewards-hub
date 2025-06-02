@@ -33,6 +33,8 @@ const Earn = () => {
       coinReward: 20,
       imageUrl: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff',
       type: 'video' as const,
+      websiteUrl: 'https://nike.com',
+      ctaText: 'Shop Now',
     },
     {
       adId: 'ad2',
@@ -41,6 +43,8 @@ const Earn = () => {
       coinReward: 25,
       imageUrl: 'https://images.unsplash.com/photo-1610945415295-d9bbf067e59c',
       type: 'video' as const,
+      websiteUrl: 'https://samsung.com',
+      ctaText: 'Buy Now',
     },
     {
       adId: 'ad3',
@@ -49,6 +53,8 @@ const Earn = () => {
       coinReward: 15,
       imageUrl: 'https://images.unsplash.com/photo-1614680376573-df3480f0c6ff',
       type: 'video' as const,
+      websiteUrl: 'https://spotify.com',
+      ctaText: 'Subscribe',
     },
     {
       adId: 'ad4',
@@ -57,6 +63,8 @@ const Earn = () => {
       coinReward: 30,
       imageUrl: 'https://images.unsplash.com/photo-1560958089-b8a1929cea89',
       type: 'video' as const,
+      websiteUrl: 'https://tesla.com',
+      ctaText: 'Order Now',
     },
     {
       adId: 'ad5',
@@ -65,6 +73,8 @@ const Earn = () => {
       coinReward: 22,
       imageUrl: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8',
       type: 'video' as const,
+      websiteUrl: 'https://apple.com',
+      ctaText: 'Buy',
     },
     {
       adId: 'ad6',
@@ -73,6 +83,8 @@ const Earn = () => {
       coinReward: 18,
       imageUrl: 'https://images.unsplash.com/photo-1523474253046-8cd2748b5fd2',
       type: 'video' as const,
+      websiteUrl: 'https://amazon.com',
+      ctaText: 'Sign Up',
     },
   ];
   
@@ -84,6 +96,8 @@ const Earn = () => {
       coinReward: 10,
       imageUrl: 'https://images.unsplash.com/photo-1556906781-9a412961c28c',
       type: 'banner' as const,
+      websiteUrl: 'https://adidas.com',
+      ctaText: 'Shop Collection',
     },
     {
       adId: 'banner2',
@@ -92,6 +106,8 @@ const Earn = () => {
       coinReward: 8,
       imageUrl: 'https://images.unsplash.com/photo-1604326531970-fe6d2d7592b2',
       type: 'banner' as const,
+      websiteUrl: 'https://disneyplus.com',
+      ctaText: 'Start Streaming',
     },
     {
       adId: 'banner3',
@@ -100,6 +116,8 @@ const Earn = () => {
       coinReward: 12,
       imageUrl: 'https://images.unsplash.com/photo-1630990179426-6a65d97eba76',
       type: 'banner' as const,
+      websiteUrl: 'https://honda.com',
+      ctaText: 'Explore EVs',
     },
     {
       adId: 'banner4',
@@ -108,6 +126,8 @@ const Earn = () => {
       coinReward: 8,
       imageUrl: 'https://images.unsplash.com/photo-1574672280600-4accfa5b6f98',
       type: 'banner' as const,
+      websiteUrl: 'https://mastercard.com',
+      ctaText: 'Learn More',
     },
   ];
   
@@ -119,6 +139,8 @@ const Earn = () => {
       coinReward: 15,
       imageUrl: 'https://images.unsplash.com/photo-1539185441755-769473a23570',
       type: 'carousel' as const,
+      websiteUrl: 'https://newbalance.com',
+      ctaText: 'Shop Shoes',
     },
     {
       adId: 'carousel2',
@@ -127,6 +149,8 @@ const Earn = () => {
       coinReward: 12,
       imageUrl: 'https://images.unsplash.com/photo-1572635196237-14b3f281503f',
       type: 'carousel' as const,
+      websiteUrl: 'https://ray-ban.com',
+      ctaText: 'Shop Eyewear',
     },
     {
       adId: 'carousel3',
@@ -135,6 +159,8 @@ const Earn = () => {
       coinReward: 18,
       imageUrl: 'https://images.unsplash.com/photo-1534723452862-4c874018d8d9',
       type: 'carousel' as const,
+      websiteUrl: 'https://wholefoodsmarket.com',
+      ctaText: 'Shop Organic',
     },
   ];
   
