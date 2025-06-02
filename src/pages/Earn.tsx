@@ -1,7 +1,8 @@
-
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import NavBar from '@/components/NavBar';
 import AdCard from '@/components/AdCard';
+import BannerAdView from '@/components/BannerAdView';
+import CarouselAdView from '@/components/CarouselAdView';
 import { 
   Tabs, 
   TabsContent, 
@@ -15,6 +16,13 @@ import { useAuth } from '@/contexts/AuthContext';
 
 const Earn = () => {
   const { user } = useAuth();
+  const [activeAdView, setActiveAdView] = useState<{
+    type: 'banner' | 'carousel' | null;
+    ad: any | null;
+  }>({
+    type: null,
+    ad: null,
+  });
   
   // Sample ad data
   const videoAds = [
@@ -130,6 +138,20 @@ const Earn = () => {
     },
   ];
   
+  const handleAdClick = (adType: 'banner' | 'carousel', ad: any) => {
+    setActiveAdView({
+      type: adType,
+      ad,
+    });
+  };
+
+  const closeAdView = () => {
+    setActiveAdView({
+      type: null,
+      ad: null,
+    });
+  };
+  
   return (
     <div className="min-h-screen bg-cyber-dark">
       <NavBar />
@@ -198,7 +220,28 @@ const Earn = () => {
             <TabsContent value="banner" className="mt-0">
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                 {bannerAds.map((ad) => (
-                  <AdCard key={ad.adId} {...ad} />
+                  <div key={ad.adId} className="glossy-card backdrop-blur-lg bg-white/10 border border-white/20 rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
+                    <div className="relative">
+                      <img 
+                        src={ad.imageUrl} 
+                        alt={ad.title}
+                        className="w-full h-48 object-cover" 
+                      />
+                      <div className="absolute top-2 right-2 bg-neon-purple rounded-full px-2 py-1 text-xs text-white font-medium">
+                        +{ad.coinReward} coins
+                      </div>
+                    </div>
+                    <div className="p-4">
+                      <h3 className="font-bold text-lg text-white mb-1">{ad.title}</h3>
+                      <p className="text-gray-300 text-sm mb-4">{ad.description}</p>
+                      <Button 
+                        onClick={() => handleAdClick('banner', ad)}
+                        className="w-full bg-neon-purple hover:bg-neon-purple/90"
+                      >
+                        Watch & Earn
+                      </Button>
+                    </div>
+                  </div>
                 ))}
               </div>
               <div className="mt-8 text-center">
@@ -212,7 +255,28 @@ const Earn = () => {
             <TabsContent value="carousel" className="mt-0">
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                 {carouselAds.map((ad) => (
-                  <AdCard key={ad.adId} {...ad} />
+                  <div key={ad.adId} className="glossy-card backdrop-blur-lg bg-white/10 border border-white/20 rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
+                    <div className="relative">
+                      <img 
+                        src={ad.imageUrl} 
+                        alt={ad.title}
+                        className="w-full h-48 object-cover" 
+                      />
+                      <div className="absolute top-2 right-2 bg-neon-purple rounded-full px-2 py-1 text-xs text-white font-medium">
+                        +{ad.coinReward} coins
+                      </div>
+                    </div>
+                    <div className="p-4">
+                      <h3 className="font-bold text-lg text-white mb-1">{ad.title}</h3>
+                      <p className="text-gray-300 text-sm mb-4">{ad.description}</p>
+                      <Button 
+                        onClick={() => handleAdClick('carousel', ad)} 
+                        className="w-full bg-neon-purple hover:bg-neon-purple/90"
+                      >
+                        Swipe & Earn
+                      </Button>
+                    </div>
+                  </div>
                 ))}
               </div>
               <div className="mt-8 text-center">
@@ -265,6 +329,16 @@ const Earn = () => {
           </div>
         </div>
       </div>
+
+      {/* Banner Ad View Modal */}
+      {activeAdView.type === 'banner' && activeAdView.ad && (
+        <BannerAdView ad={activeAdView.ad} onClose={closeAdView} />
+      )}
+
+      {/* Carousel Ad View Modal */}
+      {activeAdView.type === 'carousel' && activeAdView.ad && (
+        <CarouselAdView ad={activeAdView.ad} onClose={closeAdView} />
+      )}
     </div>
   );
 };
