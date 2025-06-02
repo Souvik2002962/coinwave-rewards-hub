@@ -12,6 +12,7 @@ import {
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
+  CarouselApi,
 } from "@/components/ui/carousel";
 
 interface CarouselAdViewProps {
@@ -31,6 +32,7 @@ const CarouselAdView = ({ ad, onClose }: CarouselAdViewProps) => {
   const [viewedAll, setViewedAll] = useState(false);
   const [abandoned, setAbandoned] = useState(false);
   const [completed, setCompleted] = useState(false);
+  const [api, setApi] = useState<CarouselApi>();
 
   // Create a set of 3-5 slides based on the ad
   const totalSlides = Math.floor(Math.random() * 3) + 3; // 3 to 5 slides
@@ -46,6 +48,30 @@ const CarouselAdView = ({ ad, onClose }: CarouselAdViewProps) => {
 
   const [slideStates, setSlideStates] = useState(slides);
   
+  // Set up carousel API listener
+  useEffect(() => {
+    if (!api) {
+      return;
+    }
+
+    const onSelect = () => {
+      const current = api.selectedScrollSnap();
+      setCurrentSlide(current);
+      
+      // Mark the current slide as viewed
+      setSlideStates(prev => prev.map((slide, i) => 
+        i === current ? { ...slide, viewed: true } : slide
+      ));
+    };
+
+    api.on("select", onSelect);
+    onSelect(); // Call once to set initial state
+
+    return () => {
+      api.off("select", onSelect);
+    };
+  }, [api]);
+  
   // Track when all slides are viewed
   useEffect(() => {
     const allViewed = slideStates.every(slide => slide.viewed);
@@ -53,15 +79,6 @@ const CarouselAdView = ({ ad, onClose }: CarouselAdViewProps) => {
       setViewedAll(true);
     }
   }, [slideStates, viewedAll]);
-
-  const handleSlideChange = (index: number) => {
-    setCurrentSlide(index);
-    
-    // Mark the current slide as viewed
-    setSlideStates(prev => prev.map((slide, i) => 
-      i === index ? { ...slide, viewed: true } : slide
-    ));
-  };
 
   const handleCompletion = async () => {
     setCompleted(true);
@@ -135,7 +152,7 @@ const CarouselAdView = ({ ad, onClose }: CarouselAdViewProps) => {
             
             <Carousel
               className="w-full max-w-3xl"
-              onSelect={(index) => handleSlideChange(index)}
+              setApi={setApi}
             >
               <CarouselContent>
                 {slideStates.map((slide, index) => (
