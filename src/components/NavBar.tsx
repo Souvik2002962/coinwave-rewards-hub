@@ -27,7 +27,7 @@ const NavBar = () => {
   };
 
   return (
-    <nav className="fixed w-full top-0 z-50 glass-nav shadow-lg py-3 px-4 md:px-6">
+    <nav className="fixed top-0 left-0 right-0 w-full z-50 glass-nav shadow-lg py-3 px-4 md:px-6">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         <Link to="/" className="flex items-center space-x-2">
           <div className="h-10 w-10 rounded-full bg-gradient-to-r from-neon-purple to-neon-blue flex items-center justify-center">
@@ -38,7 +38,6 @@ const NavBar = () => {
           </span>
         </Link>
 
-        {/* Desktop Navigation */}
         <div className="hidden md:flex items-center space-x-8">
           <Link to="/" className="text-white hover:text-neon-purple transition-colors">Home</Link>
           <Link to="/earn" className="text-white hover:text-neon-purple transition-colors">Earn Coins</Link>
@@ -51,7 +50,6 @@ const NavBar = () => {
           </Link>
         </div>
 
-        {/* User Controls - Always Visible */}
         <div className="flex items-center space-x-2 md:space-x-4">
           {user && (
             <div className="neon-border px-3 py-1 rounded-full flex items-center">
@@ -126,7 +124,6 @@ const NavBar = () => {
             )}
           </div>
           
-          {/* Mobile Menu Button */}
           <Button 
             variant="ghost" 
             size="icon" 
@@ -138,7 +135,6 @@ const NavBar = () => {
         </div>
       </div>
 
-      {/* Mobile Menu Dropdown */}
       {mobileMenuOpen && (
         <div className="md:hidden glass-nav border-t border-neon-purple/30 mt-3 py-3 px-4 space-y-3">
           <Link to="/" className="block text-white hover:text-neon-purple py-2 transition-colors" onClick={toggleMobileMenu}>Home</Link>
