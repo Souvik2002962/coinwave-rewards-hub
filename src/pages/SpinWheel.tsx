@@ -36,16 +36,17 @@ const SpinWheel = () => {
 
     setIsSpinning(true);
     
-    // Random rotation between 1440 and 2880 degrees (4-8 full rotations)
-    const randomRotation = Math.floor(Math.random() * 1440) + 1440;
+    // Random rotation between 1800 and 3600 degrees (5-10 full rotations)
+    const randomRotation = Math.floor(Math.random() * 1800) + 1800;
     const newRotation = rotation + randomRotation;
     
     setRotation(newRotation);
 
     // Calculate which segment the wheel stopped on
-    const normalizedRotation = newRotation % 360;
+    // The wheel rotates clockwise, so we need to account for that
     const segmentAngle = 360 / segments.length;
-    const winningIndex = Math.floor((360 - normalizedRotation + segmentAngle / 2) / segmentAngle) % segments.length;
+    const normalizedRotation = (360 - (newRotation % 360)) % 360;
+    const winningIndex = Math.floor(normalizedRotation / segmentAngle) % segments.length;
     const wonCoins = segments[winningIndex].value;
 
     setTimeout(() => {
@@ -54,13 +55,13 @@ const SpinWheel = () => {
       
       if (wonCoins > 0) {
         toast({
-          title: "Congratulations!",
-          description: `You won ${wonCoins} coins!`,
+          title: t('spinWheel.congratulations'),
+          description: t('spinWheel.youWon', { amount: wonCoins }),
         });
       } else {
         toast({
-          title: "Better luck next time!",
-          description: "You didn't win any coins this time.",
+          title: t('spinWheel.betterLuck'),
+          description: t('spinWheel.noCoins'),
         });
       }
     }, 3000);
@@ -87,8 +88,8 @@ const SpinWheel = () => {
   const getTextPosition = (index: number) => {
     const segmentAngle = 360 / segments.length;
     const angle = (index * segmentAngle + segmentAngle / 2) * Math.PI / 180;
-    const x = 150 + 100 * Math.cos(angle);
-    const y = 150 + 100 * Math.sin(angle);
+    const x = 150 + 90 * Math.cos(angle);
+    const y = 150 + 90 * Math.sin(angle);
     return { x, y, angle: angle * 180 / Math.PI };
   };
 
@@ -104,13 +105,13 @@ const SpinWheel = () => {
             className="text-white hover:text-neon-purple mr-4"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Earn
+            {t('spinWheel.backToEarn')}
           </Button>
         </div>
 
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-white mb-2">{t('earn.spinWheel')}</h1>
-          <p className="text-gray-400">Try your luck once daily for a chance to win up to 800 coins!</p>
+          <p className="text-gray-400">{t('spinWheel.description')}</p>
         </div>
 
         <div className="flex flex-col items-center">
@@ -153,26 +154,24 @@ const SpinWheel = () => {
                     />
                     <text
                       x={getTextPosition(index).x}
-                      y={getTextPosition(index).y}
+                      y={getTextPosition(index).y - 5}
                       fill={segment.textColor}
-                      fontSize="14"
+                      fontSize="16"
                       fontWeight="bold"
                       textAnchor="middle"
                       dominantBaseline="middle"
-                      transform={`rotate(${getTextPosition(index).angle}, ${getTextPosition(index).x}, ${getTextPosition(index).y})`}
                     >
-                      {segment.value === 0 ? '0' : segment.value}
+                      {segment.value}
                     </text>
                     <text
                       x={getTextPosition(index).x}
-                      y={getTextPosition(index).y + 15}
+                      y={getTextPosition(index).y + 12}
                       fill={segment.textColor}
                       fontSize="10"
                       textAnchor="middle"
                       dominantBaseline="middle"
-                      transform={`rotate(${getTextPosition(index).angle}, ${getTextPosition(index).x}, ${getTextPosition(index).y + 15})`}
                     >
-                      Coins
+                      {t('common.coins')}
                     </text>
                   </g>
                 ))}
@@ -225,18 +224,18 @@ const SpinWheel = () => {
                 : 'bg-gradient-to-r from-neon-purple to-neon-blue hover:from-neon-blue hover:to-neon-purple'
             }`}
           >
-            {isSpinning ? 'SPINNING...' : hasSpunToday ? 'USED TODAY' : 'SPIN'}
+            {isSpinning ? t('spinWheel.spinning') : hasSpunToday ? t('spinWheel.usedToday') : t('spinWheel.spin')}
           </Button>
 
           {hasSpunToday && (
-            <p className="text-gray-400 mt-4">Come back tomorrow for another spin!</p>
+            <p className="text-gray-400 mt-4">{t('spinWheel.comeTomorrow')}</p>
           )}
 
           {/* User's current balance */}
           {user && (
             <div className="mt-8 neon-border px-6 py-3 rounded-full flex items-center">
               <Coins className="h-5 w-5 text-yellow-400 mr-2" />
-              <span className="text-white font-medium text-lg">{user.coinBalance} Coins</span>
+              <span className="text-white font-medium text-lg">{user.coinBalance} {t('common.coins')}</span>
             </div>
           )}
         </div>
