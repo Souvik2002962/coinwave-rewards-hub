@@ -27,7 +27,7 @@ const NavBar = () => {
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 w-full z-50 glass-nav shadow-lg py-3 px-4 md:px-6">
+    <nav className="fixed top-0 left-0 right-0 w-full z-50 glass-nav shadow-lg py-3 px-4 md:px-6" style={{ position: 'fixed' }}>
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         <Link to="/" className="flex items-center space-x-2">
           <div className="h-10 w-10 rounded-full bg-gradient-to-r from-neon-purple to-neon-blue flex items-center justify-center">
