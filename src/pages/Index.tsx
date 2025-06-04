@@ -81,11 +81,11 @@ const Index = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-cyber-dark pb-16">
+    <div className="min-h-screen bg-cyber-dark">
       <NavBar />
       
-      {/* Video Ad Hero Section */}
-      <section className="relative pt-20 pb-12 overflow-hidden">
+      {/* Video Ad Hero Section - Added pt-24 to account for fixed navbar */}
+      <section className="relative pt-24 pb-12 overflow-hidden">
         <div className="absolute -top-40 -right-40 w-96 h-96 bg-neon-purple/20 rounded-full blur-3xl"></div>
         <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-neon-blue/20 rounded-full blur-3xl"></div>
         
