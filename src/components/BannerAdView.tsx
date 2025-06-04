@@ -7,6 +7,7 @@ import { coinService } from '@/services/CoinService';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
+import Poll from '@/components/Poll';
 
 interface BannerAdViewProps {
   ad: {
@@ -26,7 +27,20 @@ const BannerAdView = ({ ad, onClose }: BannerAdViewProps) => {
   const [timeRemaining, setTimeRemaining] = useState(8); // 8 seconds to view
   const [completed, setCompleted] = useState(false);
   const [abandoned, setAbandoned] = useState(false);
+  const [showPoll, setShowPoll] = useState(false);
   const progressValue = ((8 - timeRemaining) / 8) * 100;
+
+  // Sample poll data for the ad
+  const pollData = {
+    question: `What interests you most about ${ad.title}?`,
+    options: [
+      { id: '1', text: 'Design & Style', votes: 45 },
+      { id: '2', text: 'Price & Value', votes: 32 },
+      { id: '3', text: 'Quality & Durability', votes: 28 },
+      { id: '4', text: 'Brand Reputation', votes: 19 }
+    ],
+    coinReward: 5
+  };
 
   // Timer effect
   useEffect(() => {
@@ -43,6 +57,7 @@ const BannerAdView = ({ ad, onClose }: BannerAdViewProps) => {
 
   const handleCompletion = async () => {
     setCompleted(true);
+    setShowPoll(true);
     
     if (user) {
       // Add reward to user's account
@@ -136,7 +151,7 @@ const BannerAdView = ({ ad, onClose }: BannerAdViewProps) => {
             </div>
           </>
         ) : completed ? (
-          <div className="text-center">
+          <div className="text-center max-w-2xl">
             <div className="text-7xl mb-4">✅</div>
             <div className="mb-4">
               <Badge className="bg-green-500 text-white px-4 py-2 text-lg font-bold mb-2">
@@ -149,6 +164,17 @@ const BannerAdView = ({ ad, onClose }: BannerAdViewProps) => {
             <p className="text-gray-300 mb-8">
               Thank you for viewing {ad.title}
             </p>
+            
+            {showPoll && (
+              <div className="mb-8">
+                <Poll 
+                  question={pollData.question}
+                  options={pollData.options}
+                  coinReward={pollData.coinReward}
+                />
+              </div>
+            )}
+            
             <div className="flex flex-col space-y-4">
               {ad.websiteUrl && (
                 <Button 
