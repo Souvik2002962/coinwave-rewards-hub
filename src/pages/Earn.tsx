@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import NavBar from '@/components/NavBar';
 import AdCard from '@/components/AdCard';
 import BannerAdView from '@/components/BannerAdView';
 import CarouselAdView from '@/components/CarouselAdView';
+import LoginModal from '@/components/LoginModal';
 import { 
   Tabs, 
   TabsContent, 
@@ -13,9 +15,13 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const Earn = () => {
   const { user } = useAuth();
+  const { t } = useLanguage();
+  const navigate = useNavigate();
+  const [showLoginModal, setShowLoginModal] = useState(false);
   const [activeAdView, setActiveAdView] = useState<{
     type: 'banner' | 'carousel' | null;
     ad: any | null;
@@ -177,6 +183,22 @@ const Earn = () => {
       ad: null,
     });
   };
+
+  const handleDailyCheckIn = () => {
+    if (!user) {
+      setShowLoginModal(true);
+      return;
+    }
+    // Handle daily check-in logic here
+  };
+
+  const handleSpinWheel = () => {
+    if (!user) {
+      setShowLoginModal(true);
+      return;
+    }
+    navigate('/spin-wheel');
+  };
   
   return (
     <div className="min-h-screen bg-cyber-dark">
@@ -185,8 +207,8 @@ const Earn = () => {
       <div className="container mx-auto px-4 pb-16 pt-28">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-white mb-2">Earn Coins</h1>
-            <p className="text-gray-400">Watch ads, complete tasks, and earn digital coins to spend on products</p>
+            <h1 className="text-3xl font-bold text-white mb-2">{t('earn.title')}</h1>
+            <p className="text-gray-400">{t('earn.description')}</p>
           </div>
           <div className="glossy-card px-4 py-2 rounded-lg mt-4 sm:mt-0 backdrop-blur-lg bg-white/10 border border-white/20">
             <div className="flex items-center">
@@ -315,19 +337,22 @@ const Earn = () => {
           </Tabs>
         </div>
         
-        {/* Daily Bonus Section */}
+        {/* Bonus Opportunities Section - Updated without Refer Friends */}
         <div className="mt-16">
           <h2 className="text-2xl font-bold text-white mb-6">Bonus Opportunities</h2>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="glossy-card backdrop-blur-lg bg-white/10 border border-white/20 p-6 rounded-lg">
               <div className="h-14 w-14 rounded-full bg-neon-purple/20 flex items-center justify-center mb-4">
                 <div className="coin w-8 h-8 text-lg">🎯</div>
               </div>
-              <h3 className="text-lg font-bold text-white mb-2">Daily Check-in</h3>
+              <h3 className="text-lg font-bold text-white mb-2">{t('earn.dailyCheckIn')}</h3>
               <p className="text-gray-400 mb-4">Login daily to build your streak and earn increasing rewards.</p>
-              <Button className="w-full bg-neon-purple hover:bg-neon-purple/90">
-                Claim 25 Coins
+              <Button 
+                onClick={handleDailyCheckIn}
+                className="w-full bg-neon-purple hover:bg-neon-purple/90"
+              >
+                {t('earn.claimCoins')}
               </Button>
             </div>
             
@@ -335,21 +360,13 @@ const Earn = () => {
               <div className="h-14 w-14 rounded-full bg-neon-purple/20 flex items-center justify-center mb-4">
                 <div className="coin w-8 h-8 text-lg">🎮</div>
               </div>
-              <h3 className="text-lg font-bold text-white mb-2">Spin the Wheel</h3>
-              <p className="text-gray-400 mb-4">Try your luck once daily for a chance to win up to 200 coins!</p>
-              <Button className="w-full bg-neon-purple hover:bg-neon-purple/90">
-                Spin & Win
-              </Button>
-            </div>
-            
-            <div className="glossy-card backdrop-blur-lg bg-white/10 border border-white/20 p-6 rounded-lg">
-              <div className="h-14 w-14 rounded-full bg-neon-purple/20 flex items-center justify-center mb-4">
-                <div className="coin w-8 h-8 text-lg">👥</div>
-              </div>
-              <h3 className="text-lg font-bold text-white mb-2">Refer Friends</h3>
-              <p className="text-gray-400 mb-4">Invite friends and earn 100 coins for each successful referral.</p>
-              <Button className="w-full bg-neon-purple hover:bg-neon-purple/90">
-                Get Referral Link
+              <h3 className="text-lg font-bold text-white mb-2">{t('earn.spinWheel')}</h3>
+              <p className="text-gray-400 mb-4">Try your luck once daily for a chance to win up to 800 coins!</p>
+              <Button 
+                onClick={handleSpinWheel}
+                className="w-full bg-neon-purple hover:bg-neon-purple/90"
+              >
+                {t('earn.spinWin')}
               </Button>
             </div>
           </div>
@@ -365,6 +382,13 @@ const Earn = () => {
       {activeAdView.type === 'carousel' && activeAdView.ad && (
         <CarouselAdView ad={activeAdView.ad} onClose={closeAdView} />
       )}
+
+      {/* Login Modal */}
+      <LoginModal 
+        isOpen={showLoginModal} 
+        onClose={() => setShowLoginModal(false)}
+        message="Please log in to claim your daily bonus and start earning coins!"
+      />
     </div>
   );
 };

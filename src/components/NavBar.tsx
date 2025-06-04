@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Coins, ShoppingCart, User, Bell, Menu, X, BriefcaseBusiness, LogOut } from 'lucide-react';
@@ -12,9 +13,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from '@/contexts/AuthContext';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useLanguage } from '@/contexts/LanguageContext';
+import LanguageSelector from './LanguageSelector';
 
 const NavBar = () => {
   const { user, logout } = useAuth();
+  const { t } = useLanguage();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [notificationCount, setNotificationCount] = useState(3);
   
@@ -39,14 +43,14 @@ const NavBar = () => {
         </Link>
 
         <div className="hidden md:flex items-center space-x-8">
-          <Link to="/" className="text-white hover:text-neon-purple transition-colors">Home</Link>
-          <Link to="/earn" className="text-white hover:text-neon-purple transition-colors">Earn Coins</Link>
-          <Link to="/store" className="text-white hover:text-neon-purple transition-colors">Shop</Link>
-          <Link to="/reviews" className="text-white hover:text-neon-purple transition-colors">Reviews</Link>
-          <Link to="/referral" className="text-white hover:text-neon-purple transition-colors">Refer & Earn</Link>
+          <Link to="/" className="text-white hover:text-neon-purple transition-colors">{t('nav.home')}</Link>
+          <Link to="/earn" className="text-white hover:text-neon-purple transition-colors">{t('nav.earnCoins')}</Link>
+          <Link to="/store" className="text-white hover:text-neon-purple transition-colors">{t('nav.shop')}</Link>
+          <Link to="/reviews" className="text-white hover:text-neon-purple transition-colors">{t('nav.reviews')}</Link>
+          <Link to="/referral" className="text-white hover:text-neon-purple transition-colors">{t('nav.referral')}</Link>
           <Link to="/become-advertiser" className="text-white hover:text-neon-purple transition-colors flex items-center">
             <BriefcaseBusiness className="h-4 w-4 mr-1" />
-            For Advertisers
+            {t('nav.forAdvertisers')}
           </Link>
         </div>
 
@@ -59,6 +63,8 @@ const NavBar = () => {
           )}
           
           <div className="hidden md:flex items-center space-x-2">
+            <LanguageSelector />
+            
             <Button variant="ghost" size="icon" className="text-white hover:text-neon-purple relative">
               <Bell className="h-5 w-5" />
               {notificationCount > 0 && (
@@ -137,15 +143,19 @@ const NavBar = () => {
 
       {mobileMenuOpen && (
         <div className="md:hidden glass-nav border-t border-neon-purple/30 mt-3 py-3 px-4 space-y-3">
-          <Link to="/" className="block text-white hover:text-neon-purple py-2 transition-colors" onClick={toggleMobileMenu}>Home</Link>
-          <Link to="/earn" className="block text-white hover:text-neon-purple py-2 transition-colors" onClick={toggleMobileMenu}>Earn Coins</Link>
-          <Link to="/store" className="block text-white hover:text-neon-purple py-2 transition-colors" onClick={toggleMobileMenu}>Shop</Link>
-          <Link to="/reviews" className="block text-white hover:text-neon-purple py-2 transition-colors" onClick={toggleMobileMenu}>Reviews</Link>
-          <Link to="/referral" className="block text-white hover:text-neon-purple py-2 transition-colors" onClick={toggleMobileMenu}>Refer & Earn</Link>
+          <Link to="/" className="block text-white hover:text-neon-purple py-2 transition-colors" onClick={toggleMobileMenu}>{t('nav.home')}</Link>
+          <Link to="/earn" className="block text-white hover:text-neon-purple py-2 transition-colors" onClick={toggleMobileMenu}>{t('nav.earnCoins')}</Link>
+          <Link to="/store" className="block text-white hover:text-neon-purple py-2 transition-colors" onClick={toggleMobileMenu}>{t('nav.shop')}</Link>
+          <Link to="/reviews" className="block text-white hover:text-neon-purple py-2 transition-colors" onClick={toggleMobileMenu}>{t('nav.reviews')}</Link>
+          <Link to="/referral" className="block text-white hover:text-neon-purple py-2 transition-colors" onClick={toggleMobileMenu}>{t('nav.referral')}</Link>
           <Link to="/become-advertiser" className="block text-white hover:text-neon-purple py-2 transition-colors flex items-center" onClick={toggleMobileMenu}>
             <BriefcaseBusiness className="h-4 w-4 mr-1" />
-            For Advertisers
+            {t('nav.forAdvertisers')}
           </Link>
+          
+          <div className="py-2">
+            <LanguageSelector />
+          </div>
           
           {user ? (
             <>
