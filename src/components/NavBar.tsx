@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Coins, ShoppingCart, User, Bell, Menu, X, BriefcaseBusiness, LogOut } from 'lucide-react';
@@ -41,13 +42,14 @@ const NavBar = () => {
           </span>
         </Link>
 
-        <div className="hidden lg:flex items-center space-x-4">
-          <Link to="/" className="text-white hover:text-neon-purple transition-colors text-sm font-medium">{t('nav.home')}</Link>
-          <Link to="/earn" className="text-white hover:text-neon-purple transition-colors text-sm font-medium">{t('nav.earnCoins')}</Link>
-          <Link to="/store" className="text-white hover:text-neon-purple transition-colors text-sm font-medium">{t('nav.shop')}</Link>
-          <Link to="/reviews" className="text-white hover:text-neon-purple transition-colors text-sm font-medium">{t('nav.reviews')}</Link>
-          <Link to="/referral" className="text-white hover:text-neon-purple transition-colors text-sm font-medium">{t('nav.referral')}</Link>
-          <Link to="/become-advertiser" className="text-white hover:text-neon-purple transition-colors flex items-center text-sm font-medium">
+        {/* Desktop Navigation Links */}
+        <div className="hidden xl:flex items-center space-x-3">
+          <Link to="/" className="text-white hover:text-neon-purple transition-colors text-xs font-medium px-2 py-1">{t('nav.home')}</Link>
+          <Link to="/earn" className="text-white hover:text-neon-purple transition-colors text-xs font-medium px-2 py-1">{t('nav.earnCoins')}</Link>
+          <Link to="/store" className="text-white hover:text-neon-purple transition-colors text-xs font-medium px-2 py-1">{t('nav.shop')}</Link>
+          <Link to="/reviews" className="text-white hover:text-neon-purple transition-colors text-xs font-medium px-2 py-1">{t('nav.reviews')}</Link>
+          <Link to="/referral" className="text-white hover:text-neon-purple transition-colors text-xs font-medium px-2 py-1">{t('nav.referral')}</Link>
+          <Link to="/become-advertiser" className="text-white hover:text-neon-purple transition-colors flex items-center text-xs font-medium px-2 py-1">
             <BriefcaseBusiness className="h-3 w-3 mr-1" />
             {t('nav.forAdvertisers')}
           </Link>
@@ -62,28 +64,28 @@ const NavBar = () => {
           )}
           
           <div className="hidden md:flex items-center space-x-1">
-            <div className="scale-75">
+            <div className="scale-50">
               <LanguageSelector />
             </div>
             
-            <Button variant="ghost" size="icon" className="text-white hover:text-neon-purple relative h-8 w-8">
-              <Bell className="h-4 w-4" />
+            <Button variant="ghost" size="icon" className="text-white hover:text-neon-purple relative h-6 w-6">
+              <Bell className="h-3 w-3" />
               {notificationCount > 0 && (
-                <span className="absolute -top-1 -right-1 h-3 w-3 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 h-2 w-2 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
                   {notificationCount}
                 </span>
               )}
             </Button>
             
-            <Button variant="ghost" size="icon" className="text-white hover:text-neon-purple h-8 w-8">
-              <ShoppingCart className="h-4 w-4" />
+            <Button variant="ghost" size="icon" className="text-white hover:text-neon-purple h-6 w-6">
+              <ShoppingCart className="h-3 w-3" />
             </Button>
             
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" className="text-white hover:text-neon-purple h-8 w-8">
-                    <Avatar className="h-6 w-6">
+                  <Button variant="ghost" size="icon" className="text-white hover:text-neon-purple h-6 w-6">
+                    <Avatar className="h-5 w-5">
                       {user.profileImage ? (
                         <AvatarImage src={user.profileImage} />
                       ) : (
@@ -124,7 +126,7 @@ const NavBar = () => {
               </DropdownMenu>
             ) : (
               <Link to="/login">
-                <Button className="bg-neon-purple hover:bg-neon-purple/90 text-xs px-3 py-1 h-8">
+                <Button className="bg-neon-purple hover:bg-neon-purple/90 text-xs px-2 py-1 h-6">
                   Sign In
                 </Button>
               </Link>
@@ -134,7 +136,7 @@ const NavBar = () => {
           <Button 
             variant="ghost" 
             size="icon" 
-            className="md:hidden text-white hover:text-neon-purple h-8 w-8"
+            className="xl:hidden text-white hover:text-neon-purple h-8 w-8"
             onClick={toggleMobileMenu}
           >
             {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -143,7 +145,7 @@ const NavBar = () => {
       </div>
 
       {mobileMenuOpen && (
-        <div className="md:hidden glass-nav border-t border-neon-purple/30 mt-3 py-3 px-4 space-y-3">
+        <div className="xl:hidden glass-nav border-t border-neon-purple/30 mt-3 py-3 px-4 space-y-3">
           <Link to="/" className="block text-white hover:text-neon-purple py-2 transition-colors" onClick={toggleMobileMenu}>{t('nav.home')}</Link>
           <Link to="/earn" className="block text-white hover:text-neon-purple py-2 transition-colors" onClick={toggleMobileMenu}>{t('nav.earnCoins')}</Link>
           <Link to="/store" className="block text-white hover:text-neon-purple py-2 transition-colors" onClick={toggleMobileMenu}>{t('nav.shop')}</Link>
