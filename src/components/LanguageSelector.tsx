@@ -33,10 +33,10 @@ const LanguageSelector = () => {
 
   return (
     <Select value={language} onValueChange={(value: Language) => setLanguage(value)}>
-      <SelectTrigger className="w-[140px] bg-transparent border-white/20 text-white">
-        <div className="flex items-center space-x-2">
-          <Globe className="h-4 w-4" />
-          <span className="text-sm">{currentLanguage?.flag}</span>
+      <SelectTrigger className="w-[100px] h-8 bg-transparent border-white/20 text-white text-xs">
+        <div className="flex items-center space-x-1">
+          <Globe className="h-3 w-3" />
+          <span className="text-xs">{currentLanguage?.flag}</span>
         </div>
       </SelectTrigger>
       <SelectContent className="bg-cyber-dark border-neon-purple">
@@ -44,7 +44,7 @@ const LanguageSelector = () => {
           <SelectItem 
             key={lang.code} 
             value={lang.code}
-            className="text-white hover:bg-neon-purple/20 cursor-pointer"
+            className="text-white hover:bg-neon-purple/20 cursor-pointer text-xs"
           >
             <div className="flex items-center space-x-2">
               <span>{lang.flag}</span>

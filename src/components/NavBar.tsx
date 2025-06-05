@@ -31,62 +31,64 @@ const NavBar = () => {
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 w-full z-50 glass-nav shadow-lg py-3 px-4 md:px-6" style={{ position: 'fixed' }}>
+    <nav className="fixed top-0 left-0 right-0 w-full z-50 glass-nav shadow-lg py-2 px-3 md:px-4" style={{ position: 'fixed' }}>
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         <Link to="/" className="flex items-center space-x-2">
-          <div className="h-10 w-10 rounded-full bg-gradient-to-r from-neon-purple to-neon-blue flex items-center justify-center">
-            <Coins className="h-6 w-6 text-white" />
+          <div className="h-8 w-8 md:h-10 md:w-10 rounded-full bg-gradient-to-r from-neon-purple to-neon-blue flex items-center justify-center">
+            <Coins className="h-4 w-4 md:h-6 md:w-6 text-white" />
           </div>
-          <span className="font-bold text-xl md:text-2xl text-white">
+          <span className="font-bold text-lg md:text-2xl text-white">
             Coin<span className="text-neon-purple">Cart</span>
           </span>
         </Link>
 
-        <div className="hidden md:flex items-center space-x-8">
-          <Link to="/" className="text-white hover:text-neon-purple transition-colors">{t('nav.home')}</Link>
-          <Link to="/earn" className="text-white hover:text-neon-purple transition-colors">{t('nav.earnCoins')}</Link>
-          <Link to="/store" className="text-white hover:text-neon-purple transition-colors">{t('nav.shop')}</Link>
-          <Link to="/reviews" className="text-white hover:text-neon-purple transition-colors">{t('nav.reviews')}</Link>
-          <Link to="/referral" className="text-white hover:text-neon-purple transition-colors">{t('nav.referral')}</Link>
-          <Link to="/become-advertiser" className="text-white hover:text-neon-purple transition-colors flex items-center">
-            <BriefcaseBusiness className="h-4 w-4 mr-1" />
+        <div className="hidden lg:flex items-center space-x-6">
+          <Link to="/" className="text-white hover:text-neon-purple transition-colors text-sm">{t('nav.home')}</Link>
+          <Link to="/earn" className="text-white hover:text-neon-purple transition-colors text-sm">{t('nav.earnCoins')}</Link>
+          <Link to="/store" className="text-white hover:text-neon-purple transition-colors text-sm">{t('nav.shop')}</Link>
+          <Link to="/reviews" className="text-white hover:text-neon-purple transition-colors text-sm">{t('nav.reviews')}</Link>
+          <Link to="/referral" className="text-white hover:text-neon-purple transition-colors text-sm">{t('nav.referral')}</Link>
+          <Link to="/become-advertiser" className="text-white hover:text-neon-purple transition-colors flex items-center text-sm">
+            <BriefcaseBusiness className="h-3 w-3 mr-1" />
             {t('nav.forAdvertisers')}
           </Link>
         </div>
 
-        <div className="flex items-center space-x-2 md:space-x-4">
+        <div className="flex items-center space-x-1 md:space-x-2">
           {user && (
-            <div className="neon-border px-3 py-1 rounded-full flex items-center">
-              <Coins className="h-4 w-4 text-yellow-400 mr-1" />
-              <span className="text-white font-medium">{user.coinBalance}</span>
+            <div className="neon-border px-2 py-1 rounded-full flex items-center">
+              <Coins className="h-3 w-3 md:h-4 md:w-4 text-yellow-400 mr-1" />
+              <span className="text-white font-medium text-xs md:text-sm">{user.coinBalance}</span>
             </div>
           )}
           
-          <div className="hidden md:flex items-center space-x-2">
-            <LanguageSelector />
+          <div className="hidden md:flex items-center space-x-1">
+            <div className="scale-75">
+              <LanguageSelector />
+            </div>
             
-            <Button variant="ghost" size="icon" className="text-white hover:text-neon-purple relative">
-              <Bell className="h-5 w-5" />
+            <Button variant="ghost" size="icon" className="text-white hover:text-neon-purple relative h-8 w-8">
+              <Bell className="h-4 w-4" />
               {notificationCount > 0 && (
-                <span className="absolute top-0 right-0 h-4 w-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 h-3 w-3 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
                   {notificationCount}
                 </span>
               )}
             </Button>
             
-            <Button variant="ghost" size="icon" className="text-white hover:text-neon-purple">
-              <ShoppingCart className="h-5 w-5" />
+            <Button variant="ghost" size="icon" className="text-white hover:text-neon-purple h-8 w-8">
+              <ShoppingCart className="h-4 w-4" />
             </Button>
             
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" className="text-white hover:text-neon-purple">
-                    <Avatar className="h-8 w-8">
+                  <Button variant="ghost" size="icon" className="text-white hover:text-neon-purple h-8 w-8">
+                    <Avatar className="h-6 w-6">
                       {user.profileImage ? (
                         <AvatarImage src={user.profileImage} />
                       ) : (
-                        <AvatarFallback className="bg-neon-purple/20 text-neon-purple">
+                        <AvatarFallback className="bg-neon-purple/20 text-neon-purple text-xs">
                           {user.fullName.substring(0, 2).toUpperCase()}
                         </AvatarFallback>
                       )}
@@ -123,7 +125,7 @@ const NavBar = () => {
               </DropdownMenu>
             ) : (
               <Link to="/login">
-                <Button className="bg-neon-purple hover:bg-neon-purple/90">
+                <Button className="bg-neon-purple hover:bg-neon-purple/90 text-xs px-3 py-1 h-8">
                   Sign In
                 </Button>
               </Link>
@@ -133,10 +135,10 @@ const NavBar = () => {
           <Button 
             variant="ghost" 
             size="icon" 
-            className="md:hidden text-white hover:text-neon-purple"
+            className="md:hidden text-white hover:text-neon-purple h-8 w-8"
             onClick={toggleMobileMenu}
           >
-            {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </Button>
         </div>
       </div>
