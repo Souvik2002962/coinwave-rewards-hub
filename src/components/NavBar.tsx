@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Coins, ShoppingCart, User, Bell, Menu, X, BriefcaseBusiness, LogOut } from 'lucide-react';
@@ -42,13 +41,13 @@ const NavBar = () => {
           </span>
         </Link>
 
-        <div className="hidden lg:flex items-center space-x-6">
-          <Link to="/" className="text-white hover:text-neon-purple transition-colors text-sm">{t('nav.home')}</Link>
-          <Link to="/earn" className="text-white hover:text-neon-purple transition-colors text-sm">{t('nav.earnCoins')}</Link>
-          <Link to="/store" className="text-white hover:text-neon-purple transition-colors text-sm">{t('nav.shop')}</Link>
-          <Link to="/reviews" className="text-white hover:text-neon-purple transition-colors text-sm">{t('nav.reviews')}</Link>
-          <Link to="/referral" className="text-white hover:text-neon-purple transition-colors text-sm">{t('nav.referral')}</Link>
-          <Link to="/become-advertiser" className="text-white hover:text-neon-purple transition-colors flex items-center text-sm">
+        <div className="hidden lg:flex items-center space-x-4">
+          <Link to="/" className="text-white hover:text-neon-purple transition-colors text-sm font-medium">{t('nav.home')}</Link>
+          <Link to="/earn" className="text-white hover:text-neon-purple transition-colors text-sm font-medium">{t('nav.earnCoins')}</Link>
+          <Link to="/store" className="text-white hover:text-neon-purple transition-colors text-sm font-medium">{t('nav.shop')}</Link>
+          <Link to="/reviews" className="text-white hover:text-neon-purple transition-colors text-sm font-medium">{t('nav.reviews')}</Link>
+          <Link to="/referral" className="text-white hover:text-neon-purple transition-colors text-sm font-medium">{t('nav.referral')}</Link>
+          <Link to="/become-advertiser" className="text-white hover:text-neon-purple transition-colors flex items-center text-sm font-medium">
             <BriefcaseBusiness className="h-3 w-3 mr-1" />
             {t('nav.forAdvertisers')}
           </Link>
