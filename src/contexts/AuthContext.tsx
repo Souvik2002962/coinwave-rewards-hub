@@ -1,4 +1,3 @@
-
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from "sonner";
@@ -16,6 +15,8 @@ export interface User {
   xpProgress: number;
   referralCode: string;
   joinDate: string;
+  isVerified: boolean;
+  profileCompleted: boolean;
 }
 
 // Define AuthContext type
@@ -45,6 +46,8 @@ const sampleUser: User = {
   xpProgress: 75,
   referralCode: "JOHND21",
   joinDate: "March 2023",
+  isVerified: true,
+  profileCompleted: true,
 };
 
 // Create the provider component
@@ -116,11 +119,13 @@ export const AuthProvider: React.FC<{children: React.ReactNode}> = ({ children }
         xpProgress: 0,
         referralCode: username.substring(0, 5).toUpperCase() + Math.floor(Math.random() * 100),
         joinDate: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long' }),
+        isVerified: true, // Auto-verify upon signup
+        profileCompleted: false, // Profile starts as incomplete
       };
       
       setUser(newUser);
       localStorage.setItem('user', JSON.stringify(newUser));
-      toast.success("Account created successfully!");
+      toast.success("Account created successfully! You are now verified.");
       navigate('/');
     } catch (error) {
       toast.error("Signup failed. Please try again.");
