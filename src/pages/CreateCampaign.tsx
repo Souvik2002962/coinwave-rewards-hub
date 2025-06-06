@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -50,6 +49,7 @@ import {
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import { campaignService } from '@/services/CampaignService';
 
 const campaignObjectives = [
   { label: "Product Sales", value: "product_sales" },
@@ -218,17 +218,63 @@ const CreateCampaign = () => {
     return coinPayout * maxDailyViews * (dayDiff || 1);
   };
 
-  const onSubmit = (data: FormValues) => {
+  const onSubmit = async (data: FormValues) => {
     console.log("Campaign created:", data);
-    toast.success("Campaign created successfully!");
-    navigate("/advertiser-dashboard");
+    
+    try {
+      // Create campaign using the service
+      const campaignData = {
+        name: data.campaignName,
+        description: `${data.campaignObjective} campaign`,
+        status: 'active' as const,
+        type: data.adFormat === 'video' ? 'video' as const : 'image' as const,
+        budget: calculateTotalBudget(),
+        start_date: data.startDate.toISOString(),
+        end_date: data.endDate.toISOString()
+      };
+
+      const result = await campaignService.createCampaign(campaignData);
+      
+      if (result) {
+        toast.success("Campaign launched successfully!");
+        navigate("/advertiser-dashboard");
+      } else {
+        toast.error("Failed to launch campaign. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error launching campaign:", error);
+      toast.error("An error occurred while launching the campaign.");
+    }
   };
 
-  const saveAsDraft = () => {
+  const saveAsDraft = async () => {
     const data = form.getValues();
     console.log("Campaign saved as draft:", data);
-    toast.success("Campaign saved as draft!");
-    navigate("/advertiser-dashboard");
+    
+    try {
+      // Create campaign as draft using the service
+      const campaignData = {
+        name: data.campaignName || "Untitled Campaign",
+        description: `${data.campaignObjective || 'Draft'} campaign`,
+        status: 'draft' as const,
+        type: data.adFormat === 'video' ? 'video' as const : 'image' as const,
+        budget: calculateTotalBudget(),
+        start_date: data.startDate?.toISOString(),
+        end_date: data.endDate?.toISOString()
+      };
+
+      const result = await campaignService.createCampaign(campaignData);
+      
+      if (result) {
+        toast.success("Campaign saved as draft!");
+        navigate("/advertiser-dashboard");
+      } else {
+        toast.error("Failed to save campaign. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error saving campaign:", error);
+      toast.error("An error occurred while saving the campaign.");
+    }
   };
 
   const getButtonLabel = (value: string) => {
@@ -455,25 +501,32 @@ const CreateCampaign = () => {
                       <FormControl>
                         <RadioGroup
                           onValueChange={field.onChange}
-                          defaultValue={field.value}
+                          value={field.value}
                           className="grid grid-cols-1 md:grid-cols-3 gap-4"
                         >
                           {adFormats.map((format) => {
                             const Icon = format.icon;
                             return (
-                              <FormItem key={format.value} className={`neon-border rounded-md p-4 space-y-2 cursor-pointer ${field.value === format.value ? 'bg-neon-purple/10 border-neon-purple' : ''}`}>
+                              <FormItem key={format.value}>
                                 <FormControl>
-                                  <div className="flex flex-col items-center space-y-2">
-                                    <Icon className="h-8 w-8 text-neon-purple" />
-                                    <RadioGroupItem value={format.value} id={format.value} className="sr-only" />
-                                    <FormLabel htmlFor={format.value} className="cursor-pointer text-center font-medium">
-                                      {format.label}
+                                  <div className="relative">
+                                    <RadioGroupItem 
+                                      value={format.value} 
+                                      id={format.value} 
+                                      className="peer sr-only"
+                                    />
+                                    <FormLabel 
+                                      htmlFor={format.value} 
+                                      className="flex flex-col items-center justify-center rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer space-y-2"
+                                    >
+                                      <Icon className="h-8 w-8 text-neon-purple" />
+                                      <span className="font-medium">{format.label}</span>
+                                      <FormDescription className="text-center text-xs">
+                                        {format.value === 'video' && 'MP4, up to 30 sec'}
+                                        {format.value === 'image' && 'JPG, PNG, 1:1 or 16:9'}
+                                        {format.value === 'survey' && 'Multiple-choice or yes/no'}
+                                      </FormDescription>
                                     </FormLabel>
-                                    <FormDescription className="text-center text-xs">
-                                      {format.value === 'video' && 'MP4, up to 30 sec'}
-                                      {format.value === 'image' && 'JPG, PNG, 1:1 or 16:9'}
-                                      {format.value === 'survey' && 'Multiple-choice or yes/no'}
-                                    </FormDescription>
                                   </div>
                                 </FormControl>
                               </FormItem>
@@ -652,7 +705,7 @@ const CreateCampaign = () => {
                           <FormLabel>Coin Reward for Poll Participation</FormLabel>
                           <Select 
                             onValueChange={field.onChange} 
-                            defaultValue={field.value}
+                            value={field.value}
                           >
                             <FormControl>
                               <SelectTrigger>
@@ -873,7 +926,7 @@ const CreateCampaign = () => {
                       <FormLabel>Coin payout per view</FormLabel>
                       <Select 
                         onValueChange={field.onChange} 
-                        defaultValue={field.value}
+                        value={field.value}
                       >
                         <FormControl>
                           <SelectTrigger>
@@ -903,8 +956,9 @@ const CreateCampaign = () => {
                         <Input 
                           type="number"
                           min="1"
-                          {...field}
+                          value={field.value}
                           onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                          placeholder="Enter maximum daily views"
                         />
                       </FormControl>
                       <FormMessage />
