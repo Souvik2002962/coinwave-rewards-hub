@@ -28,6 +28,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { BriefcaseBusiness, Upload, Building2, Link as LinkIcon, User, Mail, Phone, BarChart, Video, Image as ImageIcon, LayoutList, Brain } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import { useCoinConversion } from '@/hooks/useCoinConversion';
 
 const businessCategories = [
   { label: "Fashion", value: "fashion" },
@@ -92,6 +93,7 @@ const BecomeAdvertiser = () => {
   });
 
   const [brandLogoPreview, setBrandLogoPreview] = React.useState<string | null>(null);
+  const { setCoins, convertToINR } = useCoinConversion();
   
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -109,6 +111,13 @@ const BecomeAdvertiser = () => {
     if (value < 5000) return "₹1,000 - ₹5,000";
     if (value < 25000) return "₹5,001 - ₹25,000";
     return "₹25,001 - ₹1L+";
+  };
+
+  const getBudgetCoins = (value: number) => {
+    // Convert budget to approximate coins (assuming 1 rupee = 100 coins)
+    const coins = value * 100;
+    setCoins(coins);
+    return coins.toLocaleString() + " coins";
   };
 
   const onSubmit = (data: FormValues) => {
@@ -354,8 +363,13 @@ const BecomeAdvertiser = () => {
                             defaultValue={[field.value]}
                             onValueChange={(value) => field.onChange(value[0])}
                           />
-                          <div className="text-center text-sm font-medium text-neon-purple">
-                            {getBudgetDisplay(field.value)}
+                          <div className="text-center space-y-1">
+                            <div className="text-sm font-medium text-neon-purple">
+                              {getBudgetDisplay(field.value)}
+                            </div>
+                            <div className="text-xs text-muted-foreground">
+                              ≈ {getBudgetCoins(field.value)}
+                            </div>
                           </div>
                         </div>
                       </FormControl>
@@ -377,15 +391,22 @@ const BecomeAdvertiser = () => {
                           className="grid grid-cols-2 md:grid-cols-4 gap-4"
                         >
                           {adTypes.map((type) => (
-                            <FormItem key={type.value} className="neon-border rounded-md p-4 space-y-2 cursor-pointer">
+                            <FormItem key={type.value}>
                               <FormControl>
-                                <div className="flex flex-col items-center space-y-2">
-                                  {type.value === 'video' && <Video className="h-8 w-8 text-neon-purple" />}
-                                  {type.value === 'image' && <ImageIcon className="h-8 w-8 text-neon-purple" />}
-                                  {type.value === 'banner' && <LayoutList className="h-8 w-8 text-neon-purple" />}
-                                  {type.value === 'interactive' && <Brain className="h-8 w-8 text-neon-purple" />}
-                                  <RadioGroupItem value={type.value} id={type.value} className="sr-only" />
-                                  <FormLabel htmlFor={type.value} className="cursor-pointer text-center font-medium">
+                                <div className="relative">
+                                  <RadioGroupItem 
+                                    value={type.value} 
+                                    id={type.value} 
+                                    className="peer sr-only"
+                                  />
+                                  <FormLabel 
+                                    htmlFor={type.value} 
+                                    className="flex flex-col items-center justify-center rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer"
+                                  >
+                                    {type.value === 'video' && <Video className="mb-3 h-6 w-6" />}
+                                    {type.value === 'image' && <ImageIcon className="mb-3 h-6 w-6" />}
+                                    {type.value === 'banner' && <LayoutList className="mb-3 h-6 w-6" />}
+                                    {type.value === 'interactive' && <Brain className="mb-3 h-6 w-6" />}
                                     {type.label}
                                   </FormLabel>
                                 </div>
