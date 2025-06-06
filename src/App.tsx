@@ -1,22 +1,21 @@
+
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Home from '@/pages/Home';
-import Login from '@/pages/Login';
-import Register from '@/pages/Register';
-import Pricing from '@/pages/Pricing';
-import Contact from '@/pages/Contact';
-import Dashboard from '@/pages/Dashboard';
-import Profile from '@/pages/Profile';
+import Index from '@/pages/Index';
+import LoginPage from '@/pages/LoginPage';
+import SignupPage from '@/pages/SignupPage';
+import Store from '@/pages/Store';
+import Earn from '@/pages/Earn';
+import ProfilePage from '@/pages/ProfilePage';
+import AdvertiserDashboard from '@/pages/AdvertiserDashboard';
+import CreateCampaign from '@/pages/CreateCampaign';
 import AdminDashboard from '@/pages/admin/AdminDashboard';
 import AdminUsers from '@/pages/admin/AdminUsers';
 import AdminAdvertisers from '@/pages/admin/AdminAdvertisers';
-import AdminCampaigns from '@/pages/admin/AdminCampaigns';
 import NotFound from '@/pages/NotFound';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { LanguageProvider } from '@/contexts/LanguageContext';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import AdvertiserDashboard from '@/pages/AdvertiserDashboard';
-import CreateCampaign from '@/pages/CreateCampaign';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { Toaster } from 'sonner';
 import AdminPolls from '@/pages/admin/AdminPolls';
@@ -30,27 +29,25 @@ function App() {
         <QueryClientProvider client={queryClient}>
           <BrowserRouter>
             <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/pricing" element={<Pricing />} />
-              <Route path="/contact" element={<Contact />} />
+              <Route path="/" element={<Index />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<SignupPage />} />
+              <Route path="/store" element={<Store />} />
+              <Route path="/earn" element={<Earn />} />
               
-              <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-              <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+              <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
               
               {/* Admin Routes */}
               <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
               <Route path="/admin/users" element={<ProtectedRoute><AdminUsers /></ProtectedRoute>} />
               <Route path="/admin/advertisers" element={<ProtectedRoute><AdminAdvertisers /></ProtectedRoute>} />
-              <Route path="/admin/campaigns" element={<ProtectedRoute><AdminCampaigns /></ProtectedRoute>} />
+              <Route path="/admin/polls" element={<ProtectedRoute><AdminPolls /></ProtectedRoute>} />
 
               {/* Advertiser Routes */}
               <Route path="/advertiser-dashboard" element={<ProtectedRoute><AdvertiserDashboard /></ProtectedRoute>} />
               <Route path="/create-campaign" element={<ProtectedRoute><CreateCampaign /></ProtectedRoute>} />
               
               <Route path="*" element={<NotFound />} />
-              <Route path="/admin/polls" element={<ProtectedRoute><AdminPolls /></ProtectedRoute>} />
             </Routes>
             <Toaster />
           </BrowserRouter>

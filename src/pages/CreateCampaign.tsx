@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -44,7 +45,8 @@ import {
   Smartphone,
   Tablet,
   Monitor,
-  Coins
+  Coins,
+  X
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
