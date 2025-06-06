@@ -6,7 +6,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Search, Eye, Edit, Users } from 'lucide-react';
+import { Search, Eye, Edit, Users, BarChart3 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const mockAdvertisers = [
   {
@@ -42,6 +43,8 @@ const mockAdvertisers = [
 ];
 
 export default function AdminAdvertisers() {
+  const navigate = useNavigate();
+
   return (
     <AdminLayout>
       <div className="space-y-6">
@@ -52,10 +55,19 @@ export default function AdminAdvertisers() {
               Manage all advertisers and their campaigns
             </p>
           </div>
-          <Button>
-            <Users className="mr-2 h-4 w-4" />
-            Add Advertiser
-          </Button>
+          <div className="flex gap-2">
+            <Button 
+              variant="outline"
+              onClick={() => navigate("/admin/polls")}
+            >
+              <BarChart3 className="mr-2 h-4 w-4" />
+              View Polls
+            </Button>
+            <Button>
+              <Users className="mr-2 h-4 w-4" />
+              Add Advertiser
+            </Button>
+          </div>
         </div>
 
         <Card>

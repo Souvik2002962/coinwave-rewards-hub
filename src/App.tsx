@@ -1,125 +1,63 @@
-
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Index from "./pages/Index";
-import NotFound from "./pages/NotFound";
-import Earn from "./pages/Earn";
-import SpinWheel from "./pages/SpinWheel";
-import Store from "./pages/Store";
-import ProductDetail from "./pages/ProductDetail";
-import Checkout from "./pages/Checkout";
-import OrderSuccess from "./pages/OrderSuccess";
-import Orders from "./pages/Orders";
-import Referral from "./pages/Referral";
-import Reviews from "./pages/Reviews";
-import BecomeAdvertiser from "./pages/BecomeAdvertiser";
-import CreateCampaign from "./pages/CreateCampaign";
-import AdvertiserDashboard from "./pages/AdvertiserDashboard";
-import ProfilePage from "./pages/ProfilePage";
-import LoginPage from "./pages/LoginPage";
-import SignupPage from "./pages/SignupPage";
-import { AuthProvider } from "./contexts/AuthContext";
-import { LanguageProvider } from "./contexts/LanguageContext";
-import ProtectedRoute from "./components/ProtectedRoute";
-
-// Admin Pages
-import AdminDashboard from "./pages/admin/AdminDashboard";
-import AdminUsers from "./pages/admin/AdminUsers";
-import AdminProducts from "./pages/admin/AdminProducts";
-import AdminOrders from "./pages/admin/AdminOrders";
-import AdminAds from "./pages/admin/AdminAds";
-import AdminAdvertisers from "./pages/admin/AdminAdvertisers";
-import AdminPayments from "./pages/admin/AdminPayments";
-import AdminCoins from "./pages/admin/AdminCoins";
-import AdminReviews from "./pages/admin/AdminReviews";
-import AdminNotifications from "./pages/admin/AdminNotifications";
-import AdminTeamMembers from "./pages/admin/AdminTeamMembers";
-import AdminSupport from "./pages/admin/AdminSupport";
-import AdminSettings from "./pages/admin/AdminSettings";
-import AdminCartWishlist from "./pages/admin/AdminCartWishlist";
+import React from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Home from '@/pages/Home';
+import Login from '@/pages/Login';
+import Register from '@/pages/Register';
+import Pricing from '@/pages/Pricing';
+import Contact from '@/pages/Contact';
+import Dashboard from '@/pages/Dashboard';
+import Profile from '@/pages/Profile';
+import AdminDashboard from '@/pages/admin/AdminDashboard';
+import AdminUsers from '@/pages/admin/AdminUsers';
+import AdminAdvertisers from '@/pages/admin/AdminAdvertisers';
+import AdminCampaigns from '@/pages/admin/AdminCampaigns';
+import NotFound from '@/pages/NotFound';
+import { AuthProvider } from '@/contexts/AuthContext';
+import { LanguageProvider } from '@/contexts/LanguageContext';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import AdvertiserDashboard from '@/pages/AdvertiserDashboard';
+import CreateCampaign from '@/pages/CreateCampaign';
+import ProtectedRoute from '@/components/ProtectedRoute';
+import { Toaster } from 'sonner';
+import AdminPolls from '@/pages/admin/AdminPolls';
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <div className="min-h-screen glass-page">
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <LanguageProvider>
-            <AuthProvider>
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/login" element={
-                  <ProtectedRoute requireAuth={false}>
-                    <LoginPage />
-                  </ProtectedRoute>
-                } />
-                <Route path="/signup" element={
-                  <ProtectedRoute requireAuth={false}>
-                    <SignupPage />
-                  </ProtectedRoute>
-                } />
-                <Route path="/earn" element={<Earn />} />
-                <Route path="/spin-wheel" element={<SpinWheel />} />
-                <Route path="/store" element={<Store />} />
-                <Route path="/shop" element={<Store />} />
-                <Route path="/shop/product/:id" element={<ProductDetail />} />
-                <Route path="/shop/checkout/:id" element={
-                  <ProtectedRoute>
-                    <Checkout />
-                  </ProtectedRoute>
-                } />
-                <Route path="/shop/order-success" element={
-                  <ProtectedRoute>
-                    <OrderSuccess />
-                  </ProtectedRoute>
-                } />
-                <Route path="/shop/orders" element={
-                  <ProtectedRoute>
-                    <Orders />
-                  </ProtectedRoute>
-                } />
-                <Route path="/referral" element={<Referral />} />
-                <Route path="/reviews" element={<Reviews />} />
-                <Route path="/become-advertiser" element={<BecomeAdvertiser />} />
-                <Route path="/create-campaign" element={<CreateCampaign />} />
-                <Route path="/advertiser-dashboard" element={<AdvertiserDashboard />} />
-                <Route path="/profile" element={
-                  <ProtectedRoute>
-                    <ProfilePage />
-                  </ProtectedRoute>
-                } />
-                
-                {/* Admin Routes */}
-                <Route path="/admin/dashboard" element={<AdminDashboard />} />
-                <Route path="/admin/users" element={<AdminUsers />} />
-                <Route path="/admin/products" element={<AdminProducts />} />
-                <Route path="/admin/orders" element={<AdminOrders />} />
-                <Route path="/admin/ads" element={<AdminAds />} />
-                <Route path="/admin/advertisers" element={<AdminAdvertisers />} />
-                <Route path="/admin/payments" element={<AdminPayments />} />
-                <Route path="/admin/coins" element={<AdminCoins />} />
-                <Route path="/admin/reviews" element={<AdminReviews />} />
-                <Route path="/admin/notifications" element={<AdminNotifications />} />
-                <Route path="/admin/cart-wishlist" element={<AdminCartWishlist />} />
-                <Route path="/admin/team-members" element={<AdminTeamMembers />} />
-                <Route path="/admin/support" element={<AdminSupport />} />
-                <Route path="/admin/settings" element={<AdminSettings />} />
-                
-                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </AuthProvider>
-          </LanguageProvider>
-        </BrowserRouter>
-      </div>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+function App() {
+  return (
+    <AuthProvider>
+      <LanguageProvider>
+        <QueryClientProvider client={queryClient}>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/pricing" element={<Pricing />} />
+              <Route path="/contact" element={<Contact />} />
+              
+              <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+              <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+              
+              {/* Admin Routes */}
+              <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
+              <Route path="/admin/users" element={<ProtectedRoute><AdminUsers /></ProtectedRoute>} />
+              <Route path="/admin/advertisers" element={<ProtectedRoute><AdminAdvertisers /></ProtectedRoute>} />
+              <Route path="/admin/campaigns" element={<ProtectedRoute><AdminCampaigns /></ProtectedRoute>} />
+
+              {/* Advertiser Routes */}
+              <Route path="/advertiser-dashboard" element={<ProtectedRoute><AdvertiserDashboard /></ProtectedRoute>} />
+              <Route path="/create-campaign" element={<ProtectedRoute><CreateCampaign /></ProtectedRoute>} />
+              
+              <Route path="*" element={<NotFound />} />
+              <Route path="/admin/polls" element={<ProtectedRoute><AdminPolls /></ProtectedRoute>} />
+            </Routes>
+            <Toaster />
+          </BrowserRouter>
+        </QueryClientProvider>
+      </LanguageProvider>
+    </AuthProvider>
+  );
+}
 
 export default App;

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -134,7 +133,11 @@ const formSchema = z.object({
   maxDailyViews: z.number().min(1, "Please enter maximum daily views"),
   buttonLabel: z.string().min(1, "Please select a button label"),
   landingPage: z.string().url("Please enter a valid URL"),
-  trackingCode: z.string().optional()
+  trackingCode: z.string().optional(),
+  includePoll: z.boolean().optional(),
+  pollQuestion: z.string().optional(),
+  pollOptions: z.array(z.string()).optional(),
+  pollCoinReward: z.string().optional()
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -143,6 +146,7 @@ const CreateCampaign = () => {
   const navigate = useNavigate();
   const [adPreview, setAdPreview] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<'phone' | 'tablet' | 'web'>('phone');
+  const [pollOptionsCount, setPollOptionsCount] = useState(2);
 
   // Calculate tomorrow and 30 days later dates for defaults
   const tomorrow = new Date();
@@ -167,7 +171,11 @@ const CreateCampaign = () => {
       maxDailyViews: 100,
       buttonLabel: "visit_site",
       landingPage: "",
-      trackingCode: ""
+      trackingCode: "",
+      includePoll: false,
+      pollQuestion: "",
+      pollOptions: ["", ""],
+      pollCoinReward: "5"
     }
   });
 
@@ -223,6 +231,23 @@ const CreateCampaign = () => {
 
   const getButtonLabel = (value: string) => {
     return buttonLabels.find(label => label.value === value)?.label || value;
+  };
+
+  const addPollOption = () => {
+    if (pollOptionsCount < 5) {
+      setPollOptionsCount(prev => prev + 1);
+      const currentOptions = form.getValues("pollOptions") || [];
+      form.setValue("pollOptions", [...currentOptions, ""]);
+    }
+  };
+
+  const removePollOption = (index: number) => {
+    if (pollOptionsCount > 2) {
+      setPollOptionsCount(prev => prev - 1);
+      const currentOptions = form.getValues("pollOptions") || [];
+      const newOptions = currentOptions.filter((_, i) => i !== index);
+      form.setValue("pollOptions", newOptions);
+    }
   };
 
   return (
@@ -507,6 +532,142 @@ const CreateCampaign = () => {
                         </FormItem>
                       </div>
                     )}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Poll Options */}
+            <Card className="neon-card">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Target className="h-5 w-5" />
+                  Poll Options (Optional)
+                </CardTitle>
+                <CardDescription>Add interactive polls to your ads to engage users and gather insights</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <FormField
+                  control={form.control}
+                  name="includePoll"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                      <div className="space-y-0.5">
+                        <FormLabel className="text-base">
+                          Include Poll in Ad
+                        </FormLabel>
+                        <FormDescription>
+                          Add an interactive poll that appears after users view your ad to gather feedback and increase engagement
+                        </FormDescription>
+                      </div>
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+
+                {form.watch("includePoll") && (
+                  <div className="space-y-4">
+                    <FormField
+                      control={form.control}
+                      name="pollQuestion"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Poll Question</FormLabel>
+                          <FormControl>
+                            <Input 
+                              placeholder="What interests you most about our product?" 
+                              {...field} 
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <div className="space-y-3">
+                      <FormLabel>Poll Options</FormLabel>
+                      {Array.from({ length: pollOptionsCount }, (_, index) => (
+                        <FormField
+                          key={index}
+                          control={form.control}
+                          name={`pollOptions.${index}`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <div className="flex items-center space-x-2">
+                                  <Input 
+                                    placeholder={`Option ${index + 1}`}
+                                    {...field}
+                                    value={form.watch("pollOptions")?.[index] || ""}
+                                    onChange={(e) => {
+                                      const currentOptions = form.getValues("pollOptions") || [];
+                                      const newOptions = [...currentOptions];
+                                      newOptions[index] = e.target.value;
+                                      form.setValue("pollOptions", newOptions);
+                                    }}
+                                  />
+                                  {pollOptionsCount > 2 && (
+                                    <Button
+                                      type="button"
+                                      variant="outline"
+                                      size="sm"
+                                      onClick={() => removePollOption(index)}
+                                    >
+                                      <X className="h-4 w-4" />
+                                    </Button>
+                                  )}
+                                </div>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      ))}
+                      
+                      {pollOptionsCount < 5 && (
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={addPollOption}
+                          className="mt-2"
+                        >
+                          + Add Option
+                        </Button>
+                      )}
+                    </div>
+
+                    <FormField
+                      control={form.control}
+                      name="pollCoinReward"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Coin Reward for Poll Participation</FormLabel>
+                          <Select 
+                            onValueChange={field.onChange} 
+                            defaultValue={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select coin reward" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="3">3 coins</SelectItem>
+                              <SelectItem value="5">5 coins</SelectItem>
+                              <SelectItem value="8">8 coins</SelectItem>
+                              <SelectItem value="10">10 coins</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
                   </div>
                 )}
               </CardContent>
