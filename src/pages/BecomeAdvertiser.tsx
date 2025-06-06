@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -25,7 +26,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Switch } from '@/components/ui/switch';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
-import { BriefcaseBusiness, Upload, Building2, Link as LinkIcon, User, Mail, Phone, BarChart, Video, Image as ImageIcon, LayoutList, Brain } from 'lucide-react';
+import { BriefcaseBusiness, Upload, Building2, Link as LinkIcon, User, Mail, Phone, BarChart, Video, Image as ImageIcon, LayoutList, Brain, Zap, Target, TrendingUp, TestTube, DollarSign, Timer } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useCoinConversion } from '@/hooks/useCoinConversion';
@@ -68,7 +69,12 @@ const formSchema = z.object({
   adBudget: z.number().min(1000).max(100000),
   preferredAdType: z.string().min(1, "Please select a preferred ad type"),
   useAI: z.boolean(),
-  preferredRegions: z.string().optional()
+  preferredRegions: z.string().optional(),
+  aiAdVariations: z.number().min(3).max(10).optional(),
+  maxCoinPerView: z.number().min(5).max(50).optional(),
+  enableABTesting: z.boolean().optional(),
+  autoOptimization: z.boolean().optional(),
+  dailyMaxSpend: z.number().min(100).max(10000).optional()
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -88,7 +94,12 @@ const BecomeAdvertiser = () => {
       adBudget: 5000,
       preferredAdType: "",
       useAI: false,
-      preferredRegions: ""
+      preferredRegions: "",
+      aiAdVariations: 5,
+      maxCoinPerView: 15,
+      enableABTesting: true,
+      autoOptimization: true,
+      dailyMaxSpend: 1000
     }
   });
 
@@ -427,11 +438,13 @@ const BecomeAdvertiser = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Brain className="h-5 w-5" />
-                  AI Smart Assist Setup (Optional)
+                  AI Smart Assist Setup
                 </CardTitle>
-                <CardDescription>Let our AI help optimize your campaigns</CardDescription>
+                <CardDescription>
+                  Let our AI automatically create multiple ad versions, test them, and optimize performance
+                </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-6">
                 <FormField
                   control={form.control}
                   name="useAI"
@@ -439,10 +452,10 @@ const BecomeAdvertiser = () => {
                     <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                       <div className="space-y-0.5">
                         <FormLabel className="text-base">
-                          Would you like us to help optimize your campaign using AI?
+                          Enable AI-Powered Ad Generation & Optimization
                         </FormLabel>
                         <CardDescription>
-                          Our AI can help target the right audience and optimize your ad spend
+                          Upload one asset → AI creates multiple versions → Auto A/B testing → Real-time optimization
                         </CardDescription>
                       </div>
                       <FormControl>
@@ -456,25 +469,243 @@ const BecomeAdvertiser = () => {
                 />
 
                 {form.watch("useAI") && (
-                  <FormField
-                    control={form.control}
-                    name="preferredRegions"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Preferred regions or audience</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="E.g., Urban millennials interested in fitness, tech enthusiasts in Bangalore"
-                            {...field}
-                          />
-                        </FormControl>
-                        <CardDescription>
-                          Describe your ideal audience or regions you want to target
-                        </CardDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                  <div className="space-y-6 border-l-4 border-neon-purple pl-6">
+                    {/* AI Features Overview */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <Card className="bg-gradient-to-br from-purple-500/10 to-blue-500/10 border-purple-500/30">
+                        <CardContent className="p-4">
+                          <div className="flex items-center gap-2 mb-2">
+                            <Zap className="h-5 w-5 text-neon-purple" />
+                            <h4 className="font-semibold">Auto-Generate Variations</h4>
+                          </div>
+                          <p className="text-sm text-muted-foreground">
+                            AI creates 5-10 ad copy variations with different CTAs and coin rewards from your single upload
+                          </p>
+                        </CardContent>
+                      </Card>
+
+                      <Card className="bg-gradient-to-br from-green-500/10 to-emerald-500/10 border-green-500/30">
+                        <CardContent className="p-4">
+                          <div className="flex items-center gap-2 mb-2">
+                            <TestTube className="h-5 w-5 text-green-400" />
+                            <h4 className="font-semibold">Smart A/B Testing</h4>
+                          </div>
+                          <p className="text-sm text-muted-foreground">
+                            Automatic testing across different user groups to find the best performing versions
+                          </p>
+                        </CardContent>
+                      </Card>
+
+                      <Card className="bg-gradient-to-br from-orange-500/10 to-red-500/10 border-orange-500/30">
+                        <CardContent className="p-4">
+                          <div className="flex items-center gap-2 mb-2">
+                            <Target className="h-5 w-5 text-orange-400" />
+                            <h4 className="font-semibold">Real-time Optimization</h4>
+                          </div>
+                          <p className="text-sm text-muted-foreground">
+                            AI pauses poor performers and prioritizes high-engagement, cost-efficient ads
+                          </p>
+                        </CardContent>
+                      </Card>
+
+                      <Card className="bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border-blue-500/30">
+                        <CardContent className="p-4">
+                          <div className="flex items-center gap-2 mb-2">
+                            <DollarSign className="h-5 w-5 text-blue-400" />
+                            <h4 className="font-semibold">Smart Coin Distribution</h4>
+                          </div>
+                          <p className="text-sm text-muted-foreground">
+                            Different coin rewards per ad to find the optimal engagement vs. cost balance
+                          </p>
+                        </CardContent>
+                      </Card>
+                    </div>
+
+                    {/* AI Configuration Settings */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <FormField
+                        control={form.control}
+                        name="aiAdVariations"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Number of AI-Generated Ad Variations</FormLabel>
+                            <FormControl>
+                              <div className="space-y-3">
+                                <Slider
+                                  min={3}
+                                  max={10}
+                                  step={1}
+                                  value={[field.value || 5]}
+                                  onValueChange={(value) => field.onChange(value[0])}
+                                />
+                                <div className="text-center">
+                                  <span className="text-sm font-medium text-neon-purple">
+                                    {field.value} variations
+                                  </span>
+                                  <p className="text-xs text-muted-foreground">
+                                    More variations = better optimization potential
+                                  </p>
+                                </div>
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="maxCoinPerView"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Maximum Coins Per Ad View</FormLabel>
+                            <FormControl>
+                              <div className="space-y-3">
+                                <Slider
+                                  min={5}
+                                  max={50}
+                                  step={5}
+                                  value={[field.value || 15]}
+                                  onValueChange={(value) => field.onChange(value[0])}
+                                />
+                                <div className="text-center">
+                                  <span className="text-sm font-medium text-neon-purple">
+                                    Up to {field.value} coins per view
+                                  </span>
+                                  <p className="text-xs text-muted-foreground">
+                                    AI will create variations with different coin rewards
+                                  </p>
+                                </div>
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="enableABTesting"
+                        render={({ field }) => (
+                          <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3">
+                            <div className="space-y-0.5">
+                              <FormLabel className="text-sm font-medium">
+                                Enable A/B Testing
+                              </FormLabel>
+                              <CardDescription className="text-xs">
+                                Test different versions automatically
+                              </CardDescription>
+                            </div>
+                            <FormControl>
+                              <Switch
+                                checked={field.value}
+                                onCheckedChange={field.onChange}
+                              />
+                            </FormControl>
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="autoOptimization"
+                        render={({ field }) => (
+                          <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3">
+                            <div className="space-y-0.5">
+                              <FormLabel className="text-sm font-medium">
+                                Auto-Optimization
+                              </FormLabel>
+                              <CardDescription className="text-xs">
+                                AI automatically pauses poor performers
+                              </CardDescription>
+                            </div>
+                            <FormControl>
+                              <Switch
+                                checked={field.value}
+                                onCheckedChange={field.onChange}
+                              />
+                            </FormControl>
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    <FormField
+                      control={form.control}
+                      name="dailyMaxSpend"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Daily Maximum Spend (Coins)</FormLabel>
+                          <FormControl>
+                            <div className="space-y-3">
+                              <Slider
+                                min={100}
+                                max={10000}
+                                step={100}
+                                value={[field.value || 1000]}
+                                onValueChange={(value) => field.onChange(value[0])}
+                              />
+                              <div className="text-center space-y-1">
+                                <div className="text-sm font-medium text-neon-purple">
+                                  {field.value?.toLocaleString()} coins per day
+                                </div>
+                                <div className="text-xs text-muted-foreground">
+                                  ≈ ₹{((field.value || 0) * 0.01).toFixed(2)} daily spend limit
+                                </div>
+                              </div>
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="preferredRegions"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Target Audience & Regions</FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="E.g., Urban millennials interested in fitness, tech enthusiasts in Bangalore, fashion lovers aged 18-35"
+                              {...field}
+                            />
+                          </FormControl>
+                          <CardDescription>
+                            Describe your ideal audience - AI will use this for targeting optimization
+                          </CardDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    {/* Benefits Summary */}
+                    <Card className="bg-gradient-to-r from-neon-purple/10 to-neon-blue/10 border-neon-purple/30">
+                      <CardContent className="p-4">
+                        <h4 className="font-semibold mb-3 flex items-center gap-2">
+                          <TrendingUp className="h-5 w-5 text-neon-purple" />
+                          Expected Benefits with AI Assist
+                        </h4>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                          <div>
+                            <span className="font-medium text-green-400">↑ 30-50%</span>
+                            <p className="text-muted-foreground">Higher engagement rates</p>
+                          </div>
+                          <div>
+                            <span className="font-medium text-blue-400">↓ 20-40%</span>
+                            <p className="text-muted-foreground">Lower cost per conversion</p>
+                          </div>
+                          <div>
+                            <span className="font-medium text-purple-400">⚡ 90%</span>
+                            <p className="text-muted-foreground">Time saved on manual optimization</p>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
                 )}
               </CardContent>
             </Card>
