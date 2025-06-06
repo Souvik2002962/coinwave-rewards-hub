@@ -9,6 +9,7 @@ import Earn from '@/pages/Earn';
 import ProfilePage from '@/pages/ProfilePage';
 import AdvertiserDashboard from '@/pages/AdvertiserDashboard';
 import CreateCampaign from '@/pages/CreateCampaign';
+import BecomeAdvertiser from '@/pages/BecomeAdvertiser';
 import AdminDashboard from '@/pages/admin/AdminDashboard';
 import AdminUsers from '@/pages/admin/AdminUsers';
 import AdminAdvertisers from '@/pages/admin/AdminAdvertisers';
@@ -34,6 +35,7 @@ function App() {
               <Route path="/register" element={<SignupPage />} />
               <Route path="/store" element={<Store />} />
               <Route path="/earn" element={<Earn />} />
+              <Route path="/become-advertiser" element={<BecomeAdvertiser />} />
               
               <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
               
