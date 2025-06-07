@@ -14,6 +14,11 @@ export interface Product {
   stock?: number;
   weight?: string; // Added for fashion items
   material?: string; // Added for fashion items (replaces nutrition)
+  colors?: string[]; // Available color variants
+  rating?: number; // Product rating
+  reviews?: number; // Number of reviews
+  originalPrice?: number; // Original price before discount
+  discount?: number; // Discount percentage
 }
 
 class ProductService {
