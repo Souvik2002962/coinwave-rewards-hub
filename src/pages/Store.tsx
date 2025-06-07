@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import NavBar from '@/components/NavBar';
 import { Button } from '@/components/ui/button';
@@ -43,7 +42,7 @@ const Store = () => {
       additionalImages: [],
       stock: 15,
       weight: '250g',
-      nutrition: 'Sweet and soft'
+      material: 'Premium Cotton'
     },
     {
       id: 'shoes-1',
@@ -56,7 +55,7 @@ const Store = () => {
       additionalImages: [],
       stock: 20,
       weight: '400g',
-      nutrition: 'Stylish and comfortable'
+      material: 'Genuine Leather'
     },
     {
       id: 'jewelry-1',
@@ -69,7 +68,7 @@ const Store = () => {
       additionalImages: [],
       stock: 8,
       weight: '15g',
-      nutrition: 'Sparkling and precious'
+      material: '18K Gold'
     },
     {
       id: 'dress-2',
@@ -82,7 +81,7 @@ const Store = () => {
       additionalImages: [],
       stock: 25,
       weight: '200g',
-      nutrition: 'Light and fresh'
+      material: 'Light Cotton'
     },
     {
       id: 'shoes-2',
@@ -95,7 +94,7 @@ const Store = () => {
       additionalImages: [],
       stock: 30,
       weight: '350g',
-      nutrition: 'Comfortable and durable'
+      material: 'Canvas & Rubber'
     }
   ];
   
@@ -184,7 +183,7 @@ const Store = () => {
             
             <div className="flex items-center gap-2 mb-4">
               <span className="text-sm text-gray-500">{showProductDetail.weight}</span>
-              <span className="text-sm text-orange-500 font-medium">{showProductDetail.nutrition}</span>
+              <span className="text-sm text-orange-500 font-medium">{showProductDetail.material}</span>
             </div>
 
             <p className="text-gray-600 mb-6 leading-relaxed">

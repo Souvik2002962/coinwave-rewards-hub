@@ -1,4 +1,3 @@
-
 export interface Product {
   id: string;
   name: string;
@@ -13,6 +12,8 @@ export interface Product {
   additionalImages: string[];
   availableSizes?: string[];
   stock?: number;
+  weight?: string; // Added for fashion items
+  material?: string; // Added for fashion items (replaces nutrition)
 }
 
 class ProductService {
