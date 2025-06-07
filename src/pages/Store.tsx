@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import NavBar from '@/components/NavBar';
 import { Button } from '@/components/ui/button';
@@ -32,6 +33,17 @@ const Store = () => {
   const navigate = useNavigate();
   const { convert } = useCoinConversion();
   
+  // Categories for the curved sidebar
+  const categories = [
+    { id: 'all', name: 'All', icon: '🛍️' },
+    { id: 'dress', name: 'Dress', icon: '👗' },
+    { id: 'shoes', name: 'Shoes', icon: '👠' },
+    { id: 'jewelry', name: 'Jewelry', icon: '💎' },
+    { id: 'shirt', name: 'Shirt', icon: '👔' },
+    { id: 'bag', name: 'Bag', icon: '👜' },
+    { id: 'accessories', name: 'Access', icon: '⌚' },
+  ];
+
   // Fashion products with enhanced details
   const fashionProducts = [
     {
@@ -402,80 +414,106 @@ const Store = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-600 via-purple-500 to-purple-700">
-      {/* Header */}
-      <div className="flex items-center justify-between p-4 pt-12">
-        <div className="p-2 bg-white/20 backdrop-blur-sm rounded-lg">
-          <div className="w-6 h-6 grid grid-cols-2 gap-1">
-            <div className="bg-white rounded-sm"></div>
-            <div className="bg-white rounded-sm"></div>
-            <div className="bg-white rounded-sm"></div>
-            <div className="bg-white rounded-sm"></div>
-          </div>
-        </div>
-        
-        <div className="text-center">
-          <p className="text-white/70 text-sm">Fashions</p>
-          <p className="text-white font-medium">Hello, Wedel</p>
-        </div>
-        
-        <div className="flex gap-2">
-          <div className="p-2 bg-white/20 backdrop-blur-sm rounded-lg">
-            <Search className="h-6 w-6 text-white" />
-          </div>
-          <div className="p-2 bg-white/20 backdrop-blur-sm rounded-lg">
-            <ShoppingCart className="h-6 w-6 text-white" />
+    <div className="min-h-screen bg-gradient-to-br from-purple-600 via-purple-500 to-purple-700 flex">
+      {/* Curved Vertical Sidebar */}
+      <div className="relative w-20 flex-shrink-0">
+        {/* Main sidebar background */}
+        <div className="fixed left-0 top-0 h-full w-20 bg-gradient-to-b from-purple-700 to-purple-900 z-10">
+          {/* Category items */}
+          <div className="flex flex-col h-full py-8">
+            {categories.map((category, index) => {
+              const isActive = activeCategory === category.id;
+              const activeIndex = categories.findIndex(cat => cat.id === activeCategory);
+              
+              return (
+                <div key={category.id} className="relative flex-1 flex items-center">
+                  {/* Curved bump for active item */}
+                  {isActive && (
+                    <>
+                      {/* SVG curved bump */}
+                      <div className="absolute right-0 w-8 h-full z-20">
+                        <svg
+                          viewBox="0 0 32 80"
+                          className="w-full h-full"
+                          style={{
+                            transform: `translateY(${(index - activeIndex) * 0}px)`,
+                            transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                          }}
+                        >
+                          <path
+                            d="M0,0 Q32,20 32,40 Q32,60 0,80 L32,80 L32,0 Z"
+                            fill="rgba(139, 69, 19, 0.1)"
+                            className="drop-shadow-lg"
+                          />
+                        </svg>
+                      </div>
+                      
+                      {/* White dot indicator */}
+                      <div 
+                        className="absolute right-4 w-3 h-3 bg-white rounded-full z-30 shadow-lg"
+                        style={{
+                          transform: `translateY(${(index - activeIndex) * 0}px)`,
+                          transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                        }}
+                      />
+                    </>
+                  )}
+                  
+                  {/* Category button */}
+                  <button
+                    onClick={() => setActiveCategory(category.id)}
+                    className={`w-full h-full flex flex-col items-center justify-center transition-all duration-300 relative z-10 ${
+                      isActive 
+                        ? 'text-white' 
+                        : 'text-purple-200 hover:text-white'
+                    }`}
+                  >
+                    <span className="text-lg mb-1">{category.icon}</span>
+                    <span 
+                      className="text-xs font-medium transform -rotate-90 whitespace-nowrap"
+                      style={{ writingMode: 'vertical-rl', textOrientation: 'mixed' }}
+                    >
+                      {category.name}
+                    </span>
+                  </button>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="px-4 py-6">
-        <div className="flex gap-6">
-          <div className="w-16 flex flex-col gap-6">
-            <button 
-              onClick={() => setActiveCategory('all')}
-              className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all ${
-                activeCategory === 'all' ? 'bg-white text-purple-600' : 'bg-white/20 text-white'
-              }`}
-            >
-              <div className="w-6 h-6 grid grid-cols-2 gap-0.5">
-                <div className="bg-current rounded-sm"></div>
-                <div className="bg-current rounded-sm"></div>
-                <div className="bg-current rounded-sm"></div>
-                <div className="bg-current rounded-sm"></div>
-              </div>
-            </button>
-            
-            <button 
-              onClick={() => setActiveCategory('dress')}
-              className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all ${
-                activeCategory === 'dress' ? 'bg-white text-purple-600' : 'bg-white/20 text-white'
-              }`}
-            >
-              <span className="text-sm font-bold">D</span>
-            </button>
-            
-            <button 
-              onClick={() => setActiveCategory('shoes')}
-              className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all ${
-                activeCategory === 'shoes' ? 'bg-white text-purple-600' : 'bg-white/20 text-white'
-              }`}
-            >
-              <span className="text-sm font-bold">S</span>
-            </button>
-            
-            <button 
-              onClick={() => setActiveCategory('jewelry')}
-              className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all ${
-                activeCategory === 'jewelry' ? 'bg-white text-purple-600' : 'bg-white/20 text-white'
-              }`}
-            >
-              <span className="text-sm font-bold">J</span>
-            </button>
+      {/* Main Content Area */}
+      <div className="flex-1 relative">
+        {/* Header */}
+        <div className="flex items-center justify-between p-4 pt-12">
+          <div className="p-2 bg-white/20 backdrop-blur-sm rounded-lg">
+            <div className="w-6 h-6 grid grid-cols-2 gap-1">
+              <div className="bg-white rounded-sm"></div>
+              <div className="bg-white rounded-sm"></div>
+              <div className="bg-white rounded-sm"></div>
+              <div className="bg-white rounded-sm"></div>
+            </div>
           </div>
+          
+          <div className="text-center">
+            <p className="text-white/70 text-sm">Fashions</p>
+            <p className="text-white font-medium">Hello, Wedel</p>
+          </div>
+          
+          <div className="flex gap-2">
+            <div className="p-2 bg-white/20 backdrop-blur-sm rounded-lg">
+              <Search className="h-6 w-6 text-white" />
+            </div>
+            <div className="p-2 bg-white/20 backdrop-blur-sm rounded-lg">
+              <ShoppingCart className="h-6 w-6 text-white" />
+            </div>
+          </div>
+        </div>
 
-          <div className="flex-1 bg-gradient-to-br from-orange-200 via-orange-100 to-pink-100 rounded-[2rem] p-6">
+        {/* Main Content */}
+        <div className="px-4 py-6">
+          <div className="bg-gradient-to-br from-orange-200 via-orange-100 to-pink-100 rounded-[2rem] p-6">
             {featuredProduct && (
               <div 
                 className="bg-gradient-to-br from-orange-300 to-orange-200 rounded-2xl p-6 mb-6 cursor-pointer relative overflow-hidden"
