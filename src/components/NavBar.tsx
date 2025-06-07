@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Coins, ShoppingCart, User, Bell, Menu, X, BriefcaseBusiness, LogOut } from 'lucide-react';
@@ -167,14 +168,48 @@ const NavBar = () => {
         </div>
 
         {mobileMenuOpen && (
-          <div className="lg:hidden glass-nav border-t border-neon-purple/30 mt-3 py-3 px-4 space-y-3">
-            <Link to="/" className="block text-white hover:text-neon-purple py-2 transition-colors" onClick={toggleMobileMenu}>{t('nav.home')}</Link>
-            <Link to="/earn" className="block text-white hover:text-neon-purple py-2 transition-colors" onClick={toggleMobileMenu}>{t('nav.earnCoins')}</Link>
-            <Link to="/store" className="block text-white hover:text-neon-purple py-2 transition-colors" onClick={toggleMobileMenu}>{t('nav.shop')}</Link>
-            <Link to="/reviews" className="block text-white hover:text-neon-purple py-2 transition-colors" onClick={toggleMobileMenu}>{t('nav.reviews')}</Link>
-            <Link to="/referral" className="block text-white hover:text-neon-purple py-2 transition-colors" onClick={toggleMobileMenu}>{t('nav.referral')}</Link>
-            <Link to="/become-advertiser" className="block text-white hover:text-neon-purple py-2 transition-colors flex items-center" onClick={toggleMobileMenu}>
-              <BriefcaseBusiness className="h-4 w-4 mr-1" />
+          <div className="lg:hidden bg-cyber-dark/95 backdrop-blur-md border-t border-neon-purple/30 mt-3 py-4 px-4 space-y-4 rounded-lg mx-2">
+            <Link 
+              to="/" 
+              className="block text-white hover:text-neon-purple py-3 px-2 transition-colors font-medium border-b border-gray-700/50" 
+              onClick={toggleMobileMenu}
+            >
+              {t('nav.home')}
+            </Link>
+            <Link 
+              to="/earn" 
+              className="block text-white hover:text-neon-purple py-3 px-2 transition-colors font-medium border-b border-gray-700/50" 
+              onClick={toggleMobileMenu}
+            >
+              {t('nav.earnCoins')}
+            </Link>
+            <Link 
+              to="/store" 
+              className="block text-white hover:text-neon-purple py-3 px-2 transition-colors font-medium border-b border-gray-700/50" 
+              onClick={toggleMobileMenu}
+            >
+              {t('nav.shop')}
+            </Link>
+            <Link 
+              to="/reviews" 
+              className="block text-white hover:text-neon-purple py-3 px-2 transition-colors font-medium border-b border-gray-700/50" 
+              onClick={toggleMobileMenu}
+            >
+              {t('nav.reviews')}
+            </Link>
+            <Link 
+              to="/referral" 
+              className="block text-white hover:text-neon-purple py-3 px-2 transition-colors font-medium border-b border-gray-700/50" 
+              onClick={toggleMobileMenu}
+            >
+              {t('nav.referral')}
+            </Link>
+            <Link 
+              to="/become-advertiser" 
+              className="block text-white hover:text-neon-purple py-3 px-2 transition-colors flex items-center font-medium border-b border-gray-700/50" 
+              onClick={toggleMobileMenu}
+            >
+              <BriefcaseBusiness className="h-4 w-4 mr-2" />
               {t('nav.forAdvertisers')}
             </Link>
             
@@ -184,31 +219,35 @@ const NavBar = () => {
             
             {user ? (
               <>
-                <Link to="/profile" className="block text-white hover:text-neon-purple py-2 transition-colors flex items-center" onClick={toggleMobileMenu}>
-                  <User className="h-4 w-4 mr-1" />
+                <Link 
+                  to="/profile" 
+                  className="block text-white hover:text-neon-purple py-3 px-2 transition-colors flex items-center font-medium border-b border-gray-700/50" 
+                  onClick={toggleMobileMenu}
+                >
+                  <User className="h-4 w-4 mr-2" />
                   My Account
                 </Link>
                 <Button 
                   variant="ghost" 
-                  className="w-full justify-start text-red-400 hover:text-red-500 p-2 h-auto"
+                  className="w-full justify-start text-red-400 hover:text-red-500 p-3 h-auto font-medium"
                   onClick={() => {
                     handleLogout();
                     toggleMobileMenu();
                   }}
                 >
-                  <LogOut className="h-4 w-4 mr-1" />
+                  <LogOut className="h-4 w-4 mr-2" />
                   Log out
                 </Button>
               </>
             ) : (
               <Link to="/login" className="block" onClick={toggleMobileMenu}>
-                <Button className="w-full bg-neon-purple hover:bg-neon-purple/90">
+                <Button className="w-full bg-neon-purple hover:bg-neon-purple/90 font-medium py-3">
                   Sign In
                 </Button>
               </Link>
             )}
             
-            <div className="flex items-center space-x-4 pt-2 border-t border-neon-purple/30">
+            <div className="flex items-center space-x-4 pt-3 border-t border-gray-700/50">
               <Button 
                 variant="ghost" 
                 size="icon" 

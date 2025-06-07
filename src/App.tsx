@@ -6,6 +6,8 @@ import LoginPage from '@/pages/LoginPage';
 import SignupPage from '@/pages/SignupPage';
 import Store from '@/pages/Store';
 import Earn from '@/pages/Earn';
+import Reviews from '@/pages/Reviews';
+import Referral from '@/pages/Referral';
 import ProfilePage from '@/pages/ProfilePage';
 import AdvertiserDashboard from '@/pages/AdvertiserDashboard';
 import CreateCampaign from '@/pages/CreateCampaign';
@@ -35,6 +37,8 @@ function App() {
               <Route path="/register" element={<SignupPage />} />
               <Route path="/store" element={<Store />} />
               <Route path="/earn" element={<Earn />} />
+              <Route path="/reviews" element={<Reviews />} />
+              <Route path="/referral" element={<Referral />} />
               <Route path="/become-advertiser" element={<BecomeAdvertiser />} />
               
               <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import NavBar from '@/components/NavBar';
 import { Button } from '@/components/ui/button';
@@ -486,16 +485,14 @@ const Store = () => {
 
       {/* Main Content Area */}
       <div className="flex-1 relative min-w-0">
-        {/* Header - Responsive */}
+        {/* Header - Responsive with Back Button */}
         <div className="flex items-center justify-between p-3 sm:p-4 pt-8 sm:pt-12">
-          <div className="p-1.5 sm:p-2 bg-white/20 backdrop-blur-sm rounded-lg">
-            <div className="w-4 h-4 sm:w-6 sm:h-6 grid grid-cols-2 gap-0.5 sm:gap-1">
-              <div className="bg-white rounded-sm"></div>
-              <div className="bg-white rounded-sm"></div>
-              <div className="bg-white rounded-sm"></div>
-              <div className="bg-white rounded-sm"></div>
-            </div>
-          </div>
+          <button 
+            onClick={() => navigate('/')}
+            className="p-1.5 sm:p-2 bg-white/20 backdrop-blur-sm rounded-lg"
+          >
+            <ArrowLeft className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
+          </button>
           
           <div className="text-center flex-1 mx-2 sm:mx-4">
             <p className="text-white/70 text-xs sm:text-sm">Fashions</p>
