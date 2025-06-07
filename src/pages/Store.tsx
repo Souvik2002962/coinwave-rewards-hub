@@ -415,80 +415,81 @@ const Store = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-600 via-purple-500 to-purple-700 flex">
-      {/* Curved Vertical Sidebar */}
-      <div className="relative w-20 flex-shrink-0">
-        {/* Main sidebar background */}
-        <div className="fixed left-0 top-0 h-full w-20 bg-gradient-to-b from-purple-700 to-purple-900 z-10">
-          {/* Category items */}
-          <div className="flex flex-col h-full py-8">
-            {categories.map((category, index) => {
-              const isActive = activeCategory === category.id;
-              const activeIndex = categories.findIndex(cat => cat.id === activeCategory);
-              
-              return (
-                <div key={category.id} className="relative flex-1 flex items-center">
-                  {/* Curved bump for active item */}
-                  {isActive && (
-                    <>
-                      {/* SVG curved bump */}
-                      <div className="absolute right-0 w-8 h-full z-20">
-                        <svg
-                          viewBox="0 0 32 80"
-                          className="w-full h-full"
-                          style={{
-                            transform: `translateY(${(index - activeIndex) * 0}px)`,
-                            transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
-                          }}
-                        >
-                          <path
-                            d="M0,0 Q32,20 32,40 Q32,60 0,80 L32,80 L32,0 Z"
-                            fill="rgba(139, 69, 19, 0.1)"
-                            className="drop-shadow-lg"
-                          />
-                        </svg>
-                      </div>
-                      
-                      {/* White dot indicator */}
-                      <div 
-                        className="absolute right-4 w-3 h-3 bg-white rounded-full z-30 shadow-lg"
-                        style={{
-                          transform: `translateY(${(index - activeIndex) * 0}px)`,
-                          transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
-                        }}
-                      />
-                    </>
-                  )}
+      {/* Curved Vertical Sidebar - Fixed */}
+      <div className="relative w-16 sm:w-20 flex-shrink-0">
+        {/* Main sidebar background - Fixed */}
+        <div className="fixed left-0 top-0 h-full w-16 sm:w-20 bg-gradient-to-b from-purple-700 to-purple-900 z-10">
+          {/* Category items - Scrollable */}
+          <div className="flex flex-col h-full py-4 sm:py-8">
+            <div className="flex-1 overflow-y-auto scrollbar-hide">
+              <div className="space-y-2 sm:space-y-4">
+                {categories.map((category, index) => {
+                  const isActive = activeCategory === category.id;
                   
-                  {/* Category button */}
-                  <button
-                    onClick={() => setActiveCategory(category.id)}
-                    className={`w-full h-full flex flex-col items-center justify-center transition-all duration-300 relative z-10 ${
-                      isActive 
-                        ? 'text-white' 
-                        : 'text-purple-200 hover:text-white'
-                    }`}
-                  >
-                    <span className="text-lg mb-1">{category.icon}</span>
-                    <span 
-                      className="text-xs font-medium transform -rotate-90 whitespace-nowrap"
-                      style={{ writingMode: 'vertical-rl', textOrientation: 'mixed' }}
-                    >
-                      {category.name}
-                    </span>
-                  </button>
-                </div>
-              );
-            })}
+                  return (
+                    <div key={category.id} className="relative h-16 sm:h-20 flex items-center">
+                      {/* Curved bump for active item */}
+                      {isActive && (
+                        <>
+                          {/* SVG curved bump */}
+                          <div className="absolute right-0 w-6 sm:w-8 h-full z-20">
+                            <svg
+                              viewBox="0 0 32 80"
+                              className="w-full h-full"
+                              style={{
+                                transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                              }}
+                            >
+                              <path
+                                d="M0,0 Q32,20 32,40 Q32,60 0,80 L32,80 L32,0 Z"
+                                fill="rgba(139, 69, 19, 0.1)"
+                                className="drop-shadow-lg"
+                              />
+                            </svg>
+                          </div>
+                          
+                          {/* White dot indicator */}
+                          <div 
+                            className="absolute right-2 sm:right-4 w-2 sm:w-3 h-2 sm:h-3 bg-white rounded-full z-30 shadow-lg"
+                            style={{
+                              transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                            }}
+                          />
+                        </>
+                      )}
+                      
+                      {/* Category button */}
+                      <button
+                        onClick={() => setActiveCategory(category.id)}
+                        className={`w-full h-full flex flex-col items-center justify-center transition-all duration-300 relative z-10 px-1 ${
+                          isActive 
+                            ? 'text-white' 
+                            : 'text-purple-200 hover:text-white'
+                        }`}
+                      >
+                        <span className="text-sm sm:text-lg mb-1">{category.icon}</span>
+                        <span 
+                          className="text-[8px] sm:text-xs font-medium transform -rotate-90 whitespace-nowrap"
+                          style={{ writingMode: 'vertical-rl', textOrientation: 'mixed' }}
+                        >
+                          {category.name}
+                        </span>
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Main Content Area */}
-      <div className="flex-1 relative">
-        {/* Header */}
-        <div className="flex items-center justify-between p-4 pt-12">
-          <div className="p-2 bg-white/20 backdrop-blur-sm rounded-lg">
-            <div className="w-6 h-6 grid grid-cols-2 gap-1">
+      <div className="flex-1 relative min-w-0">
+        {/* Header - Responsive */}
+        <div className="flex items-center justify-between p-3 sm:p-4 pt-8 sm:pt-12">
+          <div className="p-1.5 sm:p-2 bg-white/20 backdrop-blur-sm rounded-lg">
+            <div className="w-4 h-4 sm:w-6 sm:h-6 grid grid-cols-2 gap-0.5 sm:gap-1">
               <div className="bg-white rounded-sm"></div>
               <div className="bg-white rounded-sm"></div>
               <div className="bg-white rounded-sm"></div>
@@ -496,76 +497,76 @@ const Store = () => {
             </div>
           </div>
           
-          <div className="text-center">
-            <p className="text-white/70 text-sm">Fashions</p>
-            <p className="text-white font-medium">Hello, Wedel</p>
+          <div className="text-center flex-1 mx-2 sm:mx-4">
+            <p className="text-white/70 text-xs sm:text-sm">Fashions</p>
+            <p className="text-white font-medium text-sm sm:text-base">Hello, Wedel</p>
           </div>
           
-          <div className="flex gap-2">
-            <div className="p-2 bg-white/20 backdrop-blur-sm rounded-lg">
-              <Search className="h-6 w-6 text-white" />
+          <div className="flex gap-1 sm:gap-2">
+            <div className="p-1.5 sm:p-2 bg-white/20 backdrop-blur-sm rounded-lg">
+              <Search className="h-4 w-4 sm:h-6 sm:w-6 text-white" />
             </div>
-            <div className="p-2 bg-white/20 backdrop-blur-sm rounded-lg">
-              <ShoppingCart className="h-6 w-6 text-white" />
+            <div className="p-1.5 sm:p-2 bg-white/20 backdrop-blur-sm rounded-lg">
+              <ShoppingCart className="h-4 w-4 sm:h-6 sm:w-6 text-white" />
             </div>
           </div>
         </div>
 
-        {/* Main Content */}
-        <div className="px-4 py-6">
-          <div className="bg-gradient-to-br from-orange-200 via-orange-100 to-pink-100 rounded-[2rem] p-6">
+        {/* Main Content - Scrollable */}
+        <div className="px-3 sm:px-4 py-4 sm:py-6 overflow-y-auto">
+          <div className="bg-gradient-to-br from-orange-200 via-orange-100 to-pink-100 rounded-[1.5rem] sm:rounded-[2rem] p-4 sm:p-6">
             {featuredProduct && (
               <div 
-                className="bg-gradient-to-br from-orange-300 to-orange-200 rounded-2xl p-6 mb-6 cursor-pointer relative overflow-hidden"
+                className="bg-gradient-to-br from-orange-300 to-orange-200 rounded-xl sm:rounded-2xl p-4 sm:p-6 mb-4 sm:mb-6 cursor-pointer relative overflow-hidden"
                 onClick={() => handleProductClick(featuredProduct)}
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-white text-sm mb-1">{featuredProduct.weight}</p>
-                    <h2 className="text-white text-2xl font-bold mb-2">{featuredProduct.name}</h2>
-                    <div className="bg-orange-400 text-white px-3 py-1 rounded-full text-sm font-medium inline-block">
+                    <p className="text-white text-xs sm:text-sm mb-1">{featuredProduct.weight}</p>
+                    <h2 className="text-white text-lg sm:text-2xl font-bold mb-2">{featuredProduct.name}</h2>
+                    <div className="bg-orange-400 text-white px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium inline-block">
                       ₹{featuredProduct.discountCoins}
                     </div>
                   </div>
-                  <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center">
+                  <div className="w-16 h-16 sm:w-24 sm:h-24 bg-white rounded-full flex items-center justify-center flex-shrink-0">
                     <img 
                       src={featuredProduct.imageUrl} 
                       alt={featuredProduct.name}
-                      className="w-20 h-20 object-contain"
+                      className="w-12 h-12 sm:w-20 sm:h-20 object-contain"
                     />
                   </div>
                 </div>
               </div>
             )}
 
-            <div className="mb-6">
-              <h3 className="text-gray-800 text-lg font-semibold mb-4">Popular</h3>
-              <div className="space-y-3">
+            <div className="mb-4 sm:mb-6">
+              <h3 className="text-gray-800 text-base sm:text-lg font-semibold mb-3 sm:mb-4">Popular</h3>
+              <div className="space-y-2 sm:space-y-3">
                 {filteredProducts.slice(1, 4).map((product) => (
                   <div 
                     key={product.id}
-                    className="bg-white/80 backdrop-blur-sm rounded-xl p-4 flex items-center gap-4 cursor-pointer hover:bg-white/90 transition-all"
+                    className="bg-white/80 backdrop-blur-sm rounded-lg sm:rounded-xl p-3 sm:p-4 flex items-center gap-3 sm:gap-4 cursor-pointer hover:bg-white/90 transition-all"
                     onClick={() => handleProductClick(product)}
                   >
-                    <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gray-100 rounded-full flex items-center justify-center flex-shrink-0">
                       <img 
                         src={product.imageUrl} 
                         alt={product.name}
-                        className="w-10 h-10 object-contain"
+                        className="w-8 h-8 sm:w-10 sm:h-10 object-contain"
                       />
                     </div>
-                    <div className="flex-1">
-                      <h4 className="font-medium text-gray-900">{product.name}</h4>
-                      <span className="text-sm text-gray-500">₹{product.discountCoins}</span>
+                    <div className="flex-1 min-w-0">
+                      <h4 className="font-medium text-gray-900 text-sm sm:text-base truncate">{product.name}</h4>
+                      <span className="text-xs sm:text-sm text-gray-500">₹{product.discountCoins}</span>
                     </div>
                     <button 
-                      className="p-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 transition-colors"
+                      className="p-1.5 sm:p-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 transition-colors flex-shrink-0"
                       onClick={(e) => {
                         e.stopPropagation();
                         handleAddToCart();
                       }}
                     >
-                      <Plus className="h-4 w-4" />
+                      <Plus className="h-3 w-3 sm:h-4 sm:w-4" />
                     </button>
                   </div>
                 ))}
